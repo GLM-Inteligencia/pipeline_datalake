@@ -11,12 +11,13 @@ steps:
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
+      - '-c'
       - |
         gcloud functions deploy trigger_shipping_cost \
         --runtime python310 \
         --trigger-http \
         --allow-unauthenticated \
-        --entry-point main_shipping_cost \
+        --entry-point teste.py \
         --region southamerica-east1 \
         --memory 256MB \
         --source .
