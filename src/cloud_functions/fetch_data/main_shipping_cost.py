@@ -65,6 +65,6 @@ async def main_async(request):
 
     return ('Success', 200)
 
-def main(request):
+def main_shipping_cost(request):
     return asyncio.run(main_async(request))
 
