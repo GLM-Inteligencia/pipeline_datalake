@@ -1,5 +1,5 @@
 steps:
-  # Passo 1: Usar contêiner Python para instalar dependências
+  # Step 1: Install dependencies using a Python container
   - name: 'python:3.10'
     entrypoint: 'bash'
     args:
@@ -7,7 +7,7 @@ steps:
       - |
         pip install -r requirements.txt
 
-  # Passo 2: Usar o contêiner gcloud para fazer o deploy da Cloud Function
+  # Step 2: Use gcloud container to deploy the Cloud Function
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
@@ -18,9 +18,10 @@ steps:
         --allow-unauthenticated \
         --entry-point main_shipping_cost \
         --region southamerica-east1 \
-        --memory 256MB
+        --memory 256MB \
+        --source .
 
-# Configurações
-timeout: 900s  # Tempo limite para o build ser concluído (15 minutos)
+# Configuration
+timeout: 900s  # 15 minutes for the build to complete
 options:
-  logging: CLOUD_LOGGING_ONLY  # Usar apenas Cloud Logging
+  logging: CLOUD_LOGGING_ONLY  # Use only Cloud Logging
