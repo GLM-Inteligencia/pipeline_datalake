@@ -43,3 +43,6 @@ coverage.xml
 
 # mypy
 .mypy_cache/
+
+# Ignore the teste.py file
+teste.py
