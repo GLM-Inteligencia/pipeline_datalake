@@ -13,15 +13,15 @@ steps:
     args:
       - '-c'
       - |
+        export GOOGLE_FUNCTION_SOURCE=src/cloud_functions/fetch_data/main_shipping_cost.py && \
         gcloud functions deploy trigger_shipping_cost \
         --runtime python310 \
         --trigger-http \
         --allow-unauthenticated \
-        --entry-point main_costs.main \
+        --entry-point main \
         --region southamerica-east1 \
         --memory 256MB \
-        --source src/cloud_functions/fetch_data
-
+        --source .
 
 # Configuration
 timeout: 900s  # 15 minutes for the build to complete
