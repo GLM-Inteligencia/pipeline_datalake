@@ -17,7 +17,7 @@ steps:
         --trigger-http \
         --allow-unauthenticated \
         --entry-point main \
-        --source src/cloud_functions/fetch_data \
+        --source src/cloud_functions/fetch_data/main_shipping_cost.py \
         --region southamerica-east1 \
         --memory 256MB
 
