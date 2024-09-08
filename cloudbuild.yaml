@@ -18,10 +18,10 @@ steps:
         --runtime python310 \
         --trigger-http \
         --allow-unauthenticated \
-        --entry-point cloud_functions.fetch_data.main_shipping_cost.main
+        --entry-point main \
         --region southamerica-east1 \
         --memory 256MB \
-        --source src
+        --source .
 
 # Configuration
 timeout: 900s  # 15 minutes for the build to complete
