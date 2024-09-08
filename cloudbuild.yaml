@@ -17,10 +17,10 @@ steps:
         --runtime python310 \
         --trigger-http \
         --allow-unauthenticated \
-        --entry-point teste.py \
+        --entry-point main_costs.py \
         --region southamerica-east1 \
         --memory 256MB \
-        --source .
+        --source src/cloud_functions/fetch_data
 
 
 # Configuration
