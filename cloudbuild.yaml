@@ -1,13 +1,13 @@
 steps:
-  # Passo 1: Instalar dependências do Python usando o requirements.txt
-  - name: 'gcr.io/cloud-builders/gcloud'
+  # Passo 1: Usar contêiner Python para instalar dependências
+  - name: 'python:3.10'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         pip install -r requirements.txt
 
-  # Passo 2: Fazer o deploy da Cloud Function
+  # Passo 2: Usar o contêiner gcloud para fazer o deploy da Cloud Function
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
@@ -24,4 +24,4 @@ steps:
 # Configurações
 timeout: 900s  # Tempo limite para o build ser concluído (15 minutos)
 options:
-  logging: CLOUD_LOGGING_ONLY  # Use apenas o Cloud Logging (ou use NONE para desativar)
+  logging: CLOUD_LOGGING_ONLY  # Usar apenas Cloud Logging
