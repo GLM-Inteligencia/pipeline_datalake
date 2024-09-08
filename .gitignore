@@ -3,6 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+
 # Virtual environment
 venv/
 .env/
