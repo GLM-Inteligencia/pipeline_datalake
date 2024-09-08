@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+.venv/
+
+# Installed packages (if using Pipenv or Poetry)
+Pipfile.lock
+poetry.lock
+
+# Python Eggs
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Unit test / coverage reports
+.coverage
+.tox/
+.nox/
+coverage.xml
+.hypothesis/
+
+# PyInstaller
+*.spec
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Pyre type checker
+.pyre/
+
+# mypy
+.mypy_cache/
