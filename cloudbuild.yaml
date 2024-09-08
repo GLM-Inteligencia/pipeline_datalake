@@ -11,7 +11,6 @@ steps:
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
-      - '-c'
       - |
         gcloud functions deploy trigger_shipping_cost \
         --runtime python310 \
@@ -22,7 +21,5 @@ steps:
         --region southamerica-east1 \
         --memory 256MB
 
-  # Configurações
-  timeout: 900s # Tempo limite para o build ser concluído (15 minutos)
-
-# O arquivo requirements.txt precisa estar no mesmo diretório para instalar as dependências
+# Configurações
+timeout: 900s  # Tempo limite para o build ser concluído (15 minutos)
