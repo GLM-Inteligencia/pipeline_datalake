@@ -23,3 +23,5 @@ steps:
 
 # Configurações
 timeout: 900s  # Tempo limite para o build ser concluído (15 minutos)
+options:
+  logging: CLOUD_LOGGING_ONLY  # Use apenas o Cloud Logging (ou use NONE para desativar)
