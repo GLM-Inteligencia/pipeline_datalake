@@ -17,7 +17,7 @@ steps:
         --runtime python310 \
         --trigger-http \
         --allow-unauthenticated \
-        --entry-point main_costs.py \
+        --entry-point main_costs.main \
         --region southamerica-east1 \
         --memory 256MB \
         --source src/cloud_functions/fetch_data
