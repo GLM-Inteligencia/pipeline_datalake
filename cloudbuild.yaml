@@ -1,0 +1,28 @@
+steps:
+  # Passo 1: Instalar dependências do Python usando o requirements.txt
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install -r requirements.txt
+
+  # Passo 2: Fazer o deploy da Cloud Function
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud functions deploy trigger_shipping_cost \
+        --runtime python310 \
+        --trigger-http \
+        --allow-unauthenticated \
+        --entry-point main \
+        --source src/cloud_functions/fetch_data \
+        --region southamerica-east1 \
+        --memory 256MB
+
+  # Configurações
+  timeout: 900s # Tempo limite para o build ser concluído (15 minutos)
+
+# O arquivo requirements.txt precisa estar no mesmo diretório para instalar as dependências
