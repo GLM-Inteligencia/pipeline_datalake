@@ -22,6 +22,7 @@ BLOB_CATALOG = lambda store_name : f'{store_name}/meli/api_response/catelog_deta
 BLOB_FULLFILMENT= lambda store_name : f'{store_name}/meli/api_response/item_fullfilment/'
 BLOB_COSTS = lambda store_name : f'{store_name}/meli/api_response/item_cost/'
 BLOB_SHIPPING_COST = lambda store_name : f'{store_name}/meli/api_response/item_shipping/'
+BLOB_ITEMS = lambda store_name : f'{store_name}/meli/api_response/items/'
 
 # URLs API
 URL_PRICE = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}/sale_price?context=channel_marketplace'
@@ -29,3 +30,4 @@ URL_CATALOG = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}/pri
 URL_FULLFILMENT = lambda inventory_id : f"https://api.mercadolibre.com/inventories/{inventory_id}/stock/fulfillment"
 URL_COST = 'https://api.mercadolibre.com/sites/MLB/listing_prices'
 URL_SHIPPING_COST = lambda item_id, seller_id : f'https://api.mercadolibre.com/users/{seller_id}/shipping_options/free?item_id={item_id}'
+URL_ITEMS = lambda seller_id : f'https://api.mercadolibre.com/users/{seller_id}/items/search'

@@ -170,3 +170,67 @@ def fetch_items_from_storage(storage, bucket_name, blob_items_prefix, key_names,
     # Return a list of unique values if it's a single key, otherwise list of dictionaries
     return list(set(items_list)) if is_single_key else [dict(t) for t in {tuple(d.items()) for d in items_list}]
 
+
+def fetch_all_items(url, access_token, seller_id):
+    offset = 0
+    page = 1  # New page parameter
+    max_offset = 1000  # MercadoLibre API max offset
+    count_total_results = 0
+    all_products = []
+    all_responses = []  # List to store all the JSON responses
+    limit = 50 # Number of products per request
+
+    params = {
+      'access_token': access_token,
+      'limit': limit,
+      }
+
+    while True:
+        if offset >= max_offset:
+            # Switch to pagination mode
+            params['page'] = page
+            if 'offset' in params:
+                del params['offset']  # Remove offset if using page
+            print(f"Switching to pagination at page {page}")
+        else:
+            # Use offset for first 1000 items
+            params['offset'] = offset
+
+        # request api
+        response = requests.get(url(seller_id), params=params)
+
+        # checking request status
+        if response.status_code != 200:
+            raise Exception(f"Failed to fetch data: {response.json()}")
+
+        # getting items data
+        items_data = response.json()
+        results = items_data['results']
+        print(f"Offset {offset} (or page {page}): {len(results)} items")
+
+        # Add the entire JSON response to the list
+        all_responses.append(items_data)
+
+        # increment count of daily results
+        count_total_results += len(results)
+
+        # Add the current batch of product IDs to the all_products list
+        products = items_data.get('results', [])
+        all_products.extend(products)
+
+        # stop condition -> all daily information has been imported
+        if count_total_results >= items_data['paging']['total']:
+            print(f'** Request items have been processed. **')
+            break
+
+        # updating offset and page
+        if offset < max_offset:
+            offset += limit
+        else:
+            page += 1
+
+    print(f'** Number of items found : {len(all_products)}')
+    
+    return all_products, all_responses
+
+
