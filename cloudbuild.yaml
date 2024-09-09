@@ -4,22 +4,22 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/import/
+        cp requirements.txt src/cloud_functions/import/store_import_data
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        cd src/cloud_functions/import && \
-        gcloud functions deploy upload_csv_to_bigquery_inputs \
+        cd src/cloud_functions/import/store_import_data && \
+        gcloud functions deploy store_import_data \
         --gen2 \
         --runtime python310 \
         --trigger-http \
         --allow-unauthenticated \
         --region southamerica-east1 \
         --memory 256MB \
-        --source .
+        --source .    
 
 timeout: 900s  # 15 minutes for the build to complete
 options:
