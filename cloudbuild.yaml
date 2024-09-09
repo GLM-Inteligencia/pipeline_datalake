@@ -12,7 +12,7 @@ steps:
       - '-c'
       - |
         cd src/cloud_functions/import && \
-        gcloud functions deploy store_import_data \
+        gcloud functions deploy upload_csv_to_bigquery_inputs \
         --gen2 \
         --runtime python310 \
         --trigger-http \
