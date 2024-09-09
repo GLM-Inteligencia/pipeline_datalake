@@ -1,20 +1,18 @@
 steps:
-  # Step 1: Install dependencies using a Python container
   - name: 'python:3.10'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        pip install -r requirements.txt
+        cp requirements.txt src/cloud_functions/inputs/ && \
+        pip install -r src/cloud_functions/inputs/requirements.txt
 
-
-  # Step 2: Use gcloud container to deploy the Cloud Function
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        cd src/cloud_functions/inputs
+        cd src/cloud_functions/inputs && \
         gcloud functions deploy upload_csv_to_bigquery_inputs \
         --runtime python310 \
         --trigger-http \
