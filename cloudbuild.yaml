@@ -13,14 +13,13 @@ steps:
       - |
         cd src/cloud_functions/import && \
         gcloud functions deploy store_import_data \
+        --gen2 \
         --runtime python310 \
         --trigger-http \
         --allow-unauthenticated \
         --region southamerica-east1 \
         --memory 256MB \
-        --source . \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-
+        --source .
 
 timeout: 900s  # 15 minutes for the build to complete
 options:
