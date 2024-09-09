@@ -1,7 +1,7 @@
-from common.cloud_storage_connector import CloudStorage
-from common.bigquery_connector import BigQueryManager
-from common.utils import batch_process, log_process, authenticate, fetch_items_from_storage
-from config import settings
+from src.common.cloud_storage_connector import CloudStorage
+from src.common.bigquery_connector import BigQueryManager
+from src.common.utils import batch_process, log_process, authenticate, fetch_items_from_storage
+from src.config import settings
 import json
 import asyncio
 import aiohttp
@@ -56,7 +56,7 @@ async def main_async(request):
     
     # Batch processing the API requests
     async with aiohttp.ClientSession() as session:
-        await batch_process(session, items_id, url, headers, bucket_name, date_blob_path, storage, add_item_id = True, params = True)
+        await batch_process(session, items_id, url, headers, bucket_name, date_blob_path, storage, add_item_id = True)
 
     print('** Logging process in management table... **')
     # Log the process in BigQuery
