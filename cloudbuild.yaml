@@ -4,8 +4,7 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/import/store_import_data/ && \
-        pip install -r src/cloud_functions/import/store_import_data/requirements.txt
+        cp requirements.txt src/cloud_functions/import/store_import_data/
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
