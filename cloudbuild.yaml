@@ -4,14 +4,15 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/import/store_import_data/
+        cp requirements.txt src/cloud_functions/import/store_import_data/ && \
+        pip install -r src/cloud_functions/import/store_import_data/requirements.txt
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        cd src/cloud_functions/import/store_import_data/ && \
+        cd src/cloud_functions/import/store_import_data && \
         gcloud functions deploy store_import_data \
         --runtime python310 \
         --trigger-http \

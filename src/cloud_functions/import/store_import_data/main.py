@@ -1,6 +1,5 @@
 import os
 
-import functions_framework
 import pandas as pd
 from google.cloud import storage, bigquery
 from google.cloud.exceptions import NotFound
@@ -8,7 +7,6 @@ from flask import jsonify
 from datetime import datetime
 import io
 
-@functions_framework.http
 def store_import_data(request):
     """
     Cloud Function that receives a Cloud Storage path of a CSV file, lists files inside the folder,
