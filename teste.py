@@ -1,6 +1,4 @@
-import json
-from types import SimpleNamespace
-from src.cloud_functions.fetch_data.main_shipping_cost import main 
+from src.cloud_functions.jobs.fetch_data.main_shipping_cost import main
 
 # Mock request class to simulate Flask's request object
 class MockRequest:
