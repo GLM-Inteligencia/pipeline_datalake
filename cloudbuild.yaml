@@ -14,7 +14,7 @@ steps:
     args:
       - '-c'
       - |
-        cd src/cloud_functions
+        cd src/cloud_functions/inputs
         gcloud functions deploy upload_csv_to_bigquery_inputs \
         --runtime python310 \
         --trigger-http \
