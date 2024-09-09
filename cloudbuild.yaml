@@ -7,6 +7,7 @@ steps:
       - |
         pip install -r requirements.txt
 
+
   # Step 2: Use gcloud container to deploy the Cloud Function
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
@@ -18,7 +19,7 @@ steps:
         --runtime python310 \
         --trigger-http \
         --allow-unauthenticated \
-        --entry-point main \
+        --entry-point main_shipping_cost.py \
         --region southamerica-east1 \
         --memory 256MB \
         --source .
