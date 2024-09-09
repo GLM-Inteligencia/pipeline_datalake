@@ -23,7 +23,6 @@ steps:
         --memory 256MB \
         --source .
 
-# Configuration
 timeout: 900s  # 15 minutes for the build to complete
 options:
   logging: CLOUD_LOGGING_ONLY  # Use only Cloud Logging
