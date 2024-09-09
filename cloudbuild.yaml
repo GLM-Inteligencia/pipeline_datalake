@@ -4,14 +4,14 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/import/store_import_data
+        cp requirements.txt src/cloud_functions/import/store_import_data/
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        cd src/cloud_functions/import/store_import_data && \
+        cd src/cloud_functions/import/store_import_data/ && \
         gcloud functions deploy store_import_data \
         --gen2 \
         --runtime python310 \
@@ -19,7 +19,10 @@ steps:
         --allow-unauthenticated \
         --region southamerica-east1 \
         --memory 256MB \
-        --source .    
+        --source . \
+        --entry-point store_import_data \
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
 
 timeout: 900s  # 15 minutes for the build to complete
 options:
