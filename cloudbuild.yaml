@@ -13,6 +13,7 @@ steps:
       - |
         cd src/cloud_functions/import/store_import_data && \
         gcloud functions deploy store_import_data \
+        --gen2 \
         --runtime python310 \
         --trigger-http \
         --allow-unauthenticated \
