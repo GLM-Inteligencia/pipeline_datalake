@@ -18,7 +18,7 @@ steps:
         --allow-unauthenticated \
         --region southamerica-east1 \
         --memory 256MB \
-        --source .
+        --source . \
         --entry-point store_import_data
 
 timeout: 900s  # 15 minutes for the build to complete
