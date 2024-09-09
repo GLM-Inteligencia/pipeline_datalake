@@ -14,12 +14,11 @@ steps:
     args:
       - '-c'
       - |
-        export GOOGLE_FUNCTION_SOURCE=src/cloud_functions/fetch_data/main_shipping_cost.py && \
-        gcloud functions deploy trigger_shipping_cost \
+        cd src/cloud_functions
+        gcloud functions deploy upload_csv_to_bigquery_inputs \
         --runtime python310 \
         --trigger-http \
         --allow-unauthenticated \
-        --entry-point main_shipping_cost.py \
         --region southamerica-east1 \
         --memory 256MB \
         --source .
