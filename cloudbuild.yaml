@@ -16,7 +16,7 @@ steps:
         --gen2 \
         --runtime python310 \
         --trigger-http \
-        --allow-unauthenticated \
+        --no-allow-unauthenticated \
         --region southamerica-east1 \
         --memory 256MB \
         --source . \
