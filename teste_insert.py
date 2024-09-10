@@ -1,6 +1,8 @@
 import json
 from types import SimpleNamespace
-from src.cloud_functions.fetch_data.main_items import main 
+from src.cloud_functions.fetch_data.main_shipping_cost import main as main_fetch
+from src.cloud_functions.insert_bq.insert_bq_shipping import main  as main_insert
+
 
 # Mock request class to simulate Flask's request object
 class MockRequest:
@@ -23,7 +25,11 @@ test_data = {
 mock_request = MockRequest(test_data)
 
 # Call your function with the mock request
-result = main(mock_request)
+# result = main_fetch(mock_request)
+result = main_insert(mock_request)
 
 # Print the result
 print(result)
+
+
+

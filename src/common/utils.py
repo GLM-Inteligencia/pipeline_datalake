@@ -159,7 +159,9 @@ def fetch_items_from_storage(storage, bucket_name, blob_items_prefix, key_names,
                     if is_single_key:
                         # Single key: Append the value of the key directly
                         value = item.get(key_names[0], None)
-                        if value is not None:  # Filter out None values
+                        if isinstance(value, list):
+                            items_list.extend(value)
+                        elif value is not None:  # Filter out None values
                             items_list.append(value)
                     else:
                         # Multiple keys: Create a dictionary of key-value pairs
@@ -233,4 +235,96 @@ def fetch_all_items(url, access_token, seller_id):
     
     return all_products, all_responses
 
+
+async def batch_process_details(session, item_ids, url_item_func, url_variation_func, headers,
+                        storage, bucket_name, date_blob_item_basic_path, date_variation_blob_path, 
+                        chunk_size=100, semaphore_limit=100):
+    """
+    Processes API requests in batches and stores the responses for item details and variations in Google Cloud Storage using CloudStorage class.
+
+    Args:
+        session: The aiohttp session.
+        item_ids (list): List of item IDs to process.
+        url_item_func (callable): Function to generate the item details URL.
+        url_variation_func (callable): Function to generate the item variation URL.
+        headers (dict): Headers for the API requests.
+        storage (CloudStorage): Instance of CloudStorage class for interacting with GCS.
+        bucket_name (str): Name of the bucket where the files will be stored.
+        date_blob_item_basic_path (str): Path for saving item details.
+        date_variation_blob_path (str): Path for saving item variations.
+        chunk_size (int, optional): Size of the chunks for batch processing. Defaults to 100.
+        semaphore_limit (int, optional): Limit for concurrent requests. Defaults to 100.
+
+    Returns:
+        None
+    """
+    semaphore = asyncio.Semaphore(semaphore_limit)
+    chunks = [item_ids[i:i + chunk_size] for i in range(0, len(item_ids), chunk_size)]
+
+    async def process_chunk_details(chunk, batch_number):
+        batch_responses_details = []
+        batch_responses_variations = []
+        timezone_offset = "-03:00"
+        
+        tasks = [
+            fetch_details(session, item_id, batch_responses_details, batch_responses_variations,
+                  url_item_func, url_variation_func, headers, semaphore) 
+            for item_id in chunk
+        ]
+        
+        await asyncio.gather(*tasks)
+        
+        # Save item details
+        if batch_responses_details:
+            process_time = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%M.%f{timezone_offset}")
+            item_details_fn = f'batch_id={batch_number}__total_items={len(chunk)}__process_time={process_time}.json'
+            blob_items_prefix = date_blob_item_basic_path + item_details_fn
+            storage.upload_json(bucket_name, blob_items_prefix, batch_responses_details)
+        
+        # Save item variations
+        if batch_responses_variations:
+            variation_details_fn = f'batch_id={batch_number}__total_variations={len(batch_responses_variations)}__process_time={process_time}.json'
+            blob_variations_prefix = date_variation_blob_path + variation_details_fn
+            storage.upload_json(bucket_name, blob_variations_prefix, batch_responses_variations)
+
+    for batch_number, chunk in enumerate(chunks):
+        await process_chunk_details(chunk, batch_number)
+        await asyncio.sleep(1)  # Sleep to avoid hitting rate limits
+
+async def fetch_details(session, item_id, batch_responses_details, batch_responses_variations, 
+                url_item_func, url_variation_func, headers, semaphore):
+    """
+    Fetches item details and variations.
+
+    Args:
+        session: The aiohttp session.
+        item_id (str): The item ID to be processed.
+        batch_responses_details (list): List to store item details responses.
+        batch_responses_variations (list): List to store item variations responses.
+        url_item_func (callable): Function to generate the item details URL.
+        url_variation_func (callable): Function to generate the item variation URL.
+        headers (dict): Headers for the API requests.
+        semaphore (asyncio.Semaphore): Semaphore to control the number of concurrent requests.
+
+    Returns:
+        None
+    """
+    async with semaphore:
+        # Fetch item details
+        async with session.get(url_item_func(item_id), headers=headers) as response:
+            if response.status == 200:
+                json_response = await response.json()
+                batch_responses_details.append(json_response)
+                
+                # Check if item has variations
+                if not extract_seller_sku(json_response.get('attributes', [])):  # Assume variations if no SKU
+                    item_variations = []
+                    for var in json_response.get('variations', []):
+                        variation_id = var['id']
+                        async with session.get(url_variation_func(item_id, variation_id), headers=headers) as variation_response:
+                            if variation_response.status == 200:
+                                variation_json = await variation_response.json()
+                                item_variations.append(variation_json)
+                    
+                    batch_responses_variations.extend(item_variations)
 

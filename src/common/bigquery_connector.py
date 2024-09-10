@@ -2,6 +2,7 @@ from google.cloud import bigquery
 from google.cloud import secretmanager
 import os
 import pandas as pd
+import pandas_gbq
 
 class BigQueryManager:
     def __init__(self, credentials_path=None, secret_id=None):
@@ -28,7 +29,7 @@ class BigQueryManager:
         return query_job.result().to_dataframe()
 
     def insert_dataframe(self, df, table_id):
-        df.to_gbq(table_id, if_exists='append')
+        pandas_gbq.to_gbq(table_id, if_exists='append')
         print(f'Data inserted into {table_id}.')
     
     def delete_existing_data(self, table_id, seller_id, date):
@@ -39,3 +40,33 @@ class BigQueryManager:
         """
         self.run_query(query)
         print(f'Existing data deleted from {table_id} for date {date} and seller_id {seller_id}.')
+
+    def get_list_dates_to_process(self, seller_id, table_management, table_to_process):
+        query = f"""
+            SELECT DISTINCT process_date
+            FROM {table_management}
+            WHERE
+                1=1
+                AND seller_id = {seller_id}
+                AND table_name = '{table_to_process}'
+                AND processed_to_bq = false
+                  """
+        df=self.run_query(query)
+        list_dates = df['process_date'].to_list()
+        return list_dates
+    
+    def update_logs_table(self, seller_id, date, destiny_table, management_table):
+
+        query =  f"""
+                UPDATE {management_table}
+                SET processed_to_bq = true,
+                    last_bq_processing = CURRENT_TIMESTAMP()
+                WHERE 1=1
+                AND seller_id = {seller_id}
+                AND process_date = '{date}'
+                AND processed_to_bq = false
+                AND table_name = '{destiny_table}'
+                """
+        self.run_query(query)
+
+

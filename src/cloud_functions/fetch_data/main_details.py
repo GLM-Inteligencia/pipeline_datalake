@@ -1,6 +1,6 @@
 from src.common.cloud_storage_connector import CloudStorage
 from src.common.bigquery_connector import BigQueryManager
-from src.common.utils import batch_process, log_process, authenticate, fetch_items_from_storage
+from src.common.utils import batch_process_details, log_process, authenticate, fetch_items_from_storage
 from src.config import settings
 import json
 import asyncio
@@ -47,28 +47,36 @@ async def main_async(request):
 
     print(f'** Items found: {len(items_id)}**')
 
-#     print(f'** Cleaning blob **')
-#     # Path for saving 
-#     blob_basic_path = settings.BLOB_FULLFILMENT(store_name)
-#     date_blob_path = f'{blob_basic_path}date={today_str}/'
+    print(f'** Cleaning blob **')
+    # Path for saving 
+    blob_basic_path_details = settings.BLOB_ITEMS_DETAILS(store_name)
+    date_blob_path_details = f'{blob_basic_path_details}date={today_str}/'
 
-#     # Clean existing files in the storage bucket
-#     storage.clean_blobs(bucket_name, date_blob_path)
+    blob_basic_path_variations = settings.BLOB_VARIATIONS(store_name)
+    date_blob_path_variations = f'{blob_basic_path_variations}date={today_str}/'
 
-#     print(f'** Starting API requests for {len(items_id)} items**')
-#     # URL function for API
-#     url = settings.URL_FULLFILMENT
-#     headers = {'Authorization': f'Bearer {access_token}'}
+    # Clean existing files in the storage bucket
+    storage.clean_blobs(bucket_name, date_blob_path_details)
+    storage.clean_blobs(bucket_name, date_blob_path_variations)
+
+    print(f'** Starting API requests for {len(items_id)} items**')
+    # URL function for API
+    url_details = settings.URL_ITEM_DETAIL
+    url_variations = settings.URL_VARIATIONS
+
+    headers = {'Authorization': f'Bearer {access_token}'}
     
-#     # Batch processing the API requests
-#     async with aiohttp.ClientSession() as session:
-#         await batch_process(session, items_id, url, headers, bucket_name, date_blob_path, storage)
+    # Batch processing the API requests
+    async with aiohttp.ClientSession() as session:
+        await batch_process_details(session, items_id, url_details, url_variations, headers, 
+                                    storage, bucket_name, date_blob_path_details, date_blob_path_variations)
 
-#     print('** Logging process in management table... **')
-#     # Log the process in BigQuery
-#     log_process(seller_id, destiny_table, today_str, table_management, processed_to_bq=False)
 
-#     return ('Success', 200)
+    print('** Logging process in management table... **')
+    # Log the process in BigQuery
+    log_process(seller_id, destiny_table, today_str, table_management, processed_to_bq=False)
+
+    return ('Success', 200)
 
 def main(request):
     return asyncio.run(main_async(request))
