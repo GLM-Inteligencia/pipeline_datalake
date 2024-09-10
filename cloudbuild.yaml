@@ -4,7 +4,7 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/import/store_import_data/
+        cp requirements.txt ${_FUNCTION_PATH}
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
