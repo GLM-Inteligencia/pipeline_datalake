@@ -21,7 +21,7 @@ steps:
         --memory 256MB \
         --source . \
         --entry-point store_import_data \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
