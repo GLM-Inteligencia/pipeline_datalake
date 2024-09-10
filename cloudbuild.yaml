@@ -26,4 +26,4 @@ steps:
 
 timeout: 900s  # 15 minutes for the build to complete
 options:
-  logging: CLOUD_LOGGING_ONLY  # Use only Cloud Logging
+  logging: CLOUD_LOGGING_ONLY
