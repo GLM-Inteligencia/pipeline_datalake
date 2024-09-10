@@ -11,8 +11,8 @@ steps:
     args:
       - '-c'
       - |
-        cd src/cloud_functions/import/store_import_data && \
-        gcloud functions deploy store_import_data \
+        cd ${_FUNCTION_PATH} && \
+        gcloud functions deploy ${_FUNCTION_NAME} \
         --gen2 \
         --runtime python310 \
         --trigger-http \
@@ -20,7 +20,7 @@ steps:
         --region southamerica-east1 \
         --memory 256MB \
         --source . \
-        --entry-point store_import_data \
+        --entry-point ${_FUNCTION_NAME} \
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
