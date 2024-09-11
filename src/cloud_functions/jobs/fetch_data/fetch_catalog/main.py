@@ -74,4 +74,3 @@ async def main_async(request):
 
 def fetch_catalog_data(request):
     return asyncio.run(main_async(request))
-
