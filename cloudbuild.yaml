@@ -1,30 +1,30 @@
 steps:
-  # Step 1: Install dependencies using a Python container
   - name: 'python:3.10'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        pip install -r requirements.txt
+        cp requirements.txt ${_FUNCTION_PATH}
 
-
-  # Step 2: Use gcloud container to deploy the Cloud Function
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        export GOOGLE_FUNCTION_SOURCE=src/cloud_functions/fetch_data/main_shipping_cost.py && \
-        gcloud functions deploy trigger_shipping_cost \
+        cd ${_FUNCTION_PATH} && \
+        gcloud functions deploy ${_FUNCTION_NAME} \
+        --gen2 \
         --runtime python310 \
         --trigger-http \
-        --allow-unauthenticated \
-        --entry-point main_shipping_cost.py \
+        --no-allow-unauthenticated \
         --region southamerica-east1 \
         --memory 256MB \
-        --source .
+        --source . \
+        --entry-point ${_FUNCTION_NAME} \
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-# Configuration
+
 timeout: 900s  # 15 minutes for the build to complete
 options:
-  logging: CLOUD_LOGGING_ONLY  # Use only Cloud Logging
+  logging: CLOUD_LOGGING_ONLY

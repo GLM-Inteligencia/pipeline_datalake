@@ -5,6 +5,7 @@ google-cloud-storage==2.16.0
 google-cloud-secret-manager==2.20.2
 google-cloud-firestore==2.16.0
 google-cloud-workflows==1.14.3
-aiohttp==3.8.1
+aiohttp==3.9.5
 requests==2.31.0
 pandas-gbq==0.23.1
+functions_framework==3.8.1

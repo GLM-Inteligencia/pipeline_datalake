@@ -1,4 +1,5 @@
 import os
+
 import pandas as pd
 from google.cloud import storage, bigquery
 from google.cloud.exceptions import NotFound
@@ -6,29 +7,29 @@ from flask import jsonify
 from datetime import datetime
 import io
 
-def upload_csv_to_bigquery_inputs(request):
+def store_import_data(request):
     """
-    Cloud Function that receives a Cloud Storage path of a CSV file, lists files inside the folder, 
+    Cloud Function that receives a Cloud Storage path of a CSV file, lists files inside the folder,
     selects the most recent CSV (assuming files are named by dates), and loads the data into BigQuery.
     """
     try:
         # Extract the CSV file path from the HTTP request
         request_json = request.get_json()
-        
+
         if not request_json:
-            return jsonify({'error': 'Invalid request: must provide input_type and store_identifier in the request body.'}), 400
-        
-        input_type = request_json.get('input_type')
+            return jsonify({'error': 'Invalid request: must provide file_type and store_identifier in the request body.'}), 400
+
+        file_type = request_json.get('file_type')
         store_identifier = request_json.get('store_identifier')
         seller_id = request_json.get('seller_id')
-        
-        if not input_type or not store_identifier or not seller_id:
-            return jsonify({'error': 'Missing required parameters: input_type, store_identifier, and seller_id.'}), 400
-        
+
+        if not file_type or not store_identifier or not seller_id:
+            return jsonify({'error': 'Missing required parameters: file_type, store_identifier, and seller_id.'}), 400
+
         # Parse the bucket and the directory
         bucket_name = 'glm-store'
-        directory_prefix = f'{store_identifier}/inputs/{input_type}/'
-        
+        directory_prefix = f'{store_identifier}/inputs/{file_type}/'
+
         # Initialize Cloud Storage client
         storage_client = storage.Client()
 
@@ -84,8 +85,8 @@ def upload_csv_to_bigquery_inputs(request):
         # Initialize BigQuery client
         bigquery_client = bigquery.Client()
 
-        # Generate the table name dynamically based on input_type
-        table_name = f'datalake-v2-424516.inputs.{input_type}'
+        # Generate the table name dynamically based on file_type
+        table_name = f'datalake-v2-424516.inputs.{file_type}'
         print(f'Target BigQuery table: {table_name}')
 
         # Load the DataFrame to BigQuery
