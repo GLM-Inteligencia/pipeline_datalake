@@ -4,7 +4,8 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt ${_FUNCTION_PATH}
+        cp requirements.txt ${_FUNCTION_PATH} && \
+        cp -r src/common ${_FUNCTION_PATH}
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'

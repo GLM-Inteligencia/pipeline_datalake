@@ -1,7 +1,7 @@
-from src.common.cloud_storage_connector import CloudStorage
-from src.common.bigquery_connector import BigQueryManager
-from src.common.utils import batch_process, log_process, authenticate, fetch_items_from_storage
-from src.config import settings
+from common.cloud_storage_connector import CloudStorage
+from common.bigquery_connector import BigQueryManager
+from common.utils import batch_process, log_process, authenticate, fetch_items_from_storage
+from config import settings
 import json
 import asyncio
 import aiohttp
