@@ -26,7 +26,6 @@ BLOB_ITEMS = lambda store_name : f'{store_name}/meli/api_response/items/'
 BLOB_ITEMS_DETAILS = lambda store_name : f'{store_name}/meli/api_response/item_detail/'
 BLOB_VARIATIONS = lambda store_name : f'{store_name}/meli/api_response/variation_detail/'
 
-
 # URLs API
 URL_PRICE = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}/sale_price?context=channel_marketplace'
 URL_CATALOG = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}/price_to_win?version=v2'
@@ -36,3 +35,11 @@ URL_SHIPPING_COST = lambda item_id, seller_id : f'https://api.mercadolibre.com/u
 URL_ITEMS = lambda seller_id : f'https://api.mercadolibre.com/users/{seller_id}/items/search'
 URL_ITEM_DETAIL = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}'
 URL_VARIATIONS = lambda item_id, variation_id: f'https://api.mercadolibre.com/items/{item_id}/variations/{variation_id}'
+
+# GCP INFO
+FIRESTORE_COLLECTION_USERS = 'users_credentials'
+PROJECT_ID_FIREBASE = 'datalake-meli-dev'
+PROJECT_ID_WORKFLOW = "datalake-v2-424516"
+LOCATION = "southamerica-east1"
+WORKFLOW_NAME = "workflow-functions-datalakev2"
+
