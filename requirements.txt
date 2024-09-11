@@ -8,4 +8,3 @@ google-cloud-workflows==1.14.3
 aiohttp==3.9.5
 requests==2.31.0
 pandas-gbq==0.23.1
-functions_framework==3.8.1
