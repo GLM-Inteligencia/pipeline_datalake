@@ -8,7 +8,7 @@ from src.config import settings
 import json
 
 
-def main(request):
+def insert_bq_fullfilment(request):
 
     data = request.get_json()
     store_name = data.get('store_name')
@@ -22,8 +22,8 @@ def main(request):
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_PRICES
-    blob_shipping_cost = settings.BLOB_PRICES(store_name)
+    destiny_table = settings.TABLE_FULLFILMENT
+    blob_shipping_cost = settings.BLOB_FULLFILMENT(store_name)
 
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
@@ -51,7 +51,7 @@ def main(request):
             content = storage.download_json(bucket_name, blob.name)
 
             for json in content:
-                processed_dict = process_prices(json)
+                processed_dict = process_fullfilment(json)
 
                 if isinstance(processed_dict, dict):
                     df_processed_data = pd.concat([df_processed_data, pd.DataFrame([processed_dict])], ignore_index = True)
@@ -77,17 +77,34 @@ def main(request):
 
     return df_processed_data
 
-def process_prices(json):
+
+def process_fullfilment(json):
 
     try:
-        dict_content = {
-                        'item_id' : json.get('item_id'),
-                        'price_id': json.get('price_id'),
-                        'regular_amount': json.get('regular_amount'),
-                        'price': json.get('amount')
-                        }
-        
-        return dict_content
+        # Extraindo as informações principais
+        inventory_id = json['inventory_id']
+        total = json['total']
+        available_quantity = json['available_quantity']
+        not_available_quantity = json['not_available_quantity']
+
+        # Inicializando as colunas 'transfer', 'lost', 'withdrawal' com zero
+        status_dict = {'transfer': 0, 'lost': 0, 'withdrawal': 0, 'notSupported': 0}
+
+        # Atualizando os valores baseados no not_available_detail
+        for detail in json['not_available_detail']:
+            status_dict[detail['status']] = detail['quantity']
+
+        # Retornando os dados como um dicionário
+        return {
+            'inventory_id': inventory_id,
+            'total': total,
+            'available_quantity': available_quantity,
+            'not_available_quantity': not_available_quantity,
+            'transfer': status_dict['transfer'],
+            'lost': status_dict['lost'],
+            'withdrawal': status_dict['withdrawal'],
+            'not_supported':status_dict['notSupported']
+        }
     
     except:
         print(f'Error processing json: {json}')

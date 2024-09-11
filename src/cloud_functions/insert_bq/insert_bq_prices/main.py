@@ -8,7 +8,7 @@ from src.config import settings
 import json
 
 
-def main(request):
+def insert_bq_prices(request):
 
     data = request.get_json()
     store_name = data.get('store_name')
@@ -22,8 +22,8 @@ def main(request):
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_COSTS
-    blob_shipping_cost = settings.BLOB_COSTS(store_name)
+    destiny_table = settings.TABLE_PRICES
+    blob_shipping_cost = settings.BLOB_PRICES(store_name)
 
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
@@ -51,7 +51,7 @@ def main(request):
             content = storage.download_json(bucket_name, blob.name)
 
             for json in content:
-                processed_dict = process_costs(json)
+                processed_dict = process_prices(json)
 
                 if isinstance(processed_dict, dict):
                     df_processed_data = pd.concat([df_processed_data, pd.DataFrame([processed_dict])], ignore_index = True)
@@ -77,25 +77,20 @@ def main(request):
 
     return df_processed_data
 
-    
-def process_costs(json):
+def process_prices(json):
 
     try:
         dict_content = {
-                'item_id' : json.get('item_id'),
-                'free_relist' : json.get('free_relist', ''),
-                'listing_exposure' : json.get('listing_exposure', ''),
-                'listing_fee_amount' : json.get('listing_fee_amount', ''),
-                'listing_type_id' : json.get('listing_type_id', ''),
-                'requires_picture' : json.get('requires_picture', ''),
-                'sale_fee_amount' : json.get('sale_fee_amount', ''),
-                'fixed_fee' : json['sale_fee_details']['fixed_fee'],
-                'percentage_fee' : json['sale_fee_details']['percentage_fee'],
-                }       
+                        'item_id' : json.get('item_id'),
+                        'price_id': json.get('price_id'),
+                        'regular_amount': json.get('regular_amount'),
+                        'price': json.get('amount')
+                        }
         
         return dict_content
     
     except:
         print(f'Error processing json: {json}')
+        
                         
 

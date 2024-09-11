@@ -1,6 +1,6 @@
 from src.common.cloud_storage_connector import CloudStorage
 from src.common.bigquery_connector import BigQueryManager
-from src.common.utils import batch_process_details, log_process, authenticate, fetch_items_from_storage
+from src.common.utils import batch_process, log_process, authenticate, fetch_items_from_storage
 from src.config import settings
 import json
 import asyncio
@@ -31,46 +31,33 @@ async def main_async(request):
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_DETAILS
+    destiny_table = settings.TABLE_SHIPPING_COSTS
 
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
     
     # Fetch item IDs from the storage bucket
-    blob_items_prefix = f'{store_name}/meli/api_response/items/date={today_str}/'
-    items_id = fetch_items_from_storage(
-    storage, 
-    bucket_name, 
-    blob_items_prefix, 
-    key_names='results'
-    )
-
+    blob_items_prefix = f'{store_name}/meli/api_response/item_detail/date={today_str}/'
+    items_id = fetch_items_from_storage(storage, settings.BUCKET_STORES, blob_items_prefix, 'id')
     print(f'** Items found: {len(items_id)}**')
 
     print(f'** Cleaning blob **')
-    # Path for saving 
-    blob_basic_path_details = settings.BLOB_ITEMS_DETAILS(store_name)
-    date_blob_path_details = f'{blob_basic_path_details}date={today_str}/'
-
-    blob_basic_path_variations = settings.BLOB_VARIATIONS(store_name)
-    date_blob_path_variations = f'{blob_basic_path_variations}date={today_str}/'
+    # Path for saving price details
+    blob_basic_path = settings.BLOB_SHIPPING_COST(store_name)
+    date_blob_path = f'{blob_basic_path}date={today_str}/'
 
     # Clean existing files in the storage bucket
-    storage.clean_blobs(bucket_name, date_blob_path_details)
-    storage.clean_blobs(bucket_name, date_blob_path_variations)
+    storage.clean_blobs(bucket_name, date_blob_path)
 
     print(f'** Starting API requests for {len(items_id)} items**')
     # URL function for API
-    url_details = settings.URL_ITEM_DETAIL
-    url_variations = settings.URL_VARIATIONS
-
+    url = lambda item_id : f'https://api.mercadolibre.com/users/{seller_id}/shipping_options/free?item_id={item_id}'
     headers = {'Authorization': f'Bearer {access_token}'}
     
     # Batch processing the API requests
     async with aiohttp.ClientSession() as session:
-        await batch_process_details(session, items_id, url_details, url_variations, headers, 
-                                    storage, bucket_name, date_blob_path_details, date_blob_path_variations)
-
+        await batch_process(session, items_id, url, headers, bucket_name, 
+                            date_blob_path, storage, add_item_id = True)
 
     print('** Logging process in management table... **')
     # Log the process in BigQuery
@@ -78,6 +65,6 @@ async def main_async(request):
 
     return ('Success', 200)
 
-def main(request):
+def fetch_shipping_cost_data(request):
     return asyncio.run(main_async(request))
 

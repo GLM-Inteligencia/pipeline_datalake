@@ -1,6 +1,6 @@
 from src.common.cloud_storage_connector import CloudStorage
 from src.common.bigquery_connector import BigQueryManager
-from src.common.utils import authenticate, fetch_all_items
+from src.common.utils import batch_process, log_process, authenticate, fetch_items_from_storage
 from src.config import settings
 import json
 import asyncio
@@ -30,35 +30,46 @@ async def main_async(request):
 
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
+    table_management = settings.TABLE_MANAGEMENT
+    destiny_table = settings.TABLE_FULLFILMENT
 
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
+    
+    # Fetch item IDs from the storage bucket
+    blob_items_prefix = f'{store_name}/meli/api_response/item_detail/date={today_str}/'
+    items_id = fetch_items_from_storage(
+    storage, 
+    bucket_name, 
+    blob_items_prefix, 
+    key_names='inventory_id'
+    )
+
+    print(f'** Items found: {len(items_id)}**')
 
     print(f'** Cleaning blob **')
     # Path for saving 
-    blob_basic_path = settings.BLOB_ITEMS(store_name)
+    blob_basic_path = settings.BLOB_FULLFILMENT(store_name)
     date_blob_path = f'{blob_basic_path}date={today_str}/'
 
     # Clean existing files in the storage bucket
     storage.clean_blobs(bucket_name, date_blob_path)
 
-    print(f'** Starting API requests **')
+    print(f'** Starting API requests for {len(items_id)} items**')
     # URL function for API
-    url = settings.URL_ITEMS
+    url = settings.URL_FULLFILMENT
     headers = {'Authorization': f'Bearer {access_token}'}
     
-    # Fetch and save all items
-    all_products, all_responses = fetch_all_items(url, access_token, seller_id)
+    # Batch processing the API requests
+    async with aiohttp.ClientSession() as session:
+        await batch_process(session, items_id, url, headers, bucket_name, date_blob_path, storage)
 
-    # creating file path
-    timezone_offset = "-03:00" # Brazilian time
-    process_time = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%M.%f{timezone_offset}")
-    file_name = f'total_items={len(all_products)}__processing-date={process_time}.json'
-    file_path = date_blob_path + file_name 
-    storage.upload_json(bucket_name, file_path, all_responses)
-    
+    print('** Logging process in management table... **')
+    # Log the process in BigQuery
+    log_process(seller_id, destiny_table, today_str, table_management, processed_to_bq=False)
+
     return ('Success', 200)
 
-def main(request):
+def fetch_fullfilment_data(request):
     return asyncio.run(main_async(request))
 

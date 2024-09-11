@@ -1,6 +1,6 @@
 from src.common.cloud_storage_connector import CloudStorage
 from src.common.bigquery_connector import BigQueryManager
-from src.common.utils import batch_process, log_process, authenticate, fetch_items_from_storage
+from src.common.utils import batch_process_details, log_process, authenticate, fetch_items_from_storage
 from src.config import settings
 import json
 import asyncio
@@ -31,38 +31,46 @@ async def main_async(request):
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_FULLFILMENT
+    destiny_table = settings.TABLE_DETAILS
 
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
     
     # Fetch item IDs from the storage bucket
-    blob_items_prefix = f'{store_name}/meli/api_response/item_detail/date={today_str}/'
+    blob_items_prefix = f'{store_name}/meli/api_response/items/date={today_str}/'
     items_id = fetch_items_from_storage(
     storage, 
     bucket_name, 
     blob_items_prefix, 
-    key_names='inventory_id'
+    key_names='results'
     )
 
     print(f'** Items found: {len(items_id)}**')
 
     print(f'** Cleaning blob **')
     # Path for saving 
-    blob_basic_path = settings.BLOB_FULLFILMENT(store_name)
-    date_blob_path = f'{blob_basic_path}date={today_str}/'
+    blob_basic_path_details = settings.BLOB_ITEMS_DETAILS(store_name)
+    date_blob_path_details = f'{blob_basic_path_details}date={today_str}/'
+
+    blob_basic_path_variations = settings.BLOB_VARIATIONS(store_name)
+    date_blob_path_variations = f'{blob_basic_path_variations}date={today_str}/'
 
     # Clean existing files in the storage bucket
-    storage.clean_blobs(bucket_name, date_blob_path)
+    storage.clean_blobs(bucket_name, date_blob_path_details)
+    storage.clean_blobs(bucket_name, date_blob_path_variations)
 
     print(f'** Starting API requests for {len(items_id)} items**')
     # URL function for API
-    url = settings.URL_FULLFILMENT
+    url_details = settings.URL_ITEM_DETAIL
+    url_variations = settings.URL_VARIATIONS
+
     headers = {'Authorization': f'Bearer {access_token}'}
     
     # Batch processing the API requests
     async with aiohttp.ClientSession() as session:
-        await batch_process(session, items_id, url, headers, bucket_name, date_blob_path, storage)
+        await batch_process_details(session, items_id, url_details, url_variations, headers, 
+                                    storage, bucket_name, date_blob_path_details, date_blob_path_variations)
+
 
     print('** Logging process in management table... **')
     # Log the process in BigQuery
@@ -70,6 +78,6 @@ async def main_async(request):
 
     return ('Success', 200)
 
-def main(request):
+def fetch_details_data(request):
     return asyncio.run(main_async(request))
 

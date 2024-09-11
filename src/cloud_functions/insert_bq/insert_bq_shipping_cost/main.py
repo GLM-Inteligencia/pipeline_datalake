@@ -8,7 +8,7 @@ from src.config import settings
 import json
 
 
-def main(request):
+def insert_bq_shipping_cost(request):
 
     data = request.get_json()
     store_name = data.get('store_name')
