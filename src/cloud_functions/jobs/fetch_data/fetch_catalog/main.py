@@ -72,6 +72,6 @@ async def main_async(request):
 
     return ('Success', 200)
 
-def main(request):
+def fetch_catalog_data(request):
     return asyncio.run(main_async(request))
 
