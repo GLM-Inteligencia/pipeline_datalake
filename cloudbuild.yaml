@@ -5,7 +5,9 @@ steps:
       - '-c'
       - |
         cp requirements.txt ${_FUNCTION_PATH} && \
-        cp -r src/common ${_FUNCTION_PATH}
+        cp -r src/common ${_FUNCTION_PATH} && \
+        cp -r src/config ${_FUNCTION_PATH}
+
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
