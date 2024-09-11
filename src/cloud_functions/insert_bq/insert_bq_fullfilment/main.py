@@ -32,7 +32,6 @@ def insert_bq_fullfilment(request):
     list_dates_to_process = bigquery.get_list_dates_to_process(seller_id, table_management, destiny_table)
 
     print(f'*** Starting to process dates: {len(list_dates_to_process)} dates to process  ***')
-
     df_processed_data = pd.DataFrame()
 
     for date in list_dates_to_process:
