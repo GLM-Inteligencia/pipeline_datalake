@@ -25,6 +25,7 @@ BLOB_SHIPPING_COST = lambda store_name : f'{store_name}/meli/api_response/item_s
 BLOB_ITEMS = lambda store_name : f'{store_name}/meli/api_response/items/'
 BLOB_ITEMS_DETAILS = lambda store_name : f'{store_name}/meli/api_response/item_detail/'
 BLOB_VARIATIONS = lambda store_name : f'{store_name}/meli/api_response/variation_detail/'
+BLOB_ORDERS = lambda store_name : f'{store_name}/meli/api_response/orders/'
 
 # URLs API
 URL_PRICE = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}/sale_price?context=channel_marketplace'
@@ -35,6 +36,7 @@ URL_SHIPPING_COST = lambda item_id, seller_id : f'https://api.mercadolibre.com/u
 URL_ITEMS = lambda seller_id : f'https://api.mercadolibre.com/users/{seller_id}/items/search'
 URL_ITEM_DETAIL = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}'
 URL_VARIATIONS = lambda item_id, variation_id: f'https://api.mercadolibre.com/items/{item_id}/variations/{variation_id}'
+URL_ORDERS = lambda seller_id : f"https://api.mercadolibre.com/orders/search?seller={seller_id}"
 
 # GCP INFO
 FIRESTORE_COLLECTION_USERS = 'users_credentials'
