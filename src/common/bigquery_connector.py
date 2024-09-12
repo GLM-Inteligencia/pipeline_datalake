@@ -8,14 +8,14 @@ class BigQueryManager:
     def __init__(self, credentials_path=None, secret_id=None):
         self.client = self.authenticate(credentials_path, secret_id)
 
-    def authenticate(self, credentials_path, secret_id):
-        if credentials_path:
+    def authenticate(self, credentials_path, secret_id= 'service_acount_dalaka_v2'):
+        try:
             # Autenticação usando o arquivo local de credenciais
             os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
-        elif secret_id:
+        except:
             # Autenticação usando o Secret Manager
             secret_client = secretmanager.SecretManagerServiceClient()
-            secret_name = f"projects/YOUR_PROJECT_ID/secrets/{secret_id}/versions/latest"
+            secret_name = f"projects/datalake-v2-424516/secrets/{secret_id}/versions/latest"
             response = secret_client.access_secret_version(request={"name": secret_name})
             credentials_json = response.payload.data.decode("UTF-8")
             with open("temp_credentials.json", "w") as cred_file:
