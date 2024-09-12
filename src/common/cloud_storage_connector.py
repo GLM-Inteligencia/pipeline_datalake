@@ -4,13 +4,13 @@ import os
 from google.cloud import secretmanager
 
 class CloudStorage:
-    def __init__(self, credentials_path=None, secret_id=None):
+    def __init__(self, credentials_path=None, secret_id='service_acount_dalaka_v2'):
         self.client = self.authenticate(credentials_path, secret_id)
 
     def authenticate(self, credentials_path, secret_id):
-        if credentials_path:
+        try:
             os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
-        elif secret_id:
+        except:
             secret_client = secretmanager.SecretManagerServiceClient()
             secret_name = f"projects/YOUR_PROJECT_ID/secrets/{secret_id}/versions/latest"
             response = secret_client.access_secret_version(request={"name": secret_name})

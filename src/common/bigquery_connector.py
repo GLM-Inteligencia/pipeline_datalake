@@ -5,10 +5,10 @@ import pandas as pd
 import pandas_gbq
 
 class BigQueryManager:
-    def __init__(self, credentials_path=None, secret_id=None):
+    def __init__(self, credentials_path=None, secret_id= 'service_acount_dalaka_v2'):
         self.client = self.authenticate(credentials_path, secret_id)
 
-    def authenticate(self, credentials_path, secret_id= 'service_acount_dalaka_v2'):
+    def authenticate(self, credentials_path, secret_id):
         try:
             # Autenticação usando o arquivo local de credenciais
             os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
