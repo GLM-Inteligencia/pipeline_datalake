@@ -74,7 +74,8 @@ def insert_bq_details(request):
         print('** Deleting existing data **')
         bigquery.delete_existing_data(destiny_table, seller_id, date_to_process)
         
-        print(df_processed_data.dtypes)
+        print('** Correct dataframe schema **')
+        bigquery.match_dataframe_schema(df_processed_data, destiny_table)
 
         print('** Inserting data into BQ**')
         bigquery.insert_dataframe(df_processed_data, destiny_table)
@@ -93,6 +94,9 @@ def extract_seller_sku(attributes):
 
 
 def process_details(json_details, json_variations):
+
+    df_product = pd.DataFrame()
+    indice_variations = 0
 
     for j in range(len(json_details)):
 

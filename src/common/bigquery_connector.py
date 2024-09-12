@@ -81,4 +81,41 @@ class BigQueryManager:
                 """
         self.run_query(query)
 
+    def match_dataframe_schema(self, df, table_id):
+        """
+        Modifies the DataFrame to match the schema of the BigQuery table (table_id).
+        
+        Parameters:
+        df (pd.DataFrame): The DataFrame to be matched with the BigQuery table schema.
+        table_id (str): The BigQuery table identifier (project_id.dataset_id.table_id).
+        
+        Returns:
+        pd.DataFrame: A DataFrame with the adjusted schema.
+        """
+        # Fetch the schema of the target table from BigQuery
+        table = self.client.get_table(table_id)
+        schema = table.schema
+        
+        # Create a dictionary to store the column names and their corresponding types
+        schema_dict = {}
+        for field in schema:
+            schema_dict[field.name] = field.field_type
+        
+        # Adjust DataFrame columns to match the BigQuery table schema
+        for column, dtype in schema_dict.items():
+            if column in df.columns:
+                if dtype == 'STRING':
+                    df[column] = df[column].astype(str)
+                elif dtype == 'INTEGER':
+                    df[column] = pd.to_numeric(df[column], errors='coerce').fillna(0).astype('Int64')
+                elif dtype == 'FLOAT':
+                    df[column] = pd.to_numeric(df[column], errors='coerce').astype(float)
+                elif dtype == 'BOOLEAN':
+                    df[column] = df[column].astype(bool)
+                elif dtype == 'TIMESTAMP':
+                    df[column] = pd.to_datetime(df[column], errors='coerce')
+        
+        print("Schema adjusted to match BigQuery table.")
+        return df
+
 
