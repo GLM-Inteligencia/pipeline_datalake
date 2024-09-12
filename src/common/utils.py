@@ -260,7 +260,7 @@ async def batch_process_details(session, item_ids, url_item_func, url_variation_
     """
     semaphore = asyncio.Semaphore(semaphore_limit)
     chunks = [item_ids[i:i + chunk_size] for i in range(0, len(item_ids), chunk_size)]
-
+ 
     async def process_chunk_details(chunk, batch_number):
         batch_responses_details = []
         batch_responses_variations = []
