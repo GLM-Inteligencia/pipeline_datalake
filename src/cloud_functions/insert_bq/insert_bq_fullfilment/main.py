@@ -74,7 +74,7 @@ def insert_bq_fullfilment(request):
         print('** Updating log table **')
         bigquery.update_logs_table(seller_id, date_to_process, destiny_table, table_management)
 
-    return df_processed_data
+    return ('Success', 200)
 
 
 def process_fullfilment(json):
