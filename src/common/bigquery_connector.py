@@ -41,7 +41,7 @@ class BigQueryManager:
         return query_job.result().to_dataframe()
 
     def insert_dataframe(self, df, table_id):
-        pandas_gbq.to_gbq(table_id, if_exists='append')
+        pandas_gbq.to_gbq(df, table_id, if_exists='append')
         print(f'Data inserted into {table_id}.')
     
     def delete_existing_data(self, table_id, seller_id, date):
