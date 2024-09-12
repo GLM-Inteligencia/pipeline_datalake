@@ -10,19 +10,31 @@ class BigQueryManager:
 
     def authenticate(self, credentials_path, secret_id):
         try:
-            # Autenticação usando o arquivo local de credenciais
-            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
-        except:
-            # Autenticação usando o Secret Manager
-            secret_client = secretmanager.SecretManagerServiceClient()
-            secret_name = f"projects/datalake-v2-424516/secrets/{secret_id}/versions/latest"
-            response = secret_client.access_secret_version(request={"name": secret_name})
-            credentials_json = response.payload.data.decode("UTF-8")
-            with open("temp_credentials.json", "w") as cred_file:
-                cred_file.write(credentials_json)
-            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "temp_credentials.json"
-
+            # Check if credentials_path is provided and exists
+            if credentials_path and os.path.exists(credentials_path):
+                # Authentication using the local credentials file
+                os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
+                print(f"Using local credentials from: {credentials_path}")
+            else:
+                # Fallback to authentication using Secret Manager
+                print("Fetching credentials from Secret Manager.")
+                secret_client = secretmanager.SecretManagerServiceClient()
+                secret_name = f"projects/datalake-v2-424516/secrets/{secret_id}/versions/latest"
+                response = secret_client.access_secret_version(request={"name": secret_name})
+                credentials_json = response.payload.data.decode("UTF-8")
+    
+                # Write credentials to a temporary file and set the environment variable
+                with open("temp_credentials.json", "w") as cred_file:
+                    cred_file.write(credentials_json)
+                os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "temp_credentials.json"
+                print("Using credentials from Secret Manager.")
+            
+        except Exception as e:
+            raise RuntimeError(f"Error during authentication: {str(e)}")
+    
+        # Return the BigQuery client
         return bigquery.Client()
+
 
     def run_query(self, query):
         query_job = self.client.query(query)

@@ -7,19 +7,40 @@ class CloudStorage:
     def __init__(self, credentials_path=None, secret_id='service_acount_dalaka_v2'):
         self.client = self.authenticate(credentials_path, secret_id)
 
+import os
+from google.cloud import storage
+from google.cloud import secretmanager
+
+class CloudStorage:
+    def __init__(self, credentials_path=None, secret_id='service_acount_dalaka_v2'):
+        self.client = self.authenticate(credentials_path, secret_id)
+
     def authenticate(self, credentials_path, secret_id):
         try:
-            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
-        except:
-            secret_client = secretmanager.SecretManagerServiceClient()
-            secret_name = f"projects/YOUR_PROJECT_ID/secrets/{secret_id}/versions/latest"
-            response = secret_client.access_secret_version(request={"name": secret_name})
-            credentials_json = response.payload.data.decode("UTF-8")
-            with open("temp_credentials.json", "w") as cred_file:
-                cred_file.write(credentials_json)
-            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "temp_credentials.json"
+            # Check if credentials_path is provided and exists
+            if credentials_path and os.path.exists(credentials_path):
+                # Use local credentials if available
+                os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
+                print(f"Using local credentials from: {credentials_path}")
+            else:
+                # Fallback to Secret Manager if credentials_path is not provided or invalid
+                print("Fetching credentials from Secret Manager.")
+                secret_client = secretmanager.SecretManagerServiceClient()
+                secret_name = f"projects/datalake-v2-424516/secrets/{secret_id}/versions/latest"
+                response = secret_client.access_secret_version(request={"name": secret_name})
+                credentials_json = response.payload.data.decode("UTF-8")
+                
+                # Write credentials to a temporary file
+                with open("temp_credentials.json", "w") as cred_file:
+                    cred_file.write(credentials_json)
+                os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "temp_credentials.json"
+                print("Using credentials from Secret Manager.")
+        
+        except Exception as e:
+            raise RuntimeError(f"Error during authentication: {str(e)}")
         
         return storage.Client()
+
 
     def upload_json(self, bucket_name, destination_blob_name, data):
         bucket = self.client.bucket(bucket_name)
