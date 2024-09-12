@@ -5,24 +5,36 @@ import pandas as pd
 import pandas_gbq
 
 class BigQueryManager:
-    def __init__(self, credentials_path=None, secret_id=None):
+    def __init__(self, credentials_path=None, secret_id= 'service_acount_dalaka_v2'):
         self.client = self.authenticate(credentials_path, secret_id)
 
     def authenticate(self, credentials_path, secret_id):
-        if credentials_path:
-            # Autenticação usando o arquivo local de credenciais
-            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
-        elif secret_id:
-            # Autenticação usando o Secret Manager
-            secret_client = secretmanager.SecretManagerServiceClient()
-            secret_name = f"projects/YOUR_PROJECT_ID/secrets/{secret_id}/versions/latest"
-            response = secret_client.access_secret_version(request={"name": secret_name})
-            credentials_json = response.payload.data.decode("UTF-8")
-            with open("temp_credentials.json", "w") as cred_file:
-                cred_file.write(credentials_json)
-            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "temp_credentials.json"
-
+        try:
+            # Check if credentials_path is provided and exists
+            if credentials_path and os.path.exists(credentials_path):
+                # Authentication using the local credentials file
+                os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
+                print(f"Using local credentials from: {credentials_path}")
+            else:
+                # Fallback to authentication using Secret Manager
+                print("Fetching credentials from Secret Manager.")
+                secret_client = secretmanager.SecretManagerServiceClient()
+                secret_name = f"projects/datalake-v2-424516/secrets/{secret_id}/versions/latest"
+                response = secret_client.access_secret_version(request={"name": secret_name})
+                credentials_json = response.payload.data.decode("UTF-8")
+    
+                # Write credentials to a temporary file and set the environment variable
+                with open("temp_credentials.json", "w") as cred_file:
+                    cred_file.write(credentials_json)
+                os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "temp_credentials.json"
+                print("Using credentials from Secret Manager.")
+            
+        except Exception as e:
+            raise RuntimeError(f"Error during authentication: {str(e)}")
+    
+        # Return the BigQuery client
         return bigquery.Client()
+
 
     def run_query(self, query):
         query_job = self.client.query(query)
