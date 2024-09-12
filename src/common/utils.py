@@ -1,7 +1,8 @@
 import asyncio
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests 
+import time
 
 async def batch_process(session, items, url_func_or_string, headers, 
                         bucket_name, date_blob_path, storage, 
@@ -234,6 +235,85 @@ def fetch_all_items(url, access_token, seller_id):
     print(f'** Number of items found : {len(all_products)}')
     
     return all_products, all_responses
+
+def fetch_sales_for_day(url, access_token, start_request_date=None, end_request_date=None, timezone_offset='-03:00', limit=50):
+    # Set default dates (yesterday by default)
+    if start_request_date is None:
+        start_request_date = datetime.today() - timedelta(days=1)
+    if end_request_date is None:
+        end_request_date = start_request_date
+
+    count_processed_days = 0
+
+    while True:
+        # Start processing the day
+        if count_processed_days == 0:
+            request_date = start_request_date
+        else:
+            request_date = request_date + timedelta(days=1)
+
+        # Stop condition
+        if request_date > end_request_date:
+            print('Iteration has been completed.')
+            break
+        
+        print(f'Startd date: {request_date}')
+        # Set API params for the current day
+        start_date = request_date.strftime(f"%Y-%m-%dT00:00:00.000{timezone_offset}")
+        end_date = request_date.strftime(f"%Y-%m-%dT23:59:59.999{timezone_offset}")
+
+        params = {
+            'access_token': access_token,
+            'limit': limit,
+            'order.date_created.from': start_date,
+            'order.date_created.to': end_date
+        }
+
+        offset = 0
+        count_total_results = 0
+        all_responses = []  # List to accumulate all JSON responses for the day
+        all_sales = []
+
+        print(f'** Starting request for day {request_date} **')
+
+        while True:
+            # Update the offset
+            params['offset'] = offset
+
+            # Request the API
+            response = requests.get(url, params=params)
+
+            # Check the request status
+            if response.status_code != 200:
+                raise Exception(f"Failed to fetch data: {response.json()}")
+
+            # Get sales data
+            sales_data = response.json()
+            results = sales_data['results']
+            print(f"Offset {offset}: {len(results)} sales")
+
+            if sales_data['paging']['total'] <= 0:
+                print(f'** Request for day {request_date} is empty. **')
+                break
+
+            # Add the JSON response to the list of all responses
+            all_responses.append(sales_data)
+            all_sales.append(results)
+
+            # Increment the count of daily results
+            count_total_results += len(results)
+
+            # Stop condition: all daily information has been imported
+            if count_total_results >= sales_data['paging']['total']:
+                print(f'** Request for day {request_date} has been processed. **')
+                break
+
+            # Update the offset
+            offset += limit
+            time.sleep(1)  # To avoid hitting rate limits
+
+    return all_sales, all_responses
+
 
 
 async def batch_process_details(session, item_ids, url_item_func, url_variation_func, headers,
