@@ -13,13 +13,12 @@ class MockRequest:
 
 # Your test JSON data
 test_data = {
-  "access_token": "APP_USR-2951712600123976-091209-e4cbcf8382b99c6a63784766757e8fb6-569119547",
-  "client_id": "2951712600123976",
-  "client_secret": "QprAIl8ydXzcxFVHjnIHT6fUQ8KpzADV",
-  "seller_id": 569119547,
-  "store_name": "gw shop"
+  "access_token": None,
+  "client_id": "4959083987776428",
+  "client_secret": "Hw9wWSydd8PMvMEJewWoMvKGYMAWyKEw",
+  "seller_id": 189643563,
+  "store_name": "hubsmarthome"
 }
-
 # Create the mock request
 mock_request = MockRequest(test_data)
 
