@@ -5,7 +5,7 @@ from src.config import settings
 import json
 import asyncio
 import aiohttp
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def fetch_orders_data(request):
     # Parsing request data
@@ -32,12 +32,13 @@ def fetch_orders_data(request):
     destiny_table = settings.TABLE_ORDERS
 
     # Define today's date
-    today_str = datetime.today().strftime('%Y-%m-%d')
+    yesterday = datetime.today() - timedelta(days=1)
+    yesterday_str = yesterday.strftime('%Y-%m-%d')
 
     print(f'** Cleaning blob **')
     # Path for saving 
     blob_basic_path = settings.BLOB_ORDERS(store_name)
-    date_blob_path = f'{blob_basic_path}date={today_str}/'
+    date_blob_path = f'{blob_basic_path}date={yesterday_str}/'
     destiny_table = settings.TABLE_ORDERS
 
     # Clean existing files in the storage bucket
@@ -61,6 +62,6 @@ def fetch_orders_data(request):
     storage.upload_json(bucket_name, file_path, all_responses)
 
     # Log the process in BigQuery
-    log_process(seller_id, destiny_table, today_str, table_management, processed_to_bq=False)
+    log_process(seller_id, destiny_table, yesterday_str, table_management, processed_to_bq=False)
     
     return ('Success', 200)

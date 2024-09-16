@@ -31,14 +31,16 @@ def insert_bq_orders(request):
     # Get dates to treat
     list_dates_to_process = bigquery.get_list_dates_to_process(seller_id, table_management, destiny_table)
 
+    list_dates_to_process = list_dates_to_process[:2]
     print(f'*** Starting to process dates: {len(list_dates_to_process)} dates to process  ***')
 
     df_processed_data = pd.DataFrame()
 
-    for date in list_dates_to_process:
-
+    #for date in list_dates_to_process:
+    for i in range(2):
         # Transform date to string
-        date_to_process = date.strftime('%Y-%m-%d')
+        #date_to_process = date.strftime('%Y-%m-%d')
+        date_to_process = '2024-09-15'
         print(f'Processing date: {date_to_process}')
         # Get blob with the date
         blob_prefix = blob_shipping_cost + f'date={date_to_process}/'
@@ -48,20 +50,20 @@ def insert_bq_orders(request):
         # Processing each blob
         for blob in blobs:
             print(f"Reading file: {blob.name}")
+            
             content = storage.download_json(bucket_name, blob.name)
 
             for json in content:
-                df_ = process_orders(json)
-                
+                df_ = process_orders(json['results'])
                 df_processed_data = pd.concat([df_processed_data, df_], ignore_index = True)
 
-        df_processed_data['correspondent_date'] = pd.to_datetime(date_to_process)
+        df_processed_data['processed_json'] = pd.to_datetime(date_to_process)
         df_processed_data['process_time'] = datetime.now()
 
         print(f'*** Finished treating all data. {df_processed_data.shape[0]} products ***')
 
         print('** Deleting existing data **')
-        bigquery.delete_existing_data(destiny_table, seller_id, date_to_process)
+        bigquery.delete_existing_data(destiny_table, seller_id, date_to_process, date_filter_name='processed_json')
         
         print('** Correct dataframe schema **')
         bigquery.match_dataframe_schema(df_processed_data, destiny_table)
@@ -79,7 +81,7 @@ def process_orders(json):
     try:
         df_ = pd.DataFrame()
 
-        for sale in json['results']:
+        for sale in json:
 
             structured_sale = {
               'reason': sale['payments'][0].get('reason'),

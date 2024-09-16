@@ -44,11 +44,11 @@ class BigQueryManager:
         pandas_gbq.to_gbq(df, table_id, if_exists='append')
         print(f'Data inserted into {table_id}.')
     
-    def delete_existing_data(self, table_id, seller_id, date):
+    def delete_existing_data(self, table_id, seller_id, date, date_filter_name = 'correspondent_date'):
         query = f"""
         DELETE FROM {table_id}
         WHERE seller_id = {seller_id}
-        AND date(correspondent_date) = '{date}'
+        AND date({date_filter_name}) = '{date}'
         """
         self.run_query(query)
         print(f'Existing data deleted from {table_id} for date {date} and seller_id {seller_id}.')
