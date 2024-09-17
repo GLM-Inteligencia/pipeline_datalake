@@ -110,3 +110,4 @@ def store_import_data(request):
         traceback_str = traceback.format_exc()
         print(f'Unexpected error: {traceback_str}')
         return jsonify({'error': str(e), 'trace': traceback_str}), 500
+
