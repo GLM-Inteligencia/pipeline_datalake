@@ -55,7 +55,7 @@ def fetch_orders_data(request):
     # creating file path
     timezone_offset = "-03:00" # Brazilian time
     process_time = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%M.%f{timezone_offset}")
-    file_name = f'total_sales={num_sales}__processing-date={process_time}.json'
+    file_name = f'total_sales={num_sales}__data={yesterday_str}__processing-time={process_time}.json'
     file_path = date_blob_path + file_name 
 
     # saving files
