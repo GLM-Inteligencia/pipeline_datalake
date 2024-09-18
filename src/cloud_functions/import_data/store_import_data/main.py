@@ -87,6 +87,7 @@ def store_import_data(request):
         # Treat dataframe
         try:
             df.dropna(how='all', inplace=True)
+            df.drop_duplicates(inplace=True)
             df = bigquery.match_dataframe_schema(df, table_name)
         
         except Exception as e:
