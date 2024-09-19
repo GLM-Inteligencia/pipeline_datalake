@@ -1,11 +1,13 @@
 import os
-
 import pandas as pd
 from google.cloud import storage, bigquery
 from google.cloud.exceptions import NotFound
 from flask import jsonify
 from datetime import datetime
 import io
+from src.common.cloud_storage_connector import CloudStorage
+from src.common.bigquery_connector import BigQueryManager
+from src.config import settings
 
 def store_import_data(request):
     """
@@ -31,15 +33,11 @@ def store_import_data(request):
         directory_prefix = f'{store_identifier}/inputs/{file_type}/'
 
         # Initialize Cloud Storage client
-        storage_client = storage.Client()
-
-        try:
-            bucket = storage_client.bucket(bucket_name)
-        except NotFound:
-            return jsonify({'error': f'Bucket {bucket_name} not found.'}), 404
+        storage = CloudStorage(credentials_path=settings.PATH_SERVICE_ACCOUNT)
 
         # List all files in the folder
-        blobs = bucket.list_blobs(prefix=directory_prefix)
+        blobs = storage.list_blobs(bucket_name=bucket_name,
+                                   prefix=directory_prefix)
         date_files = []
 
         # Collect files named as dates (assuming file names are ISO format or sortable date strings)
@@ -63,12 +61,9 @@ def store_import_data(request):
         latest_date, latest_file_path = max(date_files, key=lambda x: x[0])
         print(f'Latest file selected: {latest_file_path}')
 
-        # Now latest_file_path holds the most recent file name (full GCS path)
-        blob = bucket.blob(latest_file_path)
-
         # Download the CSV file as a string
         try:
-            csv_data = blob.download_as_text()
+            csv_data = storage.download_blob_as_text(bucket_name, latest_file_path)
             print(f'CSV data length: {len(csv_data)} characters')
         except Exception as e:
             return jsonify({'error': f'Error downloading CSV file: {e}'}), 500
@@ -83,16 +78,25 @@ def store_import_data(request):
             return jsonify({'error': f'Error reading CSV: {e}'}), 500
 
         # Initialize BigQuery client
-        bigquery_client = bigquery.Client()
+        bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
 
         # Generate the table name dynamically based on file_type
         table_name = f'datalake-v2-424516.inputs.{file_type}'
         print(f'Target BigQuery table: {table_name}')
 
+        # Treat dataframe
+        try:
+            df.dropna(how='all', inplace=True)
+            df.drop_duplicates(inplace=True)
+            df = bigquery.match_dataframe_schema(df, table_name)
+        
+        except Exception as e:
+            return jsonify({'error': f'Error treating dataframe: {e}'}), 500
+
         # Load the DataFrame to BigQuery
         try:
-            job = bigquery_client.load_table_from_dataframe(
-                df, table_name, job_config=bigquery.LoadJobConfig(autodetect=True)
+            job = bigquery.insert_dataframe(
+                df, table_name
             )
             job.result()  # Wait for the job to complete
             print(f'BigQuery job completed successfully')
@@ -107,3 +111,4 @@ def store_import_data(request):
         traceback_str = traceback.format_exc()
         print(f'Unexpected error: {traceback_str}')
         return jsonify({'error': str(e), 'trace': traceback_str}), 500
+

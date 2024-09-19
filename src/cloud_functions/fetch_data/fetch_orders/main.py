@@ -1,15 +1,12 @@
 from src.common.cloud_storage_connector import CloudStorage
 from src.common.bigquery_connector import BigQueryManager
-from src.common.utils import authenticate, fetch_sales_for_day
+from src.common.trigger_cloud_function import TriggerCloudFunction
+
+from src.common.utils import authenticate, fetch_sales_for_day, log_process
 from src.config import settings
-import json
-import asyncio
-import aiohttp
-from datetime import datetime
+from datetime import datetime, timedelta
 
-semaphore = asyncio.Semaphore(100)  # Control the number of simultaneous requests
-
-async def main_async(request):
+def fetch_orders_data(request):
     # Parsing request data
     data = request.get_json()
     client_id = data.get('client_id')
@@ -30,36 +27,48 @@ async def main_async(request):
 
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
+    table_management = settings.TABLE_MANAGEMENT
+    destiny_table = settings.TABLE_ORDERS
 
     # Define today's date
-    today_str = datetime.today().strftime('%Y-%m-%d')
+    yesterday = datetime.today() - timedelta(days=1)
+    yesterday_str = yesterday.strftime('%Y-%m-%d')
 
     print(f'** Cleaning blob **')
     # Path for saving 
     blob_basic_path = settings.BLOB_ORDERS(store_name)
-    date_blob_path = f'{blob_basic_path}date={today_str}/'
+    date_blob_path = f'{blob_basic_path}date={yesterday_str}/'
     destiny_table = settings.TABLE_ORDERS
 
-    # Clean existing files in the storage bucket
-    storage.clean_blobs(bucket_name, date_blob_path)
+    # Check if it is the first time treating orders for the client
+    bool_first_time = storage.blob_exists(bucket_name, blob_basic_path)
 
-    print(f'** Starting API requests **')
-    # URL function for API
-    url = settings.URL_ORDERS
-    headers = {'Authorization': f'Bearer {access_token}'}
+    if bool_first_time:
+        print('** First time processing orders - processing history **')
+        #TriggerCloudFunction(function_url = )
     
-    # Fetch and save all items
-    all_sales, all_responses = fetch_sales_for_day(url, access_token, seller_id)
+    else:
+        # Clean existing files in the storage bucket
+        storage.clean_blobs(bucket_name, date_blob_path)
 
-    # creating file path
-    timezone_offset = "-03:00" # Brazilian time
-    process_time = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%M.%f{timezone_offset}")
-    file_name = f'total_sales={len(all_sales)}__processing-date={process_time}.json'
-    file_path = date_blob_path + file_name 
-    storage.upload_json(bucket_name, file_path, all_responses)
+        print(f'** Starting API requests **')
+        # URL function for API
+        url = settings.URL_ORDERS
+        headers = {'Authorization': f'Bearer {access_token}'}
+
+        # Fetch and save all items
+        num_sales, all_responses = fetch_sales_for_day(url(seller_id), access_token)
+
+        # creating file path
+        timezone_offset = "-03:00" # Brazilian time
+        process_time = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%M.%f{timezone_offset}")
+        file_name = f'total_sales={num_sales}__data={yesterday_str}__processing-time={process_time}.json'
+        file_path = date_blob_path + file_name 
+
+        # saving files
+        storage.upload_json(bucket_name, file_path, all_responses)
+
+        # Log the process in BigQuery
+        log_process(seller_id, destiny_table, yesterday_str, table_management, processed_to_bq=False)
     
     return ('Success', 200)
-
-def fetch_orders_data(request):
-    return asyncio.run(main_async(request))
-

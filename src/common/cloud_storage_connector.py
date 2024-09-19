@@ -66,3 +66,14 @@ class CloudStorage:
             print(f"Deleting blob: {blob.name}")
             blob.delete()
         print(f"All blobs with prefix {prefix} have been deleted.")
+
+    def download_blob_as_text(self, bucket_name, path_name):
+        bucket = self.client.bucket(bucket_name)
+        blob = bucket.blob(path_name)
+        return blob.download_as_text()
+
+    def blob_exists(self, bucket_name, blob_name):
+        """Check if a blob exists in the specified bucket."""
+        bucket = self.client.bucket(bucket_name)
+        blob = bucket.blob(blob_name)
+        return blob.exists()

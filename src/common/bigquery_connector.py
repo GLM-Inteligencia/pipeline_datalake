@@ -44,12 +44,22 @@ class BigQueryManager:
         pandas_gbq.to_gbq(df, table_id, if_exists='append')
         print(f'Data inserted into {table_id}.')
     
-    def delete_existing_data(self, table_id, seller_id, date):
-        query = f"""
-        DELETE FROM {table_id}
-        WHERE seller_id = {seller_id}
-        AND date(correspondent_date) = '{date}'
-        """
+    def delete_existing_data(self, table_id, seller_id, date, date_filter_name = 'correspondent_date'):
+        
+        if isinstance(date, list):
+            
+            query = f"""
+            DELETE FROM {table_id}
+            WHERE seller_id = {seller_id}
+            AND date({date_filter_name}) in {tuple(date)}
+            """
+
+        else:
+            query = f"""
+            DELETE FROM {table_id}
+            WHERE seller_id = {seller_id}
+            AND date({date_filter_name}) = '{date}'
+            """
         self.run_query(query)
         print(f'Existing data deleted from {table_id} for date {date} and seller_id {seller_id}.')
 
@@ -69,16 +79,30 @@ class BigQueryManager:
     
     def update_logs_table(self, seller_id, date, destiny_table, management_table):
 
-        query =  f"""
-                UPDATE {management_table}
-                SET processed_to_bq = true,
-                    last_bq_processing = CURRENT_TIMESTAMP()
-                WHERE 1=1
-                AND seller_id = {seller_id}
-                AND process_date = '{date}'
-                AND processed_to_bq = false
-                AND table_name = '{destiny_table}'
-                """
+        if isinstance(date, list):
+            
+            query = f"""
+                    UPDATE {management_table}
+                    SET processed_to_bq = true,
+                        last_bq_processing = CURRENT_TIMESTAMP()
+                    WHERE 1=1
+                    AND seller_id = {seller_id}
+                    AND date(process_date) in {tuple(date)}
+                    AND processed_to_bq = false
+                    AND table_name = '{destiny_table}'
+                    """
+
+        else:
+            query =  f"""
+                    UPDATE {management_table}
+                    SET processed_to_bq = true,
+                        last_bq_processing = CURRENT_TIMESTAMP()
+                    WHERE 1=1
+                    AND seller_id = {seller_id}
+                    AND date(process_date) = '{date}'
+                    AND processed_to_bq = false
+                    AND table_name = '{destiny_table}'
+                    """
         self.run_query(query)
 
     def match_dataframe_schema(self, df, table_id):

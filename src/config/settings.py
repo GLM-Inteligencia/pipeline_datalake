@@ -12,6 +12,7 @@ TABLE_PRICES = "datalake-v2-424516.datalake_v2.items_prices"
 TABLE_SHIPPING_COSTS = "datalake-v2-424516.datalake_v2.items_shipping_cost"
 TABLE_VISITS = "datalake-v2-424516.datalake_v2.items_visits"
 TABLE_ORDERS = "datalake-v2-424516.datalake_v2.orders"
+TABLE_PREDICTED_SALES = "datalake-v2-424516.predictions.sales"
 
 # Bucket name
 BUCKET_STORES = "glm-store"
