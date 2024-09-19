@@ -29,7 +29,6 @@ steps:
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-
 timeout: 1800s  # 30 minutes for the build to complete
 options:
   logging: CLOUD_LOGGING_ONLY
