@@ -142,6 +142,7 @@ async def save_to_gcs_async(date, num_sales, data, bucket_name, folder_name, sel
     async with aiofiles.open(temp_file_path, 'w') as f:
         await f.write(json_data)
 
+
     await asyncio.get_running_loop().run_in_executor(executor, upload_to_gcs, temp_file_path, file_name, bucket_name, storage)
 
 # Function to upload the file to GCS and insert into BigQuery
