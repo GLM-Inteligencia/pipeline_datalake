@@ -13,7 +13,6 @@ from src.common.bigquery_connector import BigQueryManager
 from src.common.utils import log_process, authenticate
 from src.config import settings
 
-
 executor = ThreadPoolExecutor(max_workers=10)
 limit = 50
 timezone_offset = "-03:00"
