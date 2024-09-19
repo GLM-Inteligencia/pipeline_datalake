@@ -20,6 +20,7 @@ def fetch_orders_data(request):
     if not access_token:
         access_token = authenticate(client_id, client_secret)  # You can add this to a common module
 
+
     print('** Connecting to storage and BigQuery... **')
     # Initialize storage and BigQuery
     storage = CloudStorage(credentials_path=settings.PATH_SERVICE_ACCOUNT)
