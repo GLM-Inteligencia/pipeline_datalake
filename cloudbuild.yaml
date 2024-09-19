@@ -22,7 +22,7 @@ steps:
         --trigger-http \
         --no-allow-unauthenticated \
         --region southamerica-east1 \
-        --memory 512MB \
+        --memory ${_FUNCTION_MEMORY} \
         --timeout 3600 \
         --source . \
         --entry-point ${_FUNCTION_NAME} \

@@ -58,8 +58,7 @@ class TriggerCloudFunction:
 
             # Send POST request to Cloud Function
             response = requests.post(function_url, json=params, headers=headers)
-            response.raise_for_status()  # Raise an error for bad responses
-            return response.json()
+            return response
 
         except Exception as e:
-            raise RuntimeError(f"Error triggering Cloud Function: {str(e)}")
+            print('Bad response for function')

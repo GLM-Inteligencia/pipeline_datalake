@@ -73,7 +73,14 @@ class CloudStorage:
         return blob.download_as_text()
 
     def blob_exists(self, bucket_name, blob_name):
-        """Check if a blob exists in the specified bucket."""
+        """
+        Check if any blob contains the specified blob_name as part of its name.
+        Returns True if any matching blob is found, otherwise False.
+        """
         bucket = self.client.bucket(bucket_name)
-        blob = bucket.blob(blob_name)
-        return blob.exists()
+        # Use list_blobs with a prefix matching the provided blob_name
+        blobs = bucket.list_blobs(prefix=blob_name)
+    
+        # If any blob exists with the provided blob_name as a prefix, return True
+        return any(blobs)
+

@@ -5,6 +5,8 @@ from src.common.trigger_cloud_function import TriggerCloudFunction
 from src.common.utils import authenticate, fetch_sales_for_day, log_process
 from src.config import settings
 from datetime import datetime, timedelta
+from flask import jsonify
+
 
 def fetch_orders_data(request):
     # Parsing request data
@@ -44,9 +46,14 @@ def fetch_orders_data(request):
     # Check if it is the first time treating orders for the client
     bool_first_time = storage.blob_exists(bucket_name, blob_basic_path)
 
-    if bool_first_time:
+    if not bool_first_time:
         print('** First time processing orders - processing history **')
-        #TriggerCloudFunction(function_url = )
+        trigger_functions = TriggerCloudFunction(credentials_path=settings.PATH_SERVICE_ACCOUNT)
+            
+        trigger_functions.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/fetch_historic_orders',
+                                           params= data) 
+                             
+        return ('Success', 200)
     
     else:
         # Clean existing files in the storage bucket
@@ -72,4 +79,4 @@ def fetch_orders_data(request):
         # Log the process in BigQuery
         log_process(seller_id, destiny_table, yesterday_str, table_management, processed_to_bq=False)
     
-    return ('Success', 200)
+    return jsonify({"message": "Success", "status_code":200})

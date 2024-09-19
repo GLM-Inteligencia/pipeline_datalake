@@ -1,6 +1,6 @@
 import json
 from types import SimpleNamespace
-from src.cloud_functions.fetch_data.fetch_history_orders.main import fetch_historic_orders
+from src.cloud_functions.fetch_data.fetch_orders.main import fetch_orders_data
 from src.cloud_functions.insert_bq.insert_bq_orders.main import insert_bq_orders
 from src.cloud_functions.import_data.store_import_data.main import store_import_data
 
@@ -31,7 +31,7 @@ mock_request = MockRequest(test_data)
 
 # Call your function with the mock request
 # result = fetch_historic_orders(mock_request)
-result = insert_bq_orders(mock_request)
+result = fetch_orders_data(mock_request)
 
 # Print the result
 print(result)
