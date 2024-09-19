@@ -51,7 +51,7 @@ class BigQueryManager:
             query = f"""
             DELETE FROM {table_id}
             WHERE seller_id = {seller_id}
-            AND date({date_filter_name}) in ({tuple(date)})
+            AND date({date_filter_name}) in {tuple(date)}
             """
 
         else:
@@ -87,7 +87,7 @@ class BigQueryManager:
                         last_bq_processing = CURRENT_TIMESTAMP()
                     WHERE 1=1
                     AND seller_id = {seller_id}
-                    AND process_date in ({tuple(date)})
+                    AND date(process_date) in {tuple(date)}
                     AND processed_to_bq = false
                     AND table_name = '{destiny_table}'
                     """
@@ -99,7 +99,7 @@ class BigQueryManager:
                         last_bq_processing = CURRENT_TIMESTAMP()
                     WHERE 1=1
                     AND seller_id = {seller_id}
-                    AND process_date = '{date}'
+                    AND date(process_date) = '{date}'
                     AND processed_to_bq = false
                     AND table_name = '{destiny_table}'
                     """

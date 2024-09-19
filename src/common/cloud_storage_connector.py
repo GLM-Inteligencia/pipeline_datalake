@@ -72,3 +72,8 @@ class CloudStorage:
         blob = bucket.blob(path_name)
         return blob.download_as_text()
 
+    def blob_exists(self, bucket_name, blob_name):
+        """Check if a blob exists in the specified bucket."""
+        bucket = self.client.bucket(bucket_name)
+        blob = bucket.blob(blob_name)
+        return blob.exists()
