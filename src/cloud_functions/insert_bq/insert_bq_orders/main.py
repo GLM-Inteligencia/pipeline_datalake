@@ -90,7 +90,7 @@ async def process_date(date, storage, bucket_name, blob_shipping_cost, semaphore
             df_processed_data = pd.concat(results, ignore_index=True)
 
             if not df_processed_data.empty:
-                df_processed_data['processed_json'] = pd.to_datetime(df_processed_data['date_approved'])
+                df_processed_data['processed_json'] = pd.to_datetime(df_processed_data['date_created'])
                 df_processed_data['process_time'] = datetime.now()
 
             print(f'*** Finished processing all data for date {date}. {df_processed_data.shape[0]} sales ***')

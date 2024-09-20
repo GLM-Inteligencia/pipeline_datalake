@@ -31,7 +31,7 @@ async def main_async(request):
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_COMPETITORS_PRICES
+    destiny_table = settings.TABLE_COMPETITORS_DETAILS
 
     # competitors input table
     table_competitors_input = settings.TABLE_INPUT_COMPETITORS
@@ -52,7 +52,7 @@ async def main_async(request):
 
     print(f'** Cleaning blob **')
     # Path for saving price details
-    blob_basic_path = settings.BLOB_COMPETITORS_PRICES(store_name)
+    blob_basic_path = settings.BLOB_COMPETITORS_DETAILS(store_name)
     date_blob_path = f'{blob_basic_path}date={today_str}/'
 
     # Clean existing files in the storage bucket
@@ -64,7 +64,7 @@ async def main_async(request):
         print("** No items to process **")
         return ('Success', 200)
 
-    url = settings.URL_PRICE
+    url = settings.URL_ITEM_DETAIL
     headers = {'Authorization': f'Bearer {access_token}'}
     
     # Batch processing the API requests
@@ -77,6 +77,6 @@ async def main_async(request):
 
     return ('Success', 200)
 
-def fetch_competitors_prices_data(request):
+def fetch_competitors_details_data(request):
     return asyncio.run(main_async(request))
 
