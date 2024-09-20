@@ -60,7 +60,7 @@ class BigQueryManager:
             query = f"""
             DELETE FROM {table_id}
             WHERE seller_id = {seller_id}
-            AND date({date_filter_name}) = '{date[0]}'
+            AND date({date_filter_name}) = '{date}'
             """
         self.run_query(query)
         print(f'Existing data deleted from {table_id} for date {date} and seller_id {seller_id}.')
