@@ -43,7 +43,7 @@ def fetch_historic_orders(request):
     destiny_table = settings.TABLE_ORDERS
 
     start_date = datetime.today() - timedelta(days=365)
-    end_date = datetime.today() - timedelta(days=1)
+    end_date = datetime.today() 
 
     blob_name = settings.BLOB_ORDERS(store_name)
 

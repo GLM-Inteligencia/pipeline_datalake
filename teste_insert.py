@@ -31,7 +31,7 @@ mock_request = MockRequest(test_data)
 
 # Call your function with the mock request
 # result = fetch_historic_orders(mock_request)
-result = fetch_orders_data(mock_request)
+result = insert_bq_orders(mock_request)
 
 # Print the result
 print(result)

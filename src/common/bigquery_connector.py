@@ -46,7 +46,7 @@ class BigQueryManager:
     
     def delete_existing_data(self, table_id, seller_id, date, date_filter_name = 'correspondent_date'):
         
-        if isinstance(date, list):
+        if len(date) > 1:
             
             query = f"""
             DELETE FROM {table_id}
@@ -58,7 +58,7 @@ class BigQueryManager:
             query = f"""
             DELETE FROM {table_id}
             WHERE seller_id = {seller_id}
-            AND date({date_filter_name}) = '{date}'
+            AND date({date_filter_name}) = '{date[0]}'
             """
         self.run_query(query)
         print(f'Existing data deleted from {table_id} for date {date} and seller_id {seller_id}.')
@@ -79,7 +79,7 @@ class BigQueryManager:
     
     def update_logs_table(self, seller_id, date, destiny_table, management_table):
 
-        if isinstance(date, list):
+        if len(date) > 1:
             
             query = f"""
                     UPDATE {management_table}
@@ -99,7 +99,7 @@ class BigQueryManager:
                         last_bq_processing = CURRENT_TIMESTAMP()
                     WHERE 1=1
                     AND seller_id = {seller_id}
-                    AND date(process_date) = '{date}'
+                    AND date(process_date) = '{date[0]}'
                     AND processed_to_bq = false
                     AND table_name = '{destiny_table}'
                     """
