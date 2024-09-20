@@ -9,16 +9,20 @@ TABLE_COSTS = "datalake-v2-424516.datalake_v2.items_costs"
 TABLE_DETAILS = "datalake-v2-424516.datalake_v2.items_details"
 TABLE_FULLFILMENT = "datalake-v2-424516.datalake_v2.items_fullfilment"
 TABLE_PRICES = "datalake-v2-424516.datalake_v2.items_prices"
+TABLE_COMPETITORS_PRICES = "datalake-v2-424516.datalake_v2.items_competitors_prices"
+TABLE_COMPETITORS_DETAILS = "datalake-v2-424516.datalake_v2.items_competitors_details"
 TABLE_SHIPPING_COSTS = "datalake-v2-424516.datalake_v2.items_shipping_cost"
 TABLE_VISITS = "datalake-v2-424516.datalake_v2.items_visits"
 TABLE_ORDERS = "datalake-v2-424516.datalake_v2.orders"
 TABLE_PREDICTED_SALES = "datalake-v2-424516.predictions.sales"
-
+TABLE_INPUT_COMPETITORS = "datalake-v2-424516.inputs.competitors"
 # Bucket name
 BUCKET_STORES = "glm-store"
 
 # Blob names
 BLOB_PRICES = lambda store_name : f'{store_name}/meli/api_response/item_price/'
+BLOB_COMPETITORS_PRICES = lambda store_name : f'{store_name}/meli/api_response/item_competitors_price/'
+BLOB_COMPETITORS_DETAILS = lambda store_name : f'{store_name}/meli/api_response/item_competitors_details/'
 BLOB_CATALOG = lambda store_name : f'{store_name}/meli/api_response/catelog_details/' 
 BLOB_FULLFILMENT= lambda store_name : f'{store_name}/meli/api_response/item_fullfilment/'
 BLOB_COSTS = lambda store_name : f'{store_name}/meli/api_response/item_cost/'
