@@ -18,7 +18,7 @@ limit = 50
 timezone_offset = "-03:00"
 
 # Main entry point for the Cloud Function
-def fetch_historic_orders(request):
+def fetch_history_orders(request):
     # Parsing request data
     data = request.get_json()
     client_id = data.get('client_id')
