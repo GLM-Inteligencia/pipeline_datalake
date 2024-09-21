@@ -16,11 +16,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/0_1_fetch_history_orders && \
-        mkdir -p src/cloud_functions/1_fetch_data/0_1_fetch_history_orders/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/0_1_fetch_history_orders/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/0_1_fetch_history_orders/src && \
-        cd src/cloud_functions/1_fetch_data/0_1_fetch_history_orders && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_0_1_fetch_history_orders && \
+        mkdir -p src/cloud_functions/__1_fetch_data/_0_1_fetch_history_orders/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_0_1_fetch_history_orders/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_0_1_fetch_history_orders/src && \
+        cd src/cloud_functions/_1_fetch_data/_0_1_fetch_history_orders && \
         gcloud functions deploy fetch_history_orders \
         --gen2 \
         --runtime python310 \
@@ -43,11 +43,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_0_fetch_items && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_0_fetch_items/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_0_fetch_items/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_0_fetch_items/src && \
-        cd src/cloud_functions/1_fetch_data/1_0_fetch_items && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_0_fetch_items && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_0_fetch_items/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_0_fetch_items/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_0_fetch_items/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_0_fetch_items && \
         gcloud functions deploy fetch_items \
         --gen2 \
         --runtime python310 \
@@ -69,11 +69,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_1_fetch_details && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_1_fetch_details/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_1_fetch_details/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_1_fetch_details/src && \
-        cd src/cloud_functions/1_fetch_data/1_1_fetch_details && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_1_fetch_details && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_1_fetch_details/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_1_fetch_details/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_1_fetch_details/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_1_fetch_details && \
         gcloud functions deploy fetch_details \
         --gen2 \
         --runtime python310 \
@@ -95,11 +95,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_2_fetch_costs && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_2_fetch_costs/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_2_fetch_costs/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_2_fetch_costs/src && \
-        cd src/cloud_functions/1_fetch_data/1_2_fetch_costs && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_2_fetch_costs && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_2_fetch_costs/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_2_fetch_costs/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_2_fetch_costs/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_2_fetch_costs && \
         gcloud functions deploy fetch_costs \
         --gen2 \
         --runtime python310 \
@@ -121,11 +121,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_3_fetch_catalog && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_3_fetch_catalog/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_3_fetch_catalog/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_3_fetch_catalog/src && \
-        cd src/cloud_functions/1_fetch_data/1_3_fetch_catalog && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_3_fetch_catalog && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_3_fetch_catalog/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_3_fetch_catalog/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_3_fetch_catalog/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_3_fetch_catalog && \
         gcloud functions deploy fetch_catalog \
         --gen2 \
         --runtime python310 \
@@ -147,11 +147,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_4_fetch_fullfilment && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_4_fetch_fullfilment/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_4_fetch_fullfilment/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_4_fetch_fullfilment/src && \
-        cd src/cloud_functions/1_fetch_data/1_4_fetch_fullfilment && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_4_fetch_fullfilment && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_4_fetch_fullfilment/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_4_fetch_fullfilment/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_4_fetch_fullfilment/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_4_fetch_fullfilment && \
         gcloud functions deploy fetch_fullfilment \
         --gen2 \
         --runtime python310 \
@@ -173,11 +173,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_5_fetch_prices && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_5_fetch_prices/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_5_fetch_prices/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_5_fetch_prices/src && \
-        cd src/cloud_functions/1_fetch_data/1_5_fetch_prices && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_5_fetch_prices && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_5_fetch_prices/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_5_fetch_prices/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_5_fetch_prices/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_5_fetch_prices && \
         gcloud functions deploy fetch_prices \
         --gen2 \
         --runtime python310 \
@@ -199,11 +199,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_6_fetch_shipping_cost && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_6_fetch_shipping_cost/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_6_fetch_shipping_cost/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_6_fetch_shipping_cost/src && \
-        cd src/cloud_functions/1_fetch_data/1_6_fetch_shipping_cost && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost && \
         gcloud functions deploy fetch_shipping_cost \
         --gen2 \
         --runtime python310 \
@@ -225,11 +225,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_7_fetch_competitors_price && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_7_fetch_competitors_price/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_7_fetch_competitors_price/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_7_fetch_competitors_price/src && \
-        cd src/cloud_functions/1_fetch_data/1_7_fetch_competitors_price && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price && \
         gcloud functions deploy fetch_competitors_price \
         --gen2 \
         --runtime python310 \
@@ -251,11 +251,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_8_fetch_orders && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_8_fetch_orders/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_8_fetch_orders/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_8_fetch_orders/src && \
-        cd src/cloud_functions/1_fetch_data/1_8_fetch_orders && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_8_fetch_orders && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_8_fetch_orders/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_8_fetch_orders/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_8_fetch_orders/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_8_fetch_orders && \
         gcloud functions deploy fetch_orders \
         --gen2 \
         --runtime python310 \
@@ -277,11 +277,11 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_9_fetch_competitors_details && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_9_fetch_competitors_details/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_9_fetch_competitors_details/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_9_fetch_competitors_details/src && \
-        cd src/cloud_functions/1_fetch_data/1_9_fetch_competitors_details && \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details && \
         gcloud functions deploy fetch_competitors_details \
         --gen2 \
         --runtime python310 \
