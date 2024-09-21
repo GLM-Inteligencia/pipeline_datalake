@@ -1,9 +1,6 @@
 import json
 from types import SimpleNamespace
-from src.cloud_functions.fetch_data.fetch_competitors_price.main import fetch_competitors_prices_data
-from src.cloud_functions.insert_bq.insert_bq_prices.main import insert_bq_prices
-from src.cloud_functions.insert_bq.insert_bq_competitors_price.main import insert_bq_competitors_prices
-
+from src.cloud_functions._2_insert_bq._2_5_insert_bq_prices
 
 # Mock request class to simulate Flask's request object
 class MockRequest:

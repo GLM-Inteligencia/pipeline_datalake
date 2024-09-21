@@ -8,7 +8,7 @@ from src.config import settings
 import json
 
 
-def insert_bq_prices(request):
+def insert_bq_competitors_prices(request):
 
     data = request.get_json()
     store_name = data.get('store_name')
@@ -22,8 +22,8 @@ def insert_bq_prices(request):
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_PRICES
-    blob_shipping_cost = settings.BLOB_PRICES(store_name)
+    destiny_table = settings.TABLE_COMPETITORS_PRICES
+    blob_shipping_cost = settings.BLOB_COMPETITORS_PRICES(store_name)
 
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
@@ -78,28 +78,28 @@ def insert_bq_prices(request):
 
     return ('Success', 200)
 
+
 def process_prices(json):
 
     try:
         extracted_data = []
-
         # Dicionário temporário para priorizar os preços por canal
         price_by_channel = {}
-
         for price in json['prices']:
-            channel = price['conditions']['context_restrictions'][0]
+            channel = price['conditions']['context_restrictions']
+            if len(channel) == 1:
+                channel = channel[0]
 
-            # Se ainda não há preço para o canal ou se o preço atual é promoção, atualiza
-            if channel not in price_by_channel or price['type'] == 'promotion':
-                price_by_channel[channel] = {
-                    'item_id': json.get('id'),
-                    'price_id': price.get('id'),
-                    'regular_amount': price.get('regular_amount'),
-                    'price': price.get('amount'),
-                    'channel': channel,
-                    'last_updated': price.get('last_updated')
-                }
-
+                # Se ainda não há preço para o canal ou se o preço atual é promoção, atualiza
+                if channel not in price_by_channel or price['type'] == 'promotion':
+                    price_by_channel[channel] = {
+                        'item_id': json.get('id'),
+                        'price_id': price.get('id'),
+                        'regular_amount': price.get('regular_amount'),
+                        'price': price.get('amount'),
+                        'channel': channel,
+                        'last_updated': price.get('last_updated')
+                    }
         # Converte os valores armazenados para uma lista
         extracted_data.extend(price_by_channel.values())
 
@@ -108,5 +108,3 @@ def process_prices(json):
     except:
         print(f'Error processing json: {json}')
         
-                        
-
