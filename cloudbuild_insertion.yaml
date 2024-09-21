@@ -245,7 +245,7 @@ steps:
 timeout: 1800s  # 30 minutos de timeout para o build completo
 options:
   logging: CLOUD_LOGGING_ONLY
-  machineType: 'E2_HIGHCPU_32'
+  machineType: 'E2_HIGHCPU_16'
   volumes:
     - name: 'pip-cache'
       path: /workspace/.pip-cache
