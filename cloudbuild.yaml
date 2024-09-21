@@ -146,12 +146,12 @@ steps:
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/1_fetch_data/1_4_fetch_fullfillment && \
-        mkdir -p src/cloud_functions/1_fetch_data/1_4_fetch_fullfillment/src && \
-        cp -r src/common src/cloud_functions/1_fetch_data/1_4_fetch_fullfillment/src && \
-        cp -r src/config src/cloud_functions/1_fetch_data/1_4_fetch_fullfillment/src && \
-        cd src/cloud_functions/1_fetch_data/1_4_fetch_fullfillment && \
-        gcloud functions deploy fetch_fullfillment \
+        cp requirements.txt src/cloud_functions/1_fetch_data/1_4_fetch_fullfilment && \
+        mkdir -p src/cloud_functions/1_fetch_data/1_4_fetch_fullfilment/src && \
+        cp -r src/common src/cloud_functions/1_fetch_data/1_4_fetch_fullfilment/src && \
+        cp -r src/config src/cloud_functions/1_fetch_data/1_4_fetch_fullfilment/src && \
+        cd src/cloud_functions/1_fetch_data/1_4_fetch_fullfilment && \
+        gcloud functions deploy fetch_fullfilment \
         --gen2 \
         --runtime python310 \
         --trigger-http \
