@@ -33,7 +33,7 @@ BLOB_VARIATIONS = lambda store_name : f'{store_name}/meli/api_response/variation
 BLOB_ORDERS = lambda store_name : f'{store_name}/meli/api_response/orders/'
 
 # URLs API
-URL_PRICE = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}/sale_price?context=channel_marketplace'
+URL_PRICE = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}/prices'
 URL_CATALOG = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}/price_to_win?version=v2'
 URL_FULLFILMENT = lambda inventory_id : f"https://api.mercadolibre.com/inventories/{inventory_id}/stock/fulfillment"
 URL_COST = 'https://api.mercadolibre.com/sites/MLB/listing_prices'

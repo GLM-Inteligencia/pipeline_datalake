@@ -1,11 +1,9 @@
 import json
 from types import SimpleNamespace
-from src.cloud_functions.fetch_data.fetch_orders.main import fetch_orders_data
-from src.cloud_functions.insert_bq.insert_bq_orders.main import insert_bq_orders
-from src.cloud_functions.import_data.store_import_data.main import store_import_data
-from src.cloud_functions.fetch_data.fetch_competitors_details.main import fetch_competitors_details_data
 from src.cloud_functions.fetch_data.fetch_competitors_price.main import fetch_competitors_prices_data
-from src.cloud_functions.insert_bq.insert_bq_competitors_details.main import insert_bq_competitors_details
+from src.cloud_functions.insert_bq.insert_bq_prices.main import insert_bq_prices
+from src.cloud_functions.insert_bq.insert_bq_competitors_price.main import insert_bq_competitors_prices
+
 
 # Mock request class to simulate Flask's request object
 class MockRequest:
@@ -34,7 +32,7 @@ mock_request = MockRequest(test_data)
 
 # Call your function with the mock request
 # result = fetch_historic_orders(mock_request)
-result = insert_bq_competitors_details(mock_request)
+result = insert_bq_competitors_prices(mock_request)
 
 # Print the result
 print(result)

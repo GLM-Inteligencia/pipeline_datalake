@@ -53,8 +53,8 @@ def insert_bq_competitors_prices(request):
             for json in content:
                 processed_dict = process_prices(json)
 
-                if isinstance(processed_dict, dict):
-                    df_processed_data = pd.concat([df_processed_data, pd.DataFrame([processed_dict])], ignore_index = True)
+                if isinstance(processed_dict, list):
+                    df_processed_data = pd.concat([df_processed_data, pd.DataFrame(processed_dict)], ignore_index = True)
                 else:
                     continue
 
@@ -78,18 +78,33 @@ def insert_bq_competitors_prices(request):
 
     return ('Success', 200)
 
+
 def process_prices(json):
 
     try:
-        dict_content = {
-                        'item_id' : json.get('item_id'),
-                        'price_id': json.get('price_id'),
-                        'regular_amount': json.get('regular_amount'),
-                        'price': json.get('amount'),
-                        'competitors_type': 'input'
-                        }
-        
-        return dict_content
+        extracted_data = []
+
+        # Dicionário temporário para priorizar os preços por canal
+        price_by_channel = {}
+
+        for price in json['prices']:
+            channel = price['conditions']['context_restrictions'][0]
+
+            # Se ainda não há preço para o canal ou se o preço atual é promoção, atualiza
+            if channel not in price_by_channel or price['type'] == 'promotion':
+                price_by_channel[channel] = {
+                    'item_id': json.get('id'),
+                    'price_id': price.get('id'),
+                    'regular_amount': price.get('regular_amount'),
+                    'price': price.get('amount'),
+                    'channel': channel,
+                    'last_updated': price.get('last_updated')
+                }
+
+        # Converte os valores armazenados para uma lista
+        extracted_data.extend(price_by_channel.values())
+
+        return extracted_data
     
     except:
         print(f'Error processing json: {json}')
