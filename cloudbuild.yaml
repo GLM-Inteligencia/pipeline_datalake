@@ -25,7 +25,7 @@ steps:
         --memory ${_FUNCTION_MEMORY} \
         --timeout 3600 \
         --source . \
-        --entry-point ${_FUNCTION_NAME} \
+        --entry-point ${_FUNCTION_ENTRY} \
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
