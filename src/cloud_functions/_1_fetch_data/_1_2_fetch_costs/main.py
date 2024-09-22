@@ -51,8 +51,8 @@ async def main_async(request):
         )
 
         select 
-        p.item_id,
-        d.listing_type,
+        p.item_id as id,
+        d.listing_type as listing_type_id,
         d.category_id,
         p.price,
         p.channel
@@ -63,11 +63,18 @@ async def main_async(request):
         1=1
         and date(p.correspondent_date) = current_date()
     '''
+    # blob_items_prefix = f'{store_name}/meli/api_response/item_detail/date={today_str}/'
+    # items_id = fetch_items_from_storage(
+    # storage, 
+    # bucket_name, 
+    # blob_items_prefix, 
+    # key_names=['id','price', 'category_id', 'listing_type_id']
+    # )
 
     df_params = bigquery.run_query(query)
-    items = df_params['item_id'].to_list()
-
-    
+    # items = df_params[['id','channel']].to_dict(orient='records')
+    df_params['channel'] = df_params['channel'].apply(lambda x : x.replace('channel_', '')).drop(columns = 'channel')
+    items_id = df_params.to_dict(orient='records')
 
     print(f'** Items found: {len(items_id)}**')
 
@@ -86,7 +93,7 @@ async def main_async(request):
     
     # Batch processing the API requests
     async with aiohttp.ClientSession() as session:
-        await batch_process(session, items, url, headers, 
+        await batch_process(session, items_id, url, headers, 
                             bucket_name, date_blob_path, storage, 
                             params = items_id, add_item_id = True)
 
