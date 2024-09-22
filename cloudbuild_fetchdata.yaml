@@ -17,7 +17,7 @@ steps:
       - '-c'
       - |
         cp requirements.txt src/cloud_functions/_1_fetch_data/_0_1_fetch_history_orders && \
-        mkdir -p src/cloud_functions/__1_fetch_data/_0_1_fetch_history_orders/src && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_0_1_fetch_history_orders/src && \
         cp -r src/common src/cloud_functions/_1_fetch_data/_0_1_fetch_history_orders/src && \
         cp -r src/config src/cloud_functions/_1_fetch_data/_0_1_fetch_history_orders/src && \
         cd src/cloud_functions/_1_fetch_data/_0_1_fetch_history_orders && \
