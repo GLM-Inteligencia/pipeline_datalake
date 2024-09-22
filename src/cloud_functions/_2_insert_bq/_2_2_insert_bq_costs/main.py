@@ -83,7 +83,8 @@ def process_costs(json):
 
     try:
         dict_content = {
-                'item_id' : json.get('item_id'),
+                'item_id' : json.get('item_id',{}).get('id'),
+                'channel' : json.get('item_id',{}).get('channel'),
                 'free_relist' : json.get('free_relist', ''),
                 'listing_exposure' : json.get('listing_exposure', ''),
                 'listing_fee_amount' : json.get('listing_fee_amount', ''),
