@@ -174,67 +174,43 @@ def fetch_items_from_storage(storage, bucket_name, blob_items_prefix, key_names,
     return list(set(items_list)) if is_single_key else [dict(t) for t in {tuple(d.items()) for d in items_list}]
 
 
-def fetch_all_items(url, access_token, seller_id):
-    offset = 0
-    page = 1  # New page parameter
-    max_offset = 1000  # MercadoLibre API max offset
-    count_total_results = 0
-    all_products = []
-    all_responses = []  # List to store all the JSON responses
-    limit = 50 # Number of products per request
-
+def fetch_items(url, seller_id, access_token):
+    url = url(seller_id)
     params = {
-      'access_token': access_token,
-      'limit': limit,
-      }
+        'access_token': access_token,
+        'limit': 50,  # You can set this up to 100
+        'search_type': 'scan'
+    }
+    
+    # First request
+    response = requests.get(url, params=params)
+    data = response.json()
 
-    while True:
-        if offset >= max_offset:
-            # Switch to pagination mode
-            params['page'] = page
-            if 'offset' in params:
-                del params['offset']  # Remove offset if using page
-            print(f"Switching to pagination at page {page}")
-        else:
-            # Use offset for first 1000 items
-            params['offset'] = offset
+    # Get the initial scroll_id from the response
+    scroll_id = data.get('scroll_id', None)
+    all_items = data.get('results', [])
+    all_responses = []
 
-        # request api
-        response = requests.get(url(seller_id), params=params)
+    while scroll_id:
+        # Update the request to use the scroll_id
+        params.update({'scroll_id': scroll_id})
+        
+        # Request the next page using scroll_id
+        response = requests.get(url, params=params)
+        data = response.json()
+        all_responses.append(data)
 
-        # checking request status
-        if response.status_code != 200:
-            raise Exception(f"Failed to fetch data: {response.json()}")
-
-        # getting items data
-        items_data = response.json()
-        results = items_data['results']
-        print(f"Offset {offset} (or page {page}): {len(results)} items")
-
-        # Add the entire JSON response to the list
-        all_responses.append(items_data)
-
-        # increment count of daily results
-        count_total_results += len(results)
-
-        # Add the current batch of product IDs to the all_products list
-        products = items_data.get('results', [])
-        all_products.extend(products)
-
-        # stop condition -> all daily information has been imported
-        if count_total_results >= items_data['paging']['total']:
-            print(f'** Request items have been processed. **')
+        # Add the new items to the list
+        all_items.extend(data.get('results', []))
+        
+        # Get the next scroll_id (if any)
+        scroll_id = data.get('scroll_id', None)
+        
+        if not data.get('results'):  # Stop when no more results
             break
 
-        # updating offset and page
-        if offset < max_offset:
-            offset += limit
-        else:
-            page += 1
-
-    print(f'** Number of items found : {len(all_products)}')
-    
-    return all_products, all_responses
+    print(f'** Items found: {len(all_items)} **')
+    return all_responses, all_items
 
 def fetch_sales_for_day(url, access_token, timezone_offset='-03:00', limit=50):
     # Set default dates (yesterday by default)
