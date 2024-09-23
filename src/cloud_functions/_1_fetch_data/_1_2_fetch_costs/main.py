@@ -6,6 +6,7 @@ import json
 import asyncio
 import aiohttp
 from datetime import datetime
+import requests
 
 semaphore = asyncio.Semaphore(100)  # Control the number of simultaneous requests
 
@@ -90,12 +91,30 @@ async def main_async(request):
     # URL function for API
     url = settings.URL_COST
     headers = {'Authorization': f'Bearer {access_token}'}
-    
-    # Batch processing the API requests
-    async with aiohttp.ClientSession() as session:
-        await batch_process(session, items_id, url, headers, 
-                            bucket_name, date_blob_path, storage, 
-                            params = items_id, add_item_id = True)
+
+    # ------------ ASSYNC COM PROBLEMA NA CONCATENACAO DO ID ----------------
+    # # Batch processing the API requests
+    # async with aiohttp.ClientSession() as session:
+    #     await batch_process(session, items_id, url, headers, 
+    #                         bucket_name, date_blob_path, storage, 
+    #                         params = items_id, add_item_id = True)
+
+    my_responses = []
+    batch_number = 0
+    for i, item in enumerate(items_id):
+        if (i + 1) % 100 == 0:
+            # Storing batch
+            process_time = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%M.%f-03:00")
+            filename = f'batch_{batch_number}__process_time={process_time}.json'
+            storage.upload_json(bucket_name, f'{date_blob_path}{filename}', my_responses)
+            print(f'Saving file in storage: {filename}')
+            batch_number +=1
+            my_responses = []
+
+        response = requests.get(url, headers=headers, params=item)
+        data = response.json()
+        data['item_id'] = item
+        my_responses.append(data)
 
     print('** Logging process in management table... **')
     # Log the process in BigQuery

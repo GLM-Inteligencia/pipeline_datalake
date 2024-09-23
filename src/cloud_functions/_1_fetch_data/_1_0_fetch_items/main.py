@@ -1,6 +1,6 @@
 from src.common.cloud_storage_connector import CloudStorage
 from src.common.bigquery_connector import BigQueryManager
-from src.common.utils import authenticate, fetch_all_items
+from src.common.utils import authenticate, fetch_items
 from src.config import settings
 import json
 import asyncio
@@ -48,7 +48,7 @@ async def main_async(request):
     headers = {'Authorization': f'Bearer {access_token}'}
     
     # Fetch and save all items
-    all_products, all_responses = fetch_all_items(url, access_token, seller_id)
+    all_products, all_responses = fetch_items(url, seller_id, access_token)
 
     # creating file path
     timezone_offset = "-03:00" # Brazilian time

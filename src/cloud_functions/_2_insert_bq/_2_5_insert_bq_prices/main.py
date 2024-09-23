@@ -88,7 +88,6 @@ def process_prices(json):
             channel = price['conditions']['context_restrictions']
             if len(channel) == 1:
                 channel = channel[0]
-
                 # Se ainda não há preço para o canal ou se o preço atual é promoção, atualiza
                 if channel not in price_by_channel or price['type'] == 'promotion':
                     price_by_channel[channel] = {
@@ -99,8 +98,17 @@ def process_prices(json):
                         'channel': channel,
                         'last_updated': price.get('last_updated')
                     }
-        # Converte os valores armazenados para uma lista
-        extracted_data.extend(price_by_channel.values())
+            # Se o canal for nulo e nao tiver nenhum outro preço
+            else:
+                channel = None
+                price_by_channel[channel] = {
+                        'item_id': json.get('id'),
+                        'price_id': price.get('id'),
+                        'regular_amount': price.get('regular_amount'),
+                        'price': price.get('amount'),
+                        'channel': channel,
+                        'last_updated': price.get('last_updated')
+                    }
 
         return extracted_data
     
