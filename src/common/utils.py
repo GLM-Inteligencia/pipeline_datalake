@@ -190,7 +190,6 @@ def fetch_items(url, seller_id, access_token):
     scroll_id = data.get('scroll_id', None)
     all_items = data.get('results', [])
     all_responses = []
-
     while scroll_id:
         # Update the request to use the scroll_id
         params.update({'scroll_id': scroll_id})
@@ -210,7 +209,7 @@ def fetch_items(url, seller_id, access_token):
             break
 
     print(f'** Items found: {len(all_items)} **')
-    return all_responses, all_items
+    return all_items, all_responses
 
 def fetch_sales_for_day(url, access_token, timezone_offset='-03:00', limit=50):
     # Set default dates (yesterday by default)
