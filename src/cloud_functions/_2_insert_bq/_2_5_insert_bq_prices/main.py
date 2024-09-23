@@ -101,15 +101,16 @@ def process_prices(json):
             # Se o canal for nulo e nao tiver nenhum outro preço
             else:
                 channel = None
-                price_by_channel[channel] = {
-                        'item_id': json.get('id'),
-                        'price_id': price.get('id'),
-                        'regular_amount': price.get('regular_amount'),
-                        'price': price.get('amount'),
-                        'channel': channel,
-                        'last_updated': price.get('last_updated')
-                    }
-
+                if channel not in price_by_channel:
+                    price_by_channel[channel] = {
+                            'item_id': json.get('id'),
+                            'price_id': price.get('id'),
+                            'regular_amount': price.get('regular_amount'),
+                            'price': price.get('amount'),
+                            'channel': channel,
+                            'last_updated': price.get('last_updated')
+                        }
+        extracted_data.extend(price_by_channel.values())
         return extracted_data
     
     except:
