@@ -193,7 +193,7 @@ def fetch_items(url, seller_id, access_token):
     # Get the initial scroll_id from the response
     scroll_id = data.get('scroll_id', None)
     all_items = data.get('results', [])
-    all_responses = []
+    all_responses = [data]
     while scroll_id:
         # Update the request to use the scroll_id
         params.update({'scroll_id': scroll_id})
