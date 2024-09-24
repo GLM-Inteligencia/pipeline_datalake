@@ -16,6 +16,7 @@ TABLE_VISITS = "datalake-v2-424516.datalake_v2.items_visits"
 TABLE_ORDERS = "datalake-v2-424516.datalake_v2.orders"
 TABLE_PREDICTED_SALES = "datalake-v2-424516.predictions.sales"
 TABLE_INPUT_COMPETITORS = "datalake-v2-424516.inputs.competitors"
+TABLE_VARIATIONS = "datalake-v2-424516.inputs.items_variations"
 # Bucket name
 BUCKET_STORES = "glm-store"
 
