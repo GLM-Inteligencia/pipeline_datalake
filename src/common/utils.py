@@ -5,7 +5,7 @@ import requests
 import time
 
 async def batch_process(session, items, url_func_or_string, headers, 
-                        bucket_name, date_blob_path, storage, 
+                        bucket_name, date_blob_path, storage, url_with_two_fields=False,
                         chunk_size=100, add_item_id=False, params=None):
     """
     Processes API requests in batches and stores the responses in Google Cloud Storage.
@@ -31,9 +31,9 @@ async def batch_process(session, items, url_func_or_string, headers,
     async def process_chunk(chunk, batch_number):
 
         if params:
-            tasks = [fetch(session, item, url_func_or_string, headers, semaphore, add_item_id, param) for item, param in zip(chunk, params)]
+            tasks = [fetch(session, item, url_func_or_string, headers, semaphore, add_item_id, param, url_with_two_fields) for item, param in zip(chunk, params)]
         else:
-            tasks = [fetch(session, item, url_func_or_string, headers, semaphore, add_item_id) for item in chunk]
+            tasks = [fetch(session, item, url_func_or_string, headers, semaphore, add_item_id,url_with_two_fields) for item in chunk]
 
         responses = await asyncio.gather(*tasks)
 
@@ -47,7 +47,8 @@ async def batch_process(session, items, url_func_or_string, headers,
         await process_chunk(chunk, batch_number)
         await asyncio.sleep(1)  # Sleep to avoid rate limits
 
-async def fetch(session, item_id, url_func_or_string, headers, semaphore, add_item_id, params=None):
+async def fetch(session, item_id, url_func_or_string, headers, 
+                semaphore, add_item_id, params=None, url_with_two_fields=False):
     """
     Fetches data for a single item using either a URL function or a URL string.
 
@@ -67,7 +68,10 @@ async def fetch(session, item_id, url_func_or_string, headers, semaphore, add_it
     async with semaphore:
         # Determine the URL (either a function or a fixed string)
         if callable(url_func_or_string):
-            url = url_func_or_string(item_id)  # Call the URL function with just item_id
+            if url_with_two_fields:
+                url=url_func_or_string(item_id['item_id'], item_id['variation_id'])
+            else:
+                url = url_func_or_string(item_id)  # Call the URL function with just item_id
         else:
             url = url_func_or_string  # Fixed URL string
         
