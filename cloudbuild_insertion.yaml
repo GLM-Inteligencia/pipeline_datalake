@@ -8,7 +8,7 @@ steps:
       - |
         pip install -r requirements.txt --cache-dir=/workspace/.pip-cache
 
-  Deploy insert_bq_details function in parallel
+  # Deploy insert_bq_details function in parallel
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'deploy-insert-bq-details'
     waitFor: ['install-dependencies']
