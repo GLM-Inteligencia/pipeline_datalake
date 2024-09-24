@@ -35,20 +35,46 @@ steps:
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
-  # # Deploy fetch_items function in parallel
+  # Deploy fetch_items function in parallel
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-fetch-items'
+    waitFor: ['install-dependencies']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_0_fetch_items && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_1_0_fetch_items/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_1_0_fetch_items/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_1_0_fetch_items/src && \
+        cd src/cloud_functions/_1_fetch_data/_1_0_fetch_items && \
+        gcloud functions deploy fetch_items \
+        --gen2 \
+        --runtime python310 \
+        --trigger-http \
+        --no-allow-unauthenticated \
+        --region southamerica-east1 \
+        --memory 512MB \
+        --timeout 3600 \
+        --source . \
+        --entry-point fetch_items_data \
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
+  # # Deploy fetch_details function in parallel
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  #   id: 'deploy-fetch-items'
+  #   id: 'deploy-fetch-details'
   #   waitFor: ['install-dependencies']
   #   entrypoint: 'bash'
   #   args:
   #     - '-c'
   #     - |
-  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_0_fetch_items && \
-  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_0_fetch_items/src && \
-  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_0_fetch_items/src && \
-  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_0_fetch_items/src && \
-  #       cd src/cloud_functions/_1_fetch_data/_1_0_fetch_items && \
-  #       gcloud functions deploy fetch_items \
+  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_1_fetch_details && \
+  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_1_fetch_details/src && \
+  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_1_fetch_details/src && \
+  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_1_fetch_details/src && \
+  #       cd src/cloud_functions/_1_fetch_data/_1_1_fetch_details && \
+  #       gcloud functions deploy fetch_details \
   #       --gen2 \
   #       --runtime python310 \
   #       --trigger-http \
@@ -57,61 +83,35 @@ steps:
   #       --memory 512MB \
   #       --timeout 3600 \
   #       --source . \
-  #       --entry-point fetch_items_data \
+  #       --entry-point fetch_details_data \
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy fetch_details function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-details'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_1_fetch_details && \
-        mkdir -p src/cloud_functions/_1_fetch_data/_1_1_fetch_details/src && \
-        cp -r src/common src/cloud_functions/_1_fetch_data/_1_1_fetch_details/src && \
-        cp -r src/config src/cloud_functions/_1_fetch_data/_1_1_fetch_details/src && \
-        cd src/cloud_functions/_1_fetch_data/_1_1_fetch_details && \
-        gcloud functions deploy fetch_details \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point fetch_details_data \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-
-  # Deploy fetch_variations function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-variations'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_10_fetch_variations && \
-        mkdir -p src/cloud_functions/_1_fetch_data/_1_10_fetch_variations/src && \
-        cp -r src/common src/cloud_functions/_1_fetch_data/_1_10_fetch_variations/src && \
-        cp -r src/config src/cloud_functions/_1_fetch_data/_1_10_fetch_variations/src && \
-        cd src/cloud_functions/_1_fetch_data/_1_10_fetch_variations && \
-        gcloud functions deploy fetch_variations \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point fetch_variations_data \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # # Deploy fetch_variations function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-variations'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_10_fetch_variations && \
+  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_10_fetch_variations/src && \
+  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_10_fetch_variations/src && \
+  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_10_fetch_variations/src && \
+  #       cd src/cloud_functions/_1_fetch_data/_1_10_fetch_variations && \
+  #       gcloud functions deploy fetch_variations \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point fetch_variations_data \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
   # # Deploy fetch_costs function in parallel
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
