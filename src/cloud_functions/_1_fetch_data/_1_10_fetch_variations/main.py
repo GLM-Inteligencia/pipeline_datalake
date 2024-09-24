@@ -31,25 +31,28 @@ async def main_async(request):
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_DETAILS
+    destiny_table = settings.TABLE_VARIATIONS
 
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
     
     # Fetch item IDs from the storage bucket
-    blob_items_prefix = f'{store_name}/meli/api_response/items/date={today_str}/'
-    items_id = fetch_items_from_storage(
-    storage, 
-    bucket_name, 
-    blob_items_prefix, 
-    key_names='results'
-    )
+    blob_items_prefix = f'{store_name}/meli/api_response/item_detail/date={today_str}/'
+    blobs = storage.list_blobs(bucket_name, blob_items_prefix)
+    items_id=[]
+    for blob in blobs:
+        if blob.name.endswith('.json'):
+            print(f"Reading file: {blob.name}")
+            content = storage.download_json(bucket_name, blob.name)
+            items_id += [{'variation_id': var['id'], 'item_id': json['id']} 
+                         for json in content if json['variations'] for var in json['variations']
+                         ]
 
     print(f'** Items found: {len(items_id)}**')
 
     print(f'** Cleaning blob **')
     # Path for saving 
-    blob_basic_path = settings.BLOB_ITEMS_DETAILS(store_name)
+    blob_basic_path = settings.BLOB_VARIATIONS(store_name)
     date_blob_path = f'{blob_basic_path}date={today_str}/'
 
     # Clean existing files in the storage bucket
@@ -57,14 +60,15 @@ async def main_async(request):
 
     print(f'** Starting API requests for {len(items_id)} items**')
     # URL function for API
-    url = settings.URL_ITEM_DETAIL
+    url = settings.URL_VARIATIONS
 
     headers = {'Authorization': f'Bearer {access_token}'}
     
     # Batch processing the API requests
     async with aiohttp.ClientSession() as session:
         await batch_process(session, items_id, url, headers, 
-                            bucket_name, date_blob_path, storage)
+                            bucket_name, date_blob_path, storage, 
+                            params = items_id, url_with_two_fields=True)
 
 
     print('** Logging process in management table... **')
@@ -73,6 +77,6 @@ async def main_async(request):
 
     return ('Success', 200)
 
-def fetch_details_data(request):
+def fetch_variations_data(request):
     return asyncio.run(main_async(request))
 
