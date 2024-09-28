@@ -34,98 +34,20 @@ steps:
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy insert_bq_costs function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-insert-bq-costs'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_2_insert_bq/_2_2_insert_bq_costs && \
-        mkdir -p src/cloud_functions/_2_insert_bq/_2_2_insert_bq_costs/src && \
-        cp -r src/common src/cloud_functions/_2_insert_bq/_2_2_insert_bq_costs/src && \
-        cp -r src/config src/cloud_functions/_2_insert_bq/_2_2_insert_bq_costs/src && \
-        cd src/cloud_functions/_2_insert_bq/_2_2_insert_bq_costs && \
-        gcloud functions deploy insert_bq_costs \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point insert_bq_costs \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-
-  # Deploy insert_bq_catalog function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-insert-bq-catalog'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_2_insert_bq/_2_3_insert_bq_catalog && \
-        mkdir -p src/cloud_functions/_2_insert_bq/_2_3_insert_bq_catalog/src && \
-        cp -r src/common src/cloud_functions/_2_insert_bq/_2_3_insert_bq_catalog/src && \
-        cp -r src/config src/cloud_functions/_2_insert_bq/_2_3_insert_bq_catalog/src && \
-        cd src/cloud_functions/_2_insert_bq/_2_3_insert_bq_catalog && \
-        gcloud functions deploy insert_bq_catalog \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point insert_bq_catalog \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-
-  # Deploy insert_bq_fulfillment function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-insert-bq-fulfillment'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_2_insert_bq/_2_4_insert_bq_fullfilment && \
-        mkdir -p src/cloud_functions/_2_insert_bq/_2_4_insert_bq_fullfilment/src && \
-        cp -r src/common src/cloud_functions/_2_insert_bq/_2_4_insert_bq_fullfilment/src && \
-        cp -r src/config src/cloud_functions/_2_insert_bq/_2_4_insert_bq_fullfilment/src && \
-        cd src/cloud_functions/_2_insert_bq/_2_4_insert_bq_fullfilment && \
-        gcloud functions deploy insert_bq_fullfilment \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point insert_bq_fullfilment \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-
-  # # Deploy insert_bq_prices function in parallel
+  # # Deploy insert_bq_costs function in parallel
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  #   id: 'deploy-insert-bq-prices'
+  #   id: 'deploy-insert-bq-costs'
   #   waitFor: ['install-dependencies']
   #   entrypoint: 'bash'
   #   args:
   #     - '-c'
   #     - |
-  #       cp requirements.txt src/cloud_functions/_2_insert_bq/_2_5_insert_bq_prices && \
-  #       mkdir -p src/cloud_functions/_2_insert_bq/_2_5_insert_bq_prices/src && \
-  #       cp -r src/common src/cloud_functions/_2_insert_bq/_2_5_insert_bq_prices/src && \
-  #       cp -r src/config src/cloud_functions/_2_insert_bq/_2_5_insert_bq_prices/src && \
-  #       cd src/cloud_functions/_2_insert_bq/_2_5_insert_bq_prices && \
-  #       gcloud functions deploy insert_bq_prices \
+  #       cp requirements.txt src/cloud_functions/_2_insert_bq/_2_2_insert_bq_costs && \
+  #       mkdir -p src/cloud_functions/_2_insert_bq/_2_2_insert_bq_costs/src && \
+  #       cp -r src/common src/cloud_functions/_2_insert_bq/_2_2_insert_bq_costs/src && \
+  #       cp -r src/config src/cloud_functions/_2_insert_bq/_2_2_insert_bq_costs/src && \
+  #       cd src/cloud_functions/_2_insert_bq/_2_2_insert_bq_costs && \
+  #       gcloud functions deploy insert_bq_costs \
   #       --gen2 \
   #       --runtime python310 \
   #       --trigger-http \
@@ -134,9 +56,87 @@ steps:
   #       --memory 512MB \
   #       --timeout 3600 \
   #       --source . \
-  #       --entry-point insert_bq_prices \
+  #       --entry-point insert_bq_costs \
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
+  # # Deploy insert_bq_catalog function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-insert-bq-catalog'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_2_insert_bq/_2_3_insert_bq_catalog && \
+  #       mkdir -p src/cloud_functions/_2_insert_bq/_2_3_insert_bq_catalog/src && \
+  #       cp -r src/common src/cloud_functions/_2_insert_bq/_2_3_insert_bq_catalog/src && \
+  #       cp -r src/config src/cloud_functions/_2_insert_bq/_2_3_insert_bq_catalog/src && \
+  #       cd src/cloud_functions/_2_insert_bq/_2_3_insert_bq_catalog && \
+  #       gcloud functions deploy insert_bq_catalog \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point insert_bq_catalog \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
+  # # Deploy insert_bq_fulfillment function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-insert-bq-fulfillment'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_2_insert_bq/_2_4_insert_bq_fullfilment && \
+  #       mkdir -p src/cloud_functions/_2_insert_bq/_2_4_insert_bq_fullfilment/src && \
+  #       cp -r src/common src/cloud_functions/_2_insert_bq/_2_4_insert_bq_fullfilment/src && \
+  #       cp -r src/config src/cloud_functions/_2_insert_bq/_2_4_insert_bq_fullfilment/src && \
+  #       cd src/cloud_functions/_2_insert_bq/_2_4_insert_bq_fullfilment && \
+  #       gcloud functions deploy insert_bq_fullfilment \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point insert_bq_fullfilment \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
+  # # Deploy insert_bq_prices function in parallel
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-insert-bq-prices'
+    waitFor: ['install-dependencies']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        cp requirements.txt src/cloud_functions/_2_insert_bq/_2_5_insert_bq_prices && \
+        mkdir -p src/cloud_functions/_2_insert_bq/_2_5_insert_bq_prices/src && \
+        cp -r src/common src/cloud_functions/_2_insert_bq/_2_5_insert_bq_prices/src && \
+        cp -r src/config src/cloud_functions/_2_insert_bq/_2_5_insert_bq_prices/src && \
+        cd src/cloud_functions/_2_insert_bq/_2_5_insert_bq_prices && \
+        gcloud functions deploy insert_bq_prices \
+        --gen2 \
+        --runtime python310 \
+        --trigger-http \
+        --no-allow-unauthenticated \
+        --region southamerica-east1 \
+        --memory 512MB \
+        --timeout 3600 \
+        --source . \
+        --entry-point insert_bq_prices \
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
   # # Deploy insert_bq_shipping_cost function in parallel
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -164,83 +164,83 @@ steps:
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy insert_bq_competitors_price function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-insert-bq-competitors-price'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_2_insert_bq/_2_7_insert_bq_competitors_price && \
-        mkdir -p src/cloud_functions/_2_insert_bq/_2_7_insert_bq_competitors_price/src && \
-        cp -r src/common src/cloud_functions/_2_insert_bq/_2_7_insert_bq_competitors_price/src && \
-        cp -r src/config src/cloud_functions/_2_insert_bq/_2_7_insert_bq_competitors_price/src && \
-        cd src/cloud_functions/_2_insert_bq/_2_7_insert_bq_competitors_price && \
-        gcloud functions deploy insert_bq_competitors_prices \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point insert_bq_competitors_prices \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # # Deploy insert_bq_competitors_price function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-insert-bq-competitors-price'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_2_insert_bq/_2_7_insert_bq_competitors_price && \
+  #       mkdir -p src/cloud_functions/_2_insert_bq/_2_7_insert_bq_competitors_price/src && \
+  #       cp -r src/common src/cloud_functions/_2_insert_bq/_2_7_insert_bq_competitors_price/src && \
+  #       cp -r src/config src/cloud_functions/_2_insert_bq/_2_7_insert_bq_competitors_price/src && \
+  #       cd src/cloud_functions/_2_insert_bq/_2_7_insert_bq_competitors_price && \
+  #       gcloud functions deploy insert_bq_competitors_prices \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point insert_bq_competitors_prices \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy insert_bq_orders function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-insert-bq-orders'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_2_insert_bq/_2_8_insert_bq_orders && \
-        mkdir -p src/cloud_functions/_2_insert_bq/_2_8_insert_bq_orders/src && \
-        cp -r src/common src/cloud_functions/_2_insert_bq/_2_8_insert_bq_orders/src && \
-        cp -r src/config src/cloud_functions/_2_insert_bq/_2_8_insert_bq_orders/src && \
-        cd src/cloud_functions/_2_insert_bq/_2_8_insert_bq_orders && \
-        gcloud functions deploy insert_bq_orders \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point insert_bq_orders \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # # Deploy insert_bq_orders function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-insert-bq-orders'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_2_insert_bq/_2_8_insert_bq_orders && \
+  #       mkdir -p src/cloud_functions/_2_insert_bq/_2_8_insert_bq_orders/src && \
+  #       cp -r src/common src/cloud_functions/_2_insert_bq/_2_8_insert_bq_orders/src && \
+  #       cp -r src/config src/cloud_functions/_2_insert_bq/_2_8_insert_bq_orders/src && \
+  #       cd src/cloud_functions/_2_insert_bq/_2_8_insert_bq_orders && \
+  #       gcloud functions deploy insert_bq_orders \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point insert_bq_orders \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy insert_bq_competitors_details function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-insert-bq-competitors-details'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_2_insert_bq/_2_9_insert_bq_competitors_details && \
-        mkdir -p src/cloud_functions/_2_insert_bq/_2_9_insert_bq_competitors_details/src && \
-        cp -r src/common src/cloud_functions/_2_insert_bq/_2_9_insert_bq_competitors_details/src && \
-        cp -r src/config src/cloud_functions/_2_insert_bq/_2_9_insert_bq_competitors_details/src && \
-        cd src/cloud_functions/_2_insert_bq/_2_9_insert_bq_competitors_details && \
-        gcloud functions deploy insert_bq_competitors_details \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point insert_bq_competitors_details \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # # Deploy insert_bq_competitors_details function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-insert-bq-competitors-details'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_2_insert_bq/_2_9_insert_bq_competitors_details && \
+  #       mkdir -p src/cloud_functions/_2_insert_bq/_2_9_insert_bq_competitors_details/src && \
+  #       cp -r src/common src/cloud_functions/_2_insert_bq/_2_9_insert_bq_competitors_details/src && \
+  #       cp -r src/config src/cloud_functions/_2_insert_bq/_2_9_insert_bq_competitors_details/src && \
+  #       cd src/cloud_functions/_2_insert_bq/_2_9_insert_bq_competitors_details && \
+  #       gcloud functions deploy insert_bq_competitors_details \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point insert_bq_competitors_details \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 timeout: 1800s  # 30 minutos de timeout para o build completo
 options:
