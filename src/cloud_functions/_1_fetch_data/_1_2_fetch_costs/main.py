@@ -61,8 +61,9 @@ async def main_async(request):
         inner join items_details d
         on p.item_id = d.item_id
         where 
-        1=1
-        and date(p.correspondent_date) = current_date()
+            1=1
+            and date(p.correspondent_date) = current_date()
+            and channel is not null
     '''
     # blob_items_prefix = f'{store_name}/meli/api_response/item_detail/date={today_str}/'
     # items_id = fetch_items_from_storage(

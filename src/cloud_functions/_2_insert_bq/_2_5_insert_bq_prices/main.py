@@ -23,7 +23,8 @@ def insert_bq_prices(request):
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
     destiny_table = settings.TABLE_PRICES
-    blob_shipping_cost = settings.BLOB_PRICES(store_name)
+    blob_prices = settings.BLOB_PRICES(store_name)
+    blob_prices_mshops = settings.BLOB_PRICES_MSHOPS(store_name)
 
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
@@ -41,23 +42,34 @@ def insert_bq_prices(request):
         date_to_process = date.strftime('%Y-%m-%d')
         print(f'Processing date: {date_to_process}')
         # Get blob with the date
-        blob_prefix = blob_shipping_cost + f'date={date_to_process}/'
+        blob_prefix = blob_prices + f'date={date_to_process}/'
         # List all the files
         blobs = storage.list_blobs(bucket_name, blob_prefix)
-
         # Processing each blob
         for blob in blobs:
             print(f"Reading file: {blob.name}")
             content = storage.download_json(bucket_name, blob.name)
-
             for json in content:
-                processed_dict = process_prices(json)
-
-                if isinstance(processed_dict, list):
-                    df_processed_data = pd.concat([df_processed_data, pd.DataFrame(processed_dict)], ignore_index = True)
-                else:
-                    continue
-
+                processed_dict = process_prices(json, 'channel_marketplace')
+                df_processed_data = pd.concat([df_processed_data, pd.DataFrame([processed_dict])], ignore_index = True)
+    
+        df_processed_data['correspondent_date'] = pd.to_datetime(date_to_process)
+        df_processed_data['process_time'] = datetime.now()
+        df_processed_data['seller_id'] = seller_id
+    
+        # MSHOPS
+        # Get blob with the date
+        blob_prefix_mshops = blob_prices_mshops + f'date={date_to_process}/'
+        # List all the files
+        blobs = storage.list_blobs(bucket_name, blob_prefix_mshops)
+        # Processing each blob
+        for blob in blobs:
+            print(f"Reading file: {blob.name}")
+            content = storage.download_json(bucket_name, blob.name)
+            for json in content:
+                processed_dict = process_prices(json, 'channel_mshops')
+                df_processed_data = pd.concat([df_processed_data, pd.DataFrame([processed_dict])], ignore_index = True)
+    
         df_processed_data['correspondent_date'] = pd.to_datetime(date_to_process)
         df_processed_data['process_time'] = datetime.now()
         df_processed_data['seller_id'] = seller_id
@@ -78,32 +90,20 @@ def insert_bq_prices(request):
 
     return ('Success', 200)
 
-def process_prices(json):
+def process_prices(json, channel):
 
     try:
-        extracted_data = []
-        # Dicionário temporário para priorizar os preços por canal
-        price_by_channel = {}
-        for price in json['prices']:
-            channel = price['conditions']['context_restrictions']
-            if len(channel) == 1:
-                channel = channel[0]
-                # Se ainda não há preço para o canal ou se o preço atual é promoção, atualiza
-                if channel not in price_by_channel or price['type'] == 'promotion':
-                    price_by_channel[channel] = {
-                        'item_id': json.get('id'),
-                        'price_id': price.get('id'),
-                        'regular_amount': price.get('regular_amount'),
-                        'price': price.get('amount'),
-                        'channel': channel,
-                        'last_updated': price.get('last_updated')
-                    }
-
-        extracted_data.extend(price_by_channel.values())
-        return extracted_data
+        price_by_channel = {
+                    'item_id': json.get('item_id'),
+                    'price_id': json.get('price_id'),
+                    'regular_amount': json.get('regular_amount'),
+                    'price': json.get('amount'),
+                    'channel': channel,
+                    'last_updated': json.get('last_updated')
+                }
+        
+        return price_by_channel
     
     except:
-        print(f'Error processing json: {json}')
-        
-                        
+        print(f'Error processing json: {json}')      
 
