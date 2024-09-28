@@ -27,17 +27,19 @@ test_data = {
   "store_name": "hubsmarthome"
 }
 
-# test_data = {
-#     "file_type": "competitors",
-#     "seller_id": "189643563",
-#     "store_name": "hubsmarthome"
-# }
-# # Create the mock request
+test_data = {
+  "access_token": "APP_USR-2951712600123976-092816-48bb66d5d2dbbceda55d4e5e32a36bd1-569119547",
+  "client_id": "2951712600123976",
+  "client_secret": "QprAIl8ydXzcxFVHjnIHT6fUQ8KpzADV",
+  "seller_id": 569119547,
+  "store_name": "gw shop"
+}
+
 mock_request = MockRequest(test_data)
 
 # Call your function with the mock request
-result = fetch_costs_data(mock_request)
-result = insert_bq_costs(mock_request)
+result = insert_bq_prices(mock_request)
+# result = insert_bq_costs(mock_request)
 
 # result = insert_bq_details(mock_request)
 # result =insert_bq_prices(mock_request)

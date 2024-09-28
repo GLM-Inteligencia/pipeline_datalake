@@ -80,7 +80,7 @@ def insert_bq_prices(request):
         bigquery.delete_existing_data(destiny_table, seller_id, date_to_process)
         
         print('** Correct dataframe schema **')
-        bigquery.match_dataframe_schema(df_processed_data, destiny_table)
+        df_processed_data = bigquery.match_dataframe_schema(df_processed_data, destiny_table)
 
         print('** Inserting data into BQ**')
         bigquery.insert_dataframe(df_processed_data, destiny_table)
