@@ -241,7 +241,7 @@ steps:
   #       --entry-point insert_bq_competitors_details \
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-=======
+
 #   # Deploy insert_bq_costs function in parallel
 #   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
 #     id: 'deploy-insert-bq-costs'
