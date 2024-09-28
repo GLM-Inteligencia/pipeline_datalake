@@ -80,12 +80,17 @@ def insert_bq_details(request):
 
     return ('Success', 200)
 
-
+# Function to extract sku
 def extract_seller_sku(attributes):
     for attribute in attributes:
         if attribute.get('id') == 'SELLER_SKU':
             return attribute.get('value_name')
     return None  
+
+# Functions to get relations 
+get_item_relations = lambda x: x.get('item_relations', [])[0].get('id') if len(x.get('item_relations', [])) > 0 else None  
+get_variation_id_relations = lambda x: x.get('item_relations', [])[0].get('variation_id') if len(x.get('item_relations', [])) > 0 else None  
+get_stock_relations = lambda x: x.get('item_relations', [])[0].get('stock_relation') if len(x.get('item_relations', [])) > 0 else None  
 
 def process_details(content_details, content_variations):  
 
@@ -97,7 +102,13 @@ def process_details(content_details, content_variations):
         if extract_seller_sku(item.get('attributes', [])):
             has_variation = False
         else:
-            has_variation = True   
+            has_variation = True 
+
+        # get channels information
+        channel = item.get('channels')
+        flag_marketplace = 'marketplace' in item.get('channels',[])
+        flag_mshops = 'mshops' in item.get('channels',[])  
+
         # get general information
         product_details_general = {
             'item_id': item.get('id'),
@@ -117,7 +128,10 @@ def process_details(content_details, content_variations):
             'picture_url': item.get('pictures', [{}])[0].get('url'),
             'catalog_listing': item.get('catalog_listing', ''),
             'item_health': item.get('health',''),
+            'fg_marketplace': flag_marketplace,
+            'fg_mshops': flag_mshops,
         }  
+
         # If product does not have variations
         if not has_variation:
             product_detail_variation = {
@@ -126,8 +140,12 @@ def process_details(content_details, content_variations):
                 'stock': item.get('available_quantity'),
                 'sold_quantity': item.get('sold_quantity'),
                 'seller_sku': extract_seller_sku(item.get('attributes', [])),
-                'variation_id': np.nan
+                'variation_id': np.nan,
+                'item_relations': get_item_relations(item),
+                'stock_relations': get_stock_relations(item),
+                'variation_id_relations':get_variation_id_relations(item)
             }
+
             product_details_general.update(product_detail_variation)
             df_ = pd.DataFrame([product_details_general])
             df_product = pd.concat([df_product, df_], ignore_index=True)
@@ -144,7 +162,10 @@ def process_details(content_details, content_variations):
                     'stock': variation.get('available_quantity'),
                     'sold_quantity': variation.get('sold_quantity'),
                     'seller_sku': extract_seller_sku(variation.get('attributes', [])),
-                    'variation_id': variation_id
+                    'variation_id': variation_id,
+                    'item_relations': get_item_relations(item),
+                    'stock_relations': get_stock_relations(item),
+                    'variation_id_relations':get_variation_id_relations(item)
                 }
                 product_details_general.update(product_detail_variation)
                 df_ = pd.DataFrame([product_details_general])

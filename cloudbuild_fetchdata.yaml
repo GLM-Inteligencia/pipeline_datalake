@@ -87,6 +87,32 @@ steps:
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
+  # # Deploy fetch_variations function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-variations'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_10_fetch_variations && \
+  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_10_fetch_variations/src && \
+  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_10_fetch_variations/src && \
+  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_10_fetch_variations/src && \
+  #       cd src/cloud_functions/_1_fetch_data/_1_10_fetch_variations && \
+  #       gcloud functions deploy fetch_variations \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point fetch_variations_data \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
   # # Deploy fetch_costs function in parallel
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   #   id: 'deploy-fetch-costs'
@@ -165,46 +191,20 @@ steps:
 #         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
 #         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy fetch_prices function in parallel
-  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  #   id: 'deploy-fetch-prices'
-  #   waitFor: ['install-dependencies']
-  #   entrypoint: 'bash'
-  #   args:
-  #     - '-c'
-  #     - |
-  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_5_fetch_prices && \
-  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_5_fetch_prices/src && \
-  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_5_fetch_prices/src && \
-  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_5_fetch_prices/src && \
-  #       cd src/cloud_functions/_1_fetch_data/_1_5_fetch_prices && \
-  #       gcloud functions deploy fetch_prices \
-  #       --gen2 \
-  #       --runtime python310 \
-  #       --trigger-http \
-  #       --no-allow-unauthenticated \
-  #       --region southamerica-east1 \
-  #       --memory 512MB \
-  #       --timeout 3600 \
-  #       --source . \
-  #       --entry-point fetch_prices_data \
-  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-
-#   # Deploy fetch_shipping_cost function in parallel
+# #   # Deploy fetch_prices function in parallel
 #   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-#     id: 'deploy-fetch-shipping-cost'
+#     id: 'deploy-fetch-prices'
 #     waitFor: ['install-dependencies']
 #     entrypoint: 'bash'
 #     args:
 #       - '-c'
 #       - |
-#         cp requirements.txt src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost && \
-#         mkdir -p src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost/src && \
-#         cp -r src/common src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost/src && \
-#         cp -r src/config src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost/src && \
-#         cd src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost && \
-#         gcloud functions deploy fetch_shipping_cost \
+#         cp requirements.txt src/cloud_functions/_1_fetch_data/_1_5_fetch_prices && \
+#         mkdir -p src/cloud_functions/_1_fetch_data/_1_5_fetch_prices/src && \
+#         cp -r src/common src/cloud_functions/_1_fetch_data/_1_5_fetch_prices/src && \
+#         cp -r src/config src/cloud_functions/_1_fetch_data/_1_5_fetch_prices/src && \
+#         cd src/cloud_functions/_1_fetch_data/_1_5_fetch_prices && \
+#         gcloud functions deploy fetch_prices \
 #         --gen2 \
 #         --runtime python310 \
 #         --trigger-http \
@@ -213,9 +213,36 @@ steps:
 #         --memory 512MB \
 #         --timeout 3600 \
 #         --source . \
-#         --entry-point fetch_shipping_cost_data \
+#         --entry-point fetch_prices_data \
 #         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
 #         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
+
+  # Deploy fetch_shipping_cost function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-shipping-cost'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost && \
+  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost/src && \
+  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost/src && \
+  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost/src && \
+  #       cd src/cloud_functions/_1_fetch_data/_1_6_fetch_shipping_cost && \
+  #       gcloud functions deploy fetch_shipping_cost \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point fetch_shipping_cost_data \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 #   # Deploy fetch_competitors_price function in parallel
 #   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
