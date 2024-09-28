@@ -5,9 +5,12 @@ from src.cloud_functions._1_fetch_data._1_5_fetch_prices.main import fetch_price
 from src.cloud_functions._1_fetch_data._1_1_fetch_details.main import fetch_details_data
 from src.cloud_functions._1_fetch_data._1_10_fetch_variations.main import fetch_variations_data
 from src.cloud_functions._1_fetch_data._1_0_fetch_items.main import fetch_items_data
-
-# from src.cloud_functions._2_insert_bq._2_2_insert_bq_costs.main import insert_bq_costs
+from src.cloud_functions._1_fetch_data._1_2_fetch_costs.main import fetch_costs_data
+from src.cloud_functions._2_insert_bq._2_1_insert_bq_details.main import insert_bq_details
+from src.cloud_functions._2_insert_bq._2_5_insert_bq_prices.main import insert_bq_prices
+from src.cloud_functions._2_insert_bq._2_2_insert_bq_costs.main import insert_bq_costs
 # Mock request class to simulate Flask's request object
+
 class MockRequest:
     def __init__(self, json_data):
         self._json_data = json_data
@@ -33,7 +36,8 @@ test_data = {
 mock_request = MockRequest(test_data)
 
 # Call your function with the mock request
-result = fetch_variations_data(mock_request)
+result = fetch_costs_data(mock_request)
+result = insert_bq_costs(mock_request)
 
 # result = insert_bq_details(mock_request)
 # result =insert_bq_prices(mock_request)
