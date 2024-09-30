@@ -4,7 +4,6 @@ from google.cloud.workflows.executions_v1 import ExecutionsClient
 import json
 import requests
 import traceback
-from config import firestore_collection_users, project_id_firebase, project_id_workflow, location, workflow_name
 import time
 from src.common.bigquery_connector import BigQueryManager
 from src.config import settings
