@@ -74,7 +74,7 @@ def triggers_workflow(request):
     # Now, wait until all workflows are done
     client = ExecutionsClient()
     execution_states = {}
-    max_wait_time = 1500  # Maximum time to wait in seconds
+    max_wait_time = 1800  # Maximum time to wait in seconds
     wait_interval = 30    # Interval between checks in seconds
     total_wait_time = 0
 
