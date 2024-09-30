@@ -7,6 +7,7 @@ import traceback
 import time
 from src.common.bigquery_connector import BigQueryManager
 from src.config import settings
+from src.common.trigger_cloud_function import TriggerCloudFunction
 
 firestore_collection_users = 'users_credentials'
 project_id_firebase = 'datalake-meli-dev'
@@ -19,7 +20,8 @@ def triggers_workflow(request):
 
     users_dict = read_firestore_data(firestore_collection_users, project_id_firebase)
     bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
-
+    trigger_function = TriggerCloudFunction(credentials_path=settings.PATH_SERVICE_ACCOUNT)
+    
     execution_ids = []
 
     for user, ids in users_dict.items():
@@ -95,8 +97,15 @@ def triggers_workflow(request):
     else:
         print("All workflows have completed.")
 
+    # Cleaning table model
+    bigquery.run_query('delete from datalake-v2-424516.models.p_predictions_forecast where prediction_date = current_date()')
+
     # Starting pipeline model sales
     bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.run_queries_sequentially`();')
+
+    # Trigger function to calculate history sales
+    trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_max_sales_history',
+                                           params= {}) 
 
     return ('Success!', 200)
 
