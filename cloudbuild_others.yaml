@@ -27,7 +27,7 @@ steps:
         --trigger-http \
         --no-allow-unauthenticated \
         --region southamerica-east1 \
-        --memory 256MB \
+        --memory 512MB \
         --timeout 3600 \
         --source . \
         --entry-point triggers_workflow \
@@ -53,7 +53,7 @@ steps:
         --trigger-http \
         --no-allow-unauthenticated \
         --region southamerica-east1 \
-        --memory 256MB \
+        --memory 512MB \
         --timeout 3600 \
         --source . \
         --entry-point get_max_sales_history \

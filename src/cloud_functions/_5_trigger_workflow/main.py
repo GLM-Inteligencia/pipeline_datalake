@@ -79,6 +79,7 @@ def triggers_workflow(request):
     total_wait_time = 0
 
     while True:
+        print("** Checking if workflows are still running **")
         all_done = True
         for execution_name in execution_ids:
             if execution_name not in execution_states or execution_states[execution_name] not in ['SUCCEEDED', 'FAILED', 'CANCELLED']:
