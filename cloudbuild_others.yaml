@@ -15,12 +15,12 @@ steps:
     entrypoint: 'bash'
     args:
       - '-c'
-      - |
+      - | 
         cp requirements.txt src/cloud_functions/_5_trigger_workflow && \
         mkdir -p src/cloud_functions/_5_trigger_workflow/src && \
         cp -r src/common src/cloud_functions/_5_trigger_workflow/src  && \
         cp -r src/config src/cloud_functions/_5_trigger_workflow/src  && \
-        cd src/cloud_functions/_5_trigger_workflow/src  && \
+        cd src/cloud_functions/_5_trigger_workflow  && \
         gcloud functions deploy triggers_workflow \
         --gen2 \
         --runtime python310 \
@@ -46,7 +46,7 @@ steps:
         mkdir -p src/cloud_functions/_4_models/predicted_sales/src && \
         cp -r src/common src/cloud_functions/_4_models/predicted_sales/src  && \
         cp -r src/config src/cloud_functions/_4_models/predicted_sales/src  && \
-        cd src/cloud_functions/_4_models/predicted_sales/src   && \
+        cd src/cloud_functions/_4_models/predicted_sales  && \
         gcloud functions deploy get_max_sales_history \
         --gen2 \
         --runtime python310 \
