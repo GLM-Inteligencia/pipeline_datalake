@@ -27,6 +27,9 @@ def get_max_sales_history(request):
 
   # BigQuery dataset and table ID
   dataset_table_id = settings.TABLE_PREDICTED_SALES
+
+  # Delete existing data
+  bigquery.run_query(f'delete from {dataset_table_id} where date(insertion_date) = current_date()')
   
   # Insert into BigQuery
   bigquery.insert_dataframe(df_consolidado, dataset_table_id)
