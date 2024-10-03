@@ -70,7 +70,7 @@ def store_import_data(request):
 
         # Convert CSV to pandas DataFrame
         try:
-            df = pd.read_csv(io.StringIO(csv_data), sep=';')
+            df = pd.read_csv(io.StringIO(csv_data), sep=';', encoding='ISO-8859-1' )
             df['seller_id'] = seller_id
             df['process_time'] = datetime.now()
             print(f'DataFrame created with {len(df)} rows')
