@@ -12,6 +12,8 @@ from src.cloud_functions._2_insert_bq._2_2_insert_bq_costs.main import insert_bq
 from src.cloud_functions._1_fetch_data._1_11_fetch_ranking_catalog.main import fetch_ranking_catalog
 from src.cloud_functions._2_insert_bq._2_10_insert_bq_competitors_catalog.main import insert_bq_competitors_catalog
 
+from src.cloud_functions._1_fetch_data._1_12_fetch_free_shipping_status.main import fetch_free_shipping_status
+from src.cloud_functions._2_insert_bq._2_11_insert_bq_free_shipping_status.main import insert_bq_free_shipping_status
 # Mock request class to simulate Flask's request object
 
 class MockRequest:
@@ -41,8 +43,8 @@ test_data = {
 mock_request = MockRequest(test_data)
 
 # Call your function with the mock request
-result = fetch_ranking_catalog(mock_request)
-result = insert_bq_competitors_catalog(mock_request)
+result = fetch_free_shipping_status(mock_request)
+result = insert_bq_free_shipping_status(mock_request)
 # result = insert_bq_costs(mock_request)
 
 # result = insert_bq_details(mock_request)
