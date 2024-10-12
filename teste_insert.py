@@ -9,6 +9,9 @@ from src.cloud_functions._1_fetch_data._1_2_fetch_costs.main import fetch_costs_
 from src.cloud_functions._2_insert_bq._2_1_insert_bq_details.main import insert_bq_details
 from src.cloud_functions._2_insert_bq._2_5_insert_bq_prices.main import insert_bq_prices
 from src.cloud_functions._2_insert_bq._2_2_insert_bq_costs.main import insert_bq_costs
+from src.cloud_functions._1_fetch_data._1_11_fetch_ranking_catalog.main import fetch_ranking_catalog
+from src.cloud_functions._2_insert_bq._2_10_insert_bq_competitors_catalog.main import insert_bq_competitors_catalog
+
 # Mock request class to simulate Flask's request object
 
 class MockRequest:
@@ -27,18 +30,19 @@ test_data = {
   "store_name": "hubsmarthome"
 }
 
-test_data = {
-  "access_token": "APP_USR-2951712600123976-092816-48bb66d5d2dbbceda55d4e5e32a36bd1-569119547",
-  "client_id": "2951712600123976",
-  "client_secret": "QprAIl8ydXzcxFVHjnIHT6fUQ8KpzADV",
-  "seller_id": 569119547,
-  "store_name": "gw shop"
-}
+# test_data = {
+#   "access_token": "APP_USR-2951712600123976-092816-48bb66d5d2dbbceda55d4e5e32a36bd1-569119547",
+#   "client_id": "2951712600123976",
+#   "client_secret": "QprAIl8ydXzcxFVHjnIHT6fUQ8KpzADV",
+#   "seller_id": 569119547,
+#   "store_name": "gw shop"
+# }
 
 mock_request = MockRequest(test_data)
 
 # Call your function with the mock request
-result = insert_bq_prices(mock_request)
+result = fetch_ranking_catalog(mock_request)
+result = insert_bq_competitors_catalog(mock_request)
 # result = insert_bq_costs(mock_request)
 
 # result = insert_bq_details(mock_request)

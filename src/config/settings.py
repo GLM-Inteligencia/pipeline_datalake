@@ -16,7 +16,9 @@ TABLE_VISITS = "datalake-v2-424516.datalake_v2.items_visits"
 TABLE_ORDERS = "datalake-v2-424516.datalake_v2.orders"
 TABLE_PREDICTED_SALES = "datalake-v2-424516.predictions.sales"
 TABLE_INPUT_COMPETITORS = "datalake-v2-424516.inputs.competitors"
-TABLE_VARIATIONS = "datalake-v2-424516.inputs.items_variations"
+TABLE_VARIATIONS = "datalake-v2-424516.datalake_v2.items_variations"
+TABLE_CATALOG_COMPETITORS = "datalake-v2-424516.datalake_v2.items_competitors_catalog"
+
 # Bucket name
 BUCKET_STORES = "glm-store"
 
@@ -26,6 +28,7 @@ BLOB_PRICES_MSHOPS = lambda store_name : f'{store_name}/meli/api_response/item_p
 
 BLOB_COMPETITORS_PRICES = lambda store_name : f'{store_name}/meli/api_response/item_competitors_price/'
 BLOB_COMPETITORS_DETAILS = lambda store_name : f'{store_name}/meli/api_response/item_competitors_details/'
+BLOB_COMPETITORS_CATALOG = lambda store_name : f'{store_name}/meli/api_response/item_competitors_catalog/'
 BLOB_CATALOG = lambda store_name : f'{store_name}/meli/api_response/catelog_details/' 
 BLOB_FULLFILMENT= lambda store_name : f'{store_name}/meli/api_response/item_fullfilment/'
 BLOB_COSTS = lambda store_name : f'{store_name}/meli/api_response/item_cost/'
@@ -46,6 +49,7 @@ URL_ITEMS = lambda seller_id : f'https://api.mercadolibre.com/users/{seller_id}/
 URL_ITEM_DETAIL = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}'
 URL_VARIATIONS = lambda item_id, variation_id: f'https://api.mercadolibre.com/items/{item_id}/variations/{variation_id}'
 URL_ORDERS = lambda seller_id : f"https://api.mercadolibre.com/orders/search?seller={seller_id}"
+URL_COMPETITORS_CATALOG = lambda catalog_item_id : f"https://api.mercadolibre.com/products/{catalog_item_id}/items"
 
 # GCP INFO
 FIRESTORE_COLLECTION_USERS = 'users_credentials'
