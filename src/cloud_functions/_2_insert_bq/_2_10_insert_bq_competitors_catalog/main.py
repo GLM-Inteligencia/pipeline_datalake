@@ -81,10 +81,12 @@ def insert_bq_competitors_catalog(request):
 
 def process_competitors_catalog(json):
 
-    catalog_id = json['item_id']
+    
     results_list = []  # Create an empty list to store the dictionaries
 
     try:
+        catalog_id = json['item_id']
+        
         for item in json['results']:
             dict_content = {
                 'catalog_product_id': catalog_id, 
