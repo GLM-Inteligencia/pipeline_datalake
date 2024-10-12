@@ -67,10 +67,10 @@ class CloudStorage:
             blob.delete()
         print(f"All blobs with prefix {prefix} have been deleted.")
 
-    def download_blob_as_text(self, bucket_name, path_name):
+    def download_blob_as_text(self, bucket_name, path_name,  encoding='utf-8'):
         bucket = self.client.bucket(bucket_name)
         blob = bucket.blob(path_name)
-        return blob.download_as_text()
+        return blob.download_as_text(encoding=encoding)
 
     def blob_exists(self, bucket_name, blob_name):
         """

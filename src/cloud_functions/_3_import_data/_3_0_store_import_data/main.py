@@ -63,14 +63,14 @@ def store_import_data(request):
 
         # Download the CSV file as a string
         try:
-            csv_data = storage.download_blob_as_text(bucket_name, latest_file_path)
+            csv_data = storage.download_blob_as_text(bucket_name, latest_file_path, encoding='ISO-8859-1')
             print(f'CSV data length: {len(csv_data)} characters')
         except Exception as e:
             return jsonify({'error': f'Error downloading CSV file: {e}'}), 500
 
         # Convert CSV to pandas DataFrame
         try:
-            df = pd.read_csv(io.StringIO(csv_data), sep=';')
+            df = pd.read_csv(io.StringIO(csv_data), sep=';', encoding='ISO-8859-1' )
             df['seller_id'] = seller_id
             df['process_time'] = datetime.now()
             print(f'DataFrame created with {len(df)} rows')
