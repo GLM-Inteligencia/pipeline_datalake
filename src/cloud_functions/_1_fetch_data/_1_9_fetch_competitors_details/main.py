@@ -41,7 +41,7 @@ async def main_async(request):
     
     # Fetch item IDs from the input bigquery
     query = f'''
-    select competitor_id
+    select distinct competitor_id
     from {table_competitors_input}
     where reference_seller_id = {seller_id}
     '''
