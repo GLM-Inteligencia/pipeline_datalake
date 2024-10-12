@@ -43,7 +43,7 @@ async def main_async(request):
     query = f'''
     select competitor_id
     from {table_competitors_input}
-    where seller_id = {seller_id}
+    where reference_seller_id = {seller_id}
     '''
 
     df_competitors = bigquery.run_query(query)
