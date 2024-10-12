@@ -348,6 +348,7 @@ steps:
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
         
+        
   # Deploy fetch_ranking_catalog function in parallel
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'deploy-fetch-ranking-catalog'
