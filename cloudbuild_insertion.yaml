@@ -452,7 +452,7 @@ steps:
 
   # Deploy insert_bq_free_shipping_status function in parallel
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-insert-bq-competitors-details'
+    id: 'deploy-insert-bq-free-shipping-status'
     waitFor: ['install-dependencies']
     entrypoint: 'bash'
     args:
@@ -478,7 +478,7 @@ steps:
 
   # Deploy insert_bq_competitors_catalog function in parallel
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-insert-bq-competitors-details'
+    id: 'deploy-insert-bq-competitors-catalog'
     waitFor: ['install-dependencies']
     entrypoint: 'bash'
     args:
