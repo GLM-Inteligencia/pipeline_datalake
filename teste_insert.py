@@ -43,8 +43,8 @@ test_data = {
 mock_request = MockRequest(test_data)
 
 # Call your function with the mock request
-result = fetch_free_shipping_status(mock_request)
-result = insert_bq_free_shipping_status(mock_request)
+result = fetch_ranking_catalog(mock_request)
+result = insert_bq_competitors_catalog(mock_request)
 # result = insert_bq_costs(mock_request)
 
 # result = insert_bq_details(mock_request)
