@@ -244,31 +244,31 @@ steps:
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy fetch_competitors_price function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-competitors-price'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price && \
-        mkdir -p src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
-        cp -r src/common src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
-        cp -r src/config src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
-        cd src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price && \
-        gcloud functions deploy fetch_competitors_price \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point fetch_competitors_prices_data \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  ## Deploy fetch_competitors_price function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-competitors-price'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price && \
+  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
+  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
+  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
+  #       cd src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price && \
+  #       gcloud functions deploy fetch_competitors_price \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point fetch_competitors_prices_data \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 #   # Deploy fetch_orders function in parallel
 #   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
