@@ -8,7 +8,7 @@ from src.config import settings
 import json
 
 
-def insert_bq_prices(request):
+def insert_bq_free_shipping_status(request):
 
     data = request.get_json()
     store_name = data.get('store_name')
@@ -22,9 +22,8 @@ def insert_bq_prices(request):
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_PRICES
-    blob_prices = settings.BLOB_PRICES(store_name)
-    blob_prices_mshops = settings.BLOB_PRICES_MSHOPS(store_name)
+    destiny_table = settings.TABLE_FREE_SHIPPING_STATUS
+    blob_shipping_cost = settings.BLOB_FREE_SHIPPING_STATUS(store_name)
 
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
@@ -42,34 +41,23 @@ def insert_bq_prices(request):
         date_to_process = date.strftime('%Y-%m-%d')
         print(f'Processing date: {date_to_process}')
         # Get blob with the date
-        blob_prefix = blob_prices + f'date={date_to_process}/'
+        blob_prefix = blob_shipping_cost + f'date={date_to_process}/'
         # List all the files
         blobs = storage.list_blobs(bucket_name, blob_prefix)
+
         # Processing each blob
         for blob in blobs:
             print(f"Reading file: {blob.name}")
             content = storage.download_json(bucket_name, blob.name)
+
             for json in content:
-                processed_dict = process_prices(json, 'channel_marketplace')
-                df_processed_data = pd.concat([df_processed_data, pd.DataFrame([processed_dict])], ignore_index = True)
-    
-        df_processed_data['correspondent_date'] = pd.to_datetime(date_to_process)
-        df_processed_data['process_time'] = datetime.now()
-        df_processed_data['seller_id'] = seller_id
-    
-        # MSHOPS
-        # Get blob with the date
-        blob_prefix_mshops = blob_prices_mshops + f'date={date_to_process}/'
-        # List all the files
-        blobs = storage.list_blobs(bucket_name, blob_prefix_mshops)
-        # Processing each blob
-        for blob in blobs:
-            print(f"Reading file: {blob.name}")
-            content = storage.download_json(bucket_name, blob.name)
-            for json in content:
-                processed_dict = process_prices(json, 'channel_mshops')
-                df_processed_data = pd.concat([df_processed_data, pd.DataFrame([processed_dict])], ignore_index = True)
-    
+                processed_dict = process_shipping(json)
+
+                if isinstance(processed_dict, list):
+                    df_processed_data = pd.concat([df_processed_data, pd.DataFrame(processed_dict)], ignore_index = True)
+                else:
+                    continue
+
         df_processed_data['correspondent_date'] = pd.to_datetime(date_to_process)
         df_processed_data['process_time'] = datetime.now()
         df_processed_data['seller_id'] = seller_id
@@ -80,7 +68,7 @@ def insert_bq_prices(request):
         bigquery.delete_existing_data(destiny_table, seller_id, date_to_process)
         
         print('** Correct dataframe schema **')
-        df_processed_data = bigquery.match_dataframe_schema(df_processed_data, destiny_table)
+        bigquery.match_dataframe_schema(df_processed_data, destiny_table)
 
         print('** Inserting data into BQ**')
         bigquery.insert_dataframe(df_processed_data, destiny_table)
@@ -90,20 +78,29 @@ def insert_bq_prices(request):
 
     return ('Success', 200)
 
-def process_prices(json, channel):
-
+def process_shipping(json_data):
     try:
-        price_by_channel = {
-                    'item_id': json.get('item_id'),
-                    'price_id': json.get('price_id'),
-                    'regular_amount': json.get('regular_amount'),
-                    'price': json.get('amount'),
-                    'channel': channel,
-                    'last_updated': json.get('last_updated')
-                }
+        default_value = json_data.get('default')
+        channels = json_data.get('channels', [])
+        item_id = json_data.get('item_id')
+        dict_list = []
+        for channel in channels:
+            dict_content = {
+                'item_id': item_id,
+                'channel_id': channel.get('id'),
+                'mode': channel.get('mode'),
+                'logistic_type': channel.get('logistic_type'),
+                'local_pick_up': channel.get('local_pick_up'),
+                'free_shipping': channel.get('free_shipping'),
+                'store_pick_up': channel.get('store_pick_up'),
+                'default_shipping': default_value
+            }
+            dict_list.append(dict_content)
+        return dict_list
+    except Exception as e:
+        print(f'Error processing json: {json_data}, error: {e}')
+        return []
+
         
-        return price_by_channel
-    
-    except:
-        print(f'Error processing json: {json}')      
+                        
 

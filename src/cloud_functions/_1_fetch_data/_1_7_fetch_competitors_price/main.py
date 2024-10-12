@@ -41,7 +41,7 @@ async def main_async(request):
     
     # Fetch item IDs from the input bigquery
     query = f'''
-    select distinct replace(mlb_concorrente, '-', '') as mbl_concorrente
+    select distinct competitor_id
     from {table_competitors_input}
     where seller_id = {seller_id}
     '''
@@ -64,7 +64,7 @@ async def main_async(request):
         print("** No items to process **")
         return ('Success', 200)
 
-    url = settings.URL_PRICE
+    url = settings.URL_PRICE_MARKETPLACE
     headers = {'Authorization': f'Bearer {access_token}'}
     
     # Batch processing the API requests

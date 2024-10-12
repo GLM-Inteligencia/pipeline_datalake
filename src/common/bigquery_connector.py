@@ -144,6 +144,6 @@ class BigQueryManager:
                     df[column] = pd.to_datetime(df[column], errors='coerce')
         
         print("Schema adjusted to match BigQuery table.")
-        return df
+        return df[schema_dict.keys()]
 
 

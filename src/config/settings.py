@@ -15,8 +15,11 @@ TABLE_SHIPPING_COSTS = "datalake-v2-424516.datalake_v2.items_shipping_cost"
 TABLE_VISITS = "datalake-v2-424516.datalake_v2.items_visits"
 TABLE_ORDERS = "datalake-v2-424516.datalake_v2.orders"
 TABLE_PREDICTED_SALES = "datalake-v2-424516.predictions.sales"
-TABLE_INPUT_COMPETITORS = "datalake-v2-424516.inputs.competitors"
-TABLE_VARIATIONS = "datalake-v2-424516.inputs.items_variations"
+TABLE_INPUT_COMPETITORS = "datalake-v2-424516.datalake_v2.competitors_suggestions_v2"
+TABLE_VARIATIONS = "datalake-v2-424516.datalake_v2.items_variations"
+TABLE_CATALOG_COMPETITORS = "datalake-v2-424516.datalake_v2.items_competitors_catalog"
+TABLE_FREE_SHIPPING_STATUS = "datalake-v2-424516.datalake_v2.items_free_shipping_status"
+
 # Bucket name
 BUCKET_STORES = "glm-store"
 
@@ -26,6 +29,7 @@ BLOB_PRICES_MSHOPS = lambda store_name : f'{store_name}/meli/api_response/item_p
 
 BLOB_COMPETITORS_PRICES = lambda store_name : f'{store_name}/meli/api_response/item_competitors_price/'
 BLOB_COMPETITORS_DETAILS = lambda store_name : f'{store_name}/meli/api_response/item_competitors_details/'
+BLOB_COMPETITORS_CATALOG = lambda store_name : f'{store_name}/meli/api_response/item_competitors_catalog/'
 BLOB_CATALOG = lambda store_name : f'{store_name}/meli/api_response/catelog_details/' 
 BLOB_FULLFILMENT= lambda store_name : f'{store_name}/meli/api_response/item_fullfilment/'
 BLOB_COSTS = lambda store_name : f'{store_name}/meli/api_response/item_cost/'
@@ -34,6 +38,8 @@ BLOB_ITEMS = lambda store_name : f'{store_name}/meli/api_response/items/'
 BLOB_ITEMS_DETAILS = lambda store_name : f'{store_name}/meli/api_response/item_detail/'
 BLOB_VARIATIONS = lambda store_name : f'{store_name}/meli/api_response/variation_detail/'
 BLOB_ORDERS = lambda store_name : f'{store_name}/meli/api_response/orders/'
+BLOB_FREE_SHIPPING_STATUS = lambda store_name : f'{store_name}/meli/api_response/item_free_shipping_status/'
+
 
 # URLs API
 URL_PRICE_MARKETPLACE = lambda item_id: f"https://api.mercadolibre.com/items/{item_id}/sale_price?context=channel_marketplace"
@@ -46,6 +52,9 @@ URL_ITEMS = lambda seller_id : f'https://api.mercadolibre.com/users/{seller_id}/
 URL_ITEM_DETAIL = lambda item_id: f'https://api.mercadolibre.com/items/{item_id}'
 URL_VARIATIONS = lambda item_id, variation_id: f'https://api.mercadolibre.com/items/{item_id}/variations/{variation_id}'
 URL_ORDERS = lambda seller_id : f"https://api.mercadolibre.com/orders/search?seller={seller_id}"
+URL_COMPETITORS_CATALOG = lambda catalog_item_id : f"https://api.mercadolibre.com/products/{catalog_item_id}/items"
+URL_FREE_SHIPPING_STATUS = lambda item_id : f"https://api.mercadolibre.com/items/{item_id}/shipping"
+
 
 # GCP INFO
 FIRESTORE_COLLECTION_USERS = 'users_credentials'
