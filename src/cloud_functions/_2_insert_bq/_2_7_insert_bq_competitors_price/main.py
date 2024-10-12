@@ -53,8 +53,8 @@ def insert_bq_competitors_prices(request):
             for json in content:
                 processed_dict = process_prices(json, 'channel_marketplace')
 
-                if isinstance(processed_dict, list):
-                    df_processed_data = pd.concat([df_processed_data, pd.DataFrame(processed_dict)], ignore_index = True)
+                if isinstance(processed_dict, dict):
+                    df_processed_data = pd.concat([df_processed_data, pd.DataFrame([processed_dict])], ignore_index = True)
                 else:
                     continue
 
