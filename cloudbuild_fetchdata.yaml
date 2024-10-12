@@ -324,7 +324,7 @@ steps:
 
   # Deploy fetch free_shipping_status function in parallel
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-competitors-details'
+    id: 'deploy-fetch-free-shipping-status'
     waitFor: ['install-dependencies']
     entrypoint: 'bash'
     args:
@@ -347,9 +347,10 @@ steps:
         --entry-point fetch_free_shipping_status \
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+        
   # Deploy fetch_ranking_catalog function in parallel
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-competitors-details'
+    id: 'deploy-fetch-ranking-catalog'
     waitFor: ['install-dependencies']
     entrypoint: 'bash'
     args:
