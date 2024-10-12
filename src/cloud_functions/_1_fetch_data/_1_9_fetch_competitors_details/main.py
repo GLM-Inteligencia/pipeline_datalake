@@ -47,7 +47,7 @@ async def main_async(request):
     '''
 
     df_competitors = bigquery.run_query(query)
-    items_id = df_competitors['mbl_concorrente'].to_list()
+    items_id = df_competitors['competitor_id'].to_list()
     print(f'** Items found: {len(items_id)}**')
 
     print(f'** Cleaning blob **')

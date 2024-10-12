@@ -448,7 +448,7 @@ steps:
         --memory 512MB \
         --timeout 3600 \
         --source . \
-        --entry-point process_competitors_catalog \
+        --entry-point insert_bq_competitors_catalog \
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 

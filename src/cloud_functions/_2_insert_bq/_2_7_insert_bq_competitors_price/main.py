@@ -87,6 +87,7 @@ def process_prices(json, channel):
                     'price_id': json.get('price_id'),
                     'regular_amount': json.get('regular_amount'),
                     'price': json.get('amount'),
+                    'competitors_type': 'suggested',
                     'channel': channel,
                     'last_updated': json.get('last_updated')
                 }
