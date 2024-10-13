@@ -65,10 +65,10 @@ def insert_bq_competitors_catalog(request):
         print(f'*** Finished treating all data. {df_processed_data.shape[0]} products ***')
 
         print('** Deleting existing data **')
-        # bigquery.delete_existing_data(destiny_table, seller_id, date_to_process)
+        bigquery.delete_existing_data(destiny_table, seller_id, date_to_process)
         
         print('** Correct dataframe schema **')
-        # bigquery.match_dataframe_schema(df_processed_data, destiny_table)
+        bigquery.match_dataframe_schema(df_processed_data, destiny_table)
 
         print('** Inserting data into BQ**')
         bigquery.insert_dataframe(df_processed_data, destiny_table)
