@@ -17,36 +17,38 @@ from src.cloud_functions._2_insert_bq._2_11_insert_bq_free_shipping_status.main 
 
 from src.cloud_functions._1_fetch_data._1_7_fetch_competitors_price.main import fetch_competitors_prices_data
 from src.cloud_functions._2_insert_bq._2_7_insert_bq_competitors_price.main import insert_bq_competitors_prices
+from src.cloud_functions._4_models.predicted_sales.main import get_max_sales_history
 
-class MockRequest:
-    def __init__(self, json_data):
-        self._json_data = json_data
+get_max_sales_history({})
+# class MockRequest:
+#     def __init__(self, json_data):
+#         self._json_data = json_data
 
-    def get_json(self):
-        return self._json_data
+#     def get_json(self):
+#         return self._json_data
 
-# Your test JSON data
-test_data = {
-  "access_token": None,
-  "client_id": "4959083987776428",
-  "client_secret": "Hw9wWSydd8PMvMEJewWoMvKGYMAWyKEw",
-  "seller_id": 189643563,
-  "store_name": "hubsmarthome"
-}
-
+# # Your test JSON data
 # test_data = {
-#   "access_token": "APP_USR-2951712600123976-092816-48bb66d5d2dbbceda55d4e5e32a36bd1-569119547",
-#   "client_id": "2951712600123976",
-#   "client_secret": "QprAIl8ydXzcxFVHjnIHT6fUQ8KpzADV",
-#   "seller_id": 569119547,
-#   "store_name": "gw shop"
+#   "access_token": None,
+#   "client_id": "4959083987776428",
+#   "client_secret": "Hw9wWSydd8PMvMEJewWoMvKGYMAWyKEw",
+#   "seller_id": 189643563,
+#   "store_name": "hubsmarthome"
 # }
 
-mock_request = MockRequest(test_data)
+# # test_data = {
+# #   "access_token": "APP_USR-2951712600123976-092816-48bb66d5d2dbbceda55d4e5e32a36bd1-569119547",
+# #   "client_id": "2951712600123976",
+# #   "client_secret": "QprAIl8ydXzcxFVHjnIHT6fUQ8KpzADV",
+# #   "seller_id": 569119547,
+# #   "store_name": "gw shop"
+# # }
 
-# Call your function with the mock request
-result = fetch_competitors_prices_data(mock_request)
-result = insert_bq_competitors_prices(mock_request)
+# mock_request = MockRequest(test_data)
+
+# # Call your function with the mock request
+# result = fetch_competitors_prices_data(mock_request)
+# result = insert_bq_competitors_prices(mock_request)
 # result = insert_bq_costs(mock_request)
 
 # result = insert_bq_details(mock_request)
