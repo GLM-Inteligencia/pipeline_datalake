@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 import requests 
 import time
 
+
+
 async def batch_process(session, items, url_func_or_string, headers, 
                         bucket_name, date_blob_path, storage, url_with_two_fields=False,
                         chunk_size=100, add_item_id=False, params=None):
@@ -20,22 +22,39 @@ async def batch_process(session, items, url_func_or_string, headers,
         storage (CloudStorage): Storage instance.
         chunk_size (int, optional): Size of the chunks for batch processing. Defaults to 100.
         add_item_id (bool, optional): Whether to include the item_id in the response data. Defaults to False.
-        params (dict, optional): Additional parameters to pass in the request.
+        params (list, optional): List of additional parameters to pass in the request for each item.
 
     Returns:
         None
     """
     semaphore = asyncio.Semaphore(100)
     chunks = [items[i:i + chunk_size] for i in range(0, len(items), chunk_size)]
+    
+    # --- Start of changes ---
+    if params:
+        params_chunks = [params[i:i + chunk_size] for i in range(0, len(params), chunk_size)]
+    else:
+        params_chunks = [None] * len(chunks)  # Ensure params_chunks aligns with chunks
 
-    async def process_chunk(chunk, batch_number):
-
-        if params:
-            tasks = [fetch(session, item, url_func_or_string, headers, semaphore, add_item_id, param, url_with_two_fields) for item, param in zip(chunk, params)]
+    async def process_chunk(chunk, batch_number, params_chunk):
+        if params_chunk:
+            # Use params_chunk (singular) to represent the parameters for this chunk
+            tasks = [
+                fetch(
+                    session, item, url_func_or_string, headers, semaphore, add_item_id, 
+                    param, url_with_two_fields
+                ) for item, param in zip(chunk, params_chunk)
+            ]
         else:
-            tasks = [fetch(session, item, url_func_or_string, headers, semaphore, add_item_id,url_with_two_fields) for item in chunk]
+            tasks = [
+                fetch(
+                    session, item, url_func_or_string, headers, semaphore, add_item_id, 
+                    params=None, url_with_two_fields=url_with_two_fields
+                ) for item in chunk
+            ]
 
-        responses = await asyncio.gather(*tasks)
+        # Use return_exceptions=True to maintain order even if exceptions occur
+        responses = await asyncio.gather(*tasks, return_exceptions=True)
 
         if responses:
             # Save batch responses to Cloud Storage
@@ -43,9 +62,11 @@ async def batch_process(session, items, url_func_or_string, headers,
             filename = f'batch_{batch_number}__process_time={process_time}.json'
             storage.upload_json(bucket_name, f'{date_blob_path}{filename}', responses)
 
-    for batch_number, chunk in enumerate(chunks):
-        await process_chunk(chunk, batch_number)
+    # Correctly pass params_chunk to process_chunk
+    for batch_number, (chunk, params_chunk) in enumerate(zip(chunks, params_chunks)):
+        await process_chunk(chunk, batch_number, params_chunk)
         await asyncio.sleep(1)  # Sleep to avoid rate limits
+
 
 async def fetch(session, item_id, url_func_or_string, headers, 
                 semaphore, add_item_id, params=None, url_with_two_fields=False):

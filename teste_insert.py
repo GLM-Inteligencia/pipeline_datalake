@@ -17,6 +17,7 @@ from src.cloud_functions._2_insert_bq._2_11_insert_bq_free_shipping_status.main 
 
 from src.cloud_functions._1_fetch_data._1_7_fetch_competitors_price.main import fetch_competitors_prices_data
 from src.cloud_functions._2_insert_bq._2_7_insert_bq_competitors_price.main import insert_bq_competitors_prices
+from src.cloud_functions._4_models.predicted_sales.main import get_max_sales_history
 
 class MockRequest:
     def __init__(self, json_data):
@@ -45,8 +46,7 @@ test_data = {
 mock_request = MockRequest(test_data)
 
 # Call your function with the mock request
-result = fetch_competitors_prices_data(mock_request)
-result = insert_bq_competitors_prices(mock_request)
+result = insert_bq_costs(mock_request)
 # result = insert_bq_costs(mock_request)
 
 # result = insert_bq_details(mock_request)

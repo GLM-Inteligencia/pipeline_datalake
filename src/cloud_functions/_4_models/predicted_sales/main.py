@@ -23,7 +23,7 @@ def get_max_sales_history(request):
   df_past_21_days_sales = create_past_sales(df_sales, 21)
 
   # Merge tables
-  df_consolidado = df_max_sales.merge(df_past_7_days_sales, on = ['seller_sku', 'seller_id'], how = 'left').merge(df_past_21_days_sales, on = ['seller_sku', 'seller_id'], how = 'left')
+  df_consolidado = df_max_sales.merge(df_past_7_days_sales, on = ['seller_sku', 'seller_id', 'context_channel'], how = 'left').merge(df_past_21_days_sales, on = ['seller_sku', 'seller_id', 'context_channel'], how = 'left')
 
   # BigQuery dataset and table ID
   dataset_table_id = settings.TABLE_PREDICTED_SALES
@@ -40,7 +40,7 @@ def get_max_sales_history(request):
 def get_sales_table(table_id, bigquery):
 
   query = f'''
-  SELECT date_created, seller_sku, seller_id, quantity FROM {table_id}
+  SELECT date_created, seller_sku, seller_id, context_channel, quantity FROM {table_id}
   WHERE payment_status = 'approved'
   '''
 
@@ -55,7 +55,7 @@ def create_max_7_and_21_days_history_per_sku(df_sales):
   max_quantity_info  = []
 
   # Process each product
-  for (item_id, seller_id), group in df_sales.groupby(['seller_sku', 'seller_id']):
+  for (item_id, seller_id, channel), group in df_sales.groupby(['seller_sku', 'seller_id', 'context_channel']):
     
       num_days = df_sales.loc[df_sales['seller_sku'] == item_id].groupby('seller_sku')['quantity'].resample('D').sum().count()
             
@@ -79,6 +79,7 @@ def create_max_7_and_21_days_history_per_sku(df_sales):
       # Append the results for this product to the list
       max_quantity_info.append({'seller_sku': item_id,
                                 'seller_id': seller_id,
+                                'context_channel': channel,
                                 'max_sold_7_days_history': max_quantity_7,
                                 'date_end_max_sold_history_7_days': max_date_7,
                                 'max_sold_21_days_history': max_quantity_21,
@@ -113,7 +114,7 @@ def create_past_sales(df_sales, num_days):
     df_past_sales = df_sales.loc[(df_sales.index >= start_date_utc) & (df_sales.index <= end_date_utc)]
     
     # Group by 'seller_sku' and sum the quantities
-    df_past_sales = df_past_sales.groupby(['seller_sku', 'seller_id'], as_index=False).agg({'quantity': 'sum'}).rename({'quantity': f'past_{num_days}_sales'}, axis=1)
+    df_past_sales = df_past_sales.groupby(['seller_sku', 'seller_id', 'context_channel'], as_index=False).agg({'quantity': 'sum'}).rename({'quantity': f'past_{num_days}_sales'}, axis=1)
 
     print(f'Start date : {start_date}')
     print(f'End date : {end_date}')
