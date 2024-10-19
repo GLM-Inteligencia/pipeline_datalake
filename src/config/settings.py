@@ -39,7 +39,7 @@ BLOB_ITEMS_DETAILS = lambda store_name : f'{store_name}/meli/api_response/item_d
 BLOB_VARIATIONS = lambda store_name : f'{store_name}/meli/api_response/variation_detail/'
 BLOB_ORDERS = lambda store_name : f'{store_name}/meli/api_response/orders/'
 BLOB_FREE_SHIPPING_STATUS = lambda store_name : f'{store_name}/meli/api_response/item_free_shipping_status/'
-
+BLOB_VISITS = lambda store_name : f'{store_name}/meli/api_response/item_visits/'
 
 # URLs API
 URL_PRICE_MARKETPLACE = lambda item_id: f"https://api.mercadolibre.com/items/{item_id}/sale_price?context=channel_marketplace"
@@ -54,7 +54,7 @@ URL_VARIATIONS = lambda item_id, variation_id: f'https://api.mercadolibre.com/it
 URL_ORDERS = lambda seller_id : f"https://api.mercadolibre.com/orders/search?seller={seller_id}"
 URL_COMPETITORS_CATALOG = lambda catalog_item_id : f"https://api.mercadolibre.com/products/{catalog_item_id}/items"
 URL_FREE_SHIPPING_STATUS = lambda item_id : f"https://api.mercadolibre.com/items/{item_id}/shipping"
-
+URL_VISITS = lambda item_id, n : f'https://api.mercadolibre.com/items/{item_id}/visits/time_window?last={n}&unit=day'
 
 # GCP INFO
 FIRESTORE_COLLECTION_USERS = 'users_credentials'

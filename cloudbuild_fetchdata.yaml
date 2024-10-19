@@ -244,7 +244,7 @@ steps:
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  ## Deploy fetch_competitors_price function in parallel
+  # # Deploy fetch_competitors_price function in parallel
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   #   id: 'deploy-fetch-competitors-price'
   #   waitFor: ['install-dependencies']
@@ -348,6 +348,7 @@ steps:
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
         
+        
   # # Deploy fetch_ranking_catalog function in parallel
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   #   id: 'deploy-fetch-ranking-catalog'
@@ -374,6 +375,32 @@ steps:
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
+
+  # Deploy fetch_visits function in parallel
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-fetch-visits'
+    waitFor: ['install-dependencies']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_0_2_fetch_history_visits && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_0_2_fetch_history_visits/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_0_2_fetch_history_visits/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_0_2_fetch_history_visits/src && \
+        cd src/cloud_functions/_1_fetch_data/_0_2_fetch_history_visits && \
+        gcloud functions deploy fetch_visits \
+        --gen2 \
+        --runtime python310 \
+        --trigger-http \
+        --no-allow-unauthenticated \
+        --region southamerica-east1 \
+        --memory 512MB \
+        --timeout 3600 \
+        --source . \
+        --entry-point fetch_visits_data \
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 timeout: 3600s  # 30 minutos de timeout para o build completo
 options:
