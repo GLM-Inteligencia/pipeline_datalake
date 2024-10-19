@@ -244,31 +244,31 @@ steps:
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy fetch_competitors_price function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-competitors-price'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price && \
-        mkdir -p src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
-        cp -r src/common src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
-        cp -r src/config src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
-        cd src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price && \
-        gcloud functions deploy fetch_competitors_price \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point fetch_competitors_prices_data \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # # Deploy fetch_competitors_price function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-competitors-price'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price && \
+  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
+  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
+  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price/src && \
+  #       cd src/cloud_functions/_1_fetch_data/_1_7_fetch_competitors_price && \
+  #       gcloud functions deploy fetch_competitors_price \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point fetch_competitors_prices_data \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 #   # Deploy fetch_orders function in parallel
 #   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -296,46 +296,100 @@ steps:
 #         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
 #         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy fetch_competitors_details function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-competitors-details'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details && \
-        mkdir -p src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details/src && \
-        cp -r src/common src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details/src && \
-        cp -r src/config src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details/src && \
-        cd src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details && \
-        gcloud functions deploy fetch_competitors_details \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point fetch_competitors_details_data \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # # Deploy fetch_competitors_details function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-competitors-details'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details && \
+  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details/src && \
+  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details/src && \
+  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details/src && \
+  #       cd src/cloud_functions/_1_fetch_data/_1_9_fetch_competitors_details && \
+  #       gcloud functions deploy fetch_competitors_details \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point fetch_competitors_details_data \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy fetch free_shipping_status function in parallel
+  # # Deploy fetch free_shipping_status function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-free-shipping-status'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_12_fetch_free_shipping_status && \
+  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_12_fetch_free_shipping_status/src && \
+  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_12_fetch_free_shipping_status/src && \
+  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_12_fetch_free_shipping_status/src && \
+  #       cd src/cloud_functions/_1_fetch_data/_1_12_fetch_free_shipping_status && \
+  #       gcloud functions deploy fetch_free_shipping_status \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point fetch_free_shipping_status \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+        
+        
+  # # Deploy fetch_ranking_catalog function in parallel
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-ranking-catalog'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_1_fetch_data/_1_11_fetch_ranking_catalog && \
+  #       mkdir -p src/cloud_functions/_1_fetch_data/_1_11_fetch_ranking_catalog/src && \
+  #       cp -r src/common src/cloud_functions/_1_fetch_data/_1_11_fetch_ranking_catalog/src && \
+  #       cp -r src/config src/cloud_functions/_1_fetch_data/_1_11_fetch_ranking_catalog/src && \
+  #       cd src/cloud_functions/_1_fetch_data/_1_11_fetch_ranking_catalog && \
+  #       gcloud functions deploy fetch_ranking_catalog \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point fetch_ranking_catalog \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
+
+  # Deploy fetch_visits function in parallel
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-free-shipping-status'
+    id: 'deploy-fetch-visits'
     waitFor: ['install-dependencies']
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_12_fetch_free_shipping_status && \
-        mkdir -p src/cloud_functions/_1_fetch_data/_1_12_fetch_free_shipping_status/src && \
-        cp -r src/common src/cloud_functions/_1_fetch_data/_1_12_fetch_free_shipping_status/src && \
-        cp -r src/config src/cloud_functions/_1_fetch_data/_1_12_fetch_free_shipping_status/src && \
-        cd src/cloud_functions/_1_fetch_data/_1_12_fetch_free_shipping_status && \
-        gcloud functions deploy fetch_free_shipping_status \
+        cp requirements.txt src/cloud_functions/_1_fetch_data/_0_2_fetch_history_visits && \
+        mkdir -p src/cloud_functions/_1_fetch_data/_0_2_fetch_history_visits/src && \
+        cp -r src/common src/cloud_functions/_1_fetch_data/_0_2_fetch_history_visits/src && \
+        cp -r src/config src/cloud_functions/_1_fetch_data/_0_2_fetch_history_visits/src && \
+        cd src/cloud_functions/_1_fetch_data/_0_2_fetch_history_visits && \
+        gcloud functions deploy fetch_visits \
         --gen2 \
         --runtime python310 \
         --trigger-http \
@@ -344,34 +398,7 @@ steps:
         --memory 512MB \
         --timeout 3600 \
         --source . \
-        --entry-point fetch_free_shipping_status \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-        
-        
-  # Deploy fetch_ranking_catalog function in parallel
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-ranking-catalog'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_1_fetch_data/_1_11_fetch_ranking_catalog && \
-        mkdir -p src/cloud_functions/_1_fetch_data/_1_11_fetch_ranking_catalog/src && \
-        cp -r src/common src/cloud_functions/_1_fetch_data/_1_11_fetch_ranking_catalog/src && \
-        cp -r src/config src/cloud_functions/_1_fetch_data/_1_11_fetch_ranking_catalog/src && \
-        cd src/cloud_functions/_1_fetch_data/_1_11_fetch_ranking_catalog && \
-        gcloud functions deploy fetch_ranking_catalog \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point fetch_ranking_catalog \
+        --entry-point fetch_visits_data \
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
