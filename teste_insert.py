@@ -18,16 +18,21 @@ from src.cloud_functions._2_insert_bq._2_11_insert_bq_free_shipping_status.main 
 from src.cloud_functions._1_fetch_data._1_7_fetch_competitors_price.main import fetch_competitors_prices_data
 from src.cloud_functions._2_insert_bq._2_7_insert_bq_competitors_price.main import insert_bq_competitors_prices
 from src.cloud_functions._4_models.predicted_sales.main import get_max_sales_history
+from src.cloud_functions._1_fetch_data._0_2_fetch_history_visits.main import fetch_visits_data
+from src.cloud_functions._2_insert_bq._2_12_insert_bq_visits.main import insert_bq_visits
 
-get_max_sales_history({})
-# class MockRequest:
-#     def __init__(self, json_data):
-#         self._json_data = json_data
+from src.cloud_functions._5_trigger_workflow.main import triggers_workflow
 
-#     def get_json(self):
-#         return self._json_data
+class MockRequest:
+    
+    def __init__(self, json_data):
+        self._json_data = json_data
 
-# # Your test JSON data
+    def get_json(self):
+        return self._json_data
+
+triggers_workflow({})
+# Your test JSON data
 # test_data = {
 #   "access_token": None,
 #   "client_id": "4959083987776428",
@@ -47,9 +52,8 @@ get_max_sales_history({})
 # mock_request = MockRequest(test_data)
 
 # # Call your function with the mock request
-# result = fetch_competitors_prices_data(mock_request)
-# result = insert_bq_competitors_prices(mock_request)
-# result = insert_bq_costs(mock_request)
+# # result = fetch_visits_data(mock_request)
+# result = insert_bq_visits(mock_request)
 
 # result = insert_bq_details(mock_request)
 # result =insert_bq_prices(mock_request)
