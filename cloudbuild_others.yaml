@@ -8,20 +8,47 @@ steps:
       - |
         pip install -r requirements.txt --cache-dir=/workspace/.pip-cache
 
+  # # Deploy trigger_workflow
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-trigger-workflow'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - | 
+  #       cp requirements.txt src/cloud_functions/_5_trigger_workflow && \
+  #       mkdir -p src/cloud_functions/_5_trigger_workflow/src && \
+  #       cp -r src/common src/cloud_functions/_5_trigger_workflow/src  && \
+  #       cp -r src/config src/cloud_functions/_5_trigger_workflow/src  && \
+  #       cd src/cloud_functions/_5_trigger_workflow  && \
+  #       gcloud functions deploy triggers_workflow \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point triggers_workflow \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
+
   # Deploy trigger_workflow
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-trigger-workflow'
+    id: 'deploy-fetch-get-sellers-information'
     waitFor: ['install-dependencies']
     entrypoint: 'bash'
     args:
       - '-c'
       - | 
-        cp requirements.txt src/cloud_functions/_5_trigger_workflow && \
-        mkdir -p src/cloud_functions/_5_trigger_workflow/src && \
-        cp -r src/common src/cloud_functions/_5_trigger_workflow/src  && \
-        cp -r src/config src/cloud_functions/_5_trigger_workflow/src  && \
-        cd src/cloud_functions/_5_trigger_workflow  && \
-        gcloud functions deploy triggers_workflow \
+        cp requirements.txt src/cloud_functions/_6_get_sellers_information && \
+        mkdir -p src/cloud_functions/_6_get_sellers_information/src && \
+        cp -r src/common src/cloud_functions/_6_get_sellers_information/src  && \
+        cp -r src/config src/cloud_functions/_6_get_sellers_information/src  && \
+        cd src/cloud_functions/_6_get_sellers_information  && \
+        gcloud functions deploy get_sellers_information \
         --gen2 \
         --runtime python310 \
         --trigger-http \
@@ -30,9 +57,10 @@ steps:
         --memory 512MB \
         --timeout 3600 \
         --source . \
-        --entry-point triggers_workflow \
+        --entry-point main_fetch_sellers_information \
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
 
   # # Deploy model predict sales
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'

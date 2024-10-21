@@ -111,6 +111,7 @@ def triggers_workflow(request):
     trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_max_sales_history',
                                            params= {}) 
     
+    
     # Creating frontend tables
     bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.create_frontend_tables`();')
 
