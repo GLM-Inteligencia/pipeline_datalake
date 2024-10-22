@@ -24,7 +24,7 @@ async def main_async(request):
     print('** Connecting to storage and BigQuery... **')
     # Initialize storage and BigQuery
     storage = CloudStorage(credentials_path=settings.PATH_SERVICE_ACCOUNT)
-    bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
+    #bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
@@ -38,7 +38,7 @@ async def main_async(request):
     print(f'** Items found: {len(items_id)}**')
     
     print(f'** Cleaning blob **')
-    # Path for saving price details
+    # Path for saving promotions details
     # marketplace
     blob_basic_path_marketplace = settings.BLOB_PROMOTIONS(store_name)
     date_blob_path_marketplace = f'{blob_basic_path_marketplace}date={today_str}/'
@@ -52,8 +52,8 @@ async def main_async(request):
     storage.clean_blobs(bucket_name, date_blob_path_mshops)
     print(f'** Starting API requests for {len(items_id)} items**')
     # URL function for API
-    url_marketplace = settings.URL_PRICE_MARKETPLACE
-    url_mshops = settings.URL_PRICE_MSHOPS
+    url_marketplace = settings.URL_PROMOTIONS_MARKETPLACE
+    url_mshops = settings.URL_PROMOTIONS_MSHOPS
     headers = {'Authorization': f'Bearer {access_token}'}
     
     # Batch processing the API requests

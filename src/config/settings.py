@@ -1,7 +1,7 @@
 
 # Service account
-#PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
-PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
+PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
+#PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
 
 # Tables Bigquery
 TABLE_MANAGEMENT = "datalake-v2-424516.datalake_v2.datalake_management"
@@ -61,6 +61,9 @@ URL_ORDERS = lambda seller_id : f"https://api.mercadolibre.com/orders/search?sel
 URL_COMPETITORS_CATALOG = lambda catalog_item_id : f"https://api.mercadolibre.com/products/{catalog_item_id}/items"
 URL_FREE_SHIPPING_STATUS = lambda item_id : f"https://api.mercadolibre.com/items/{item_id}/shipping"
 URL_VISITS = lambda item_id, n : f'https://api.mercadolibre.com/items/{item_id}/visits/time_window?last={n}&unit=day'
+
+URL_PROMOTIONS_MARKETPLACE = lambda item_id: f"https://api.mercadolibre.com/seller-promotions/items/{item_id}?app_version=v2"
+URL_PROMOTIONS_MSHOPS = lambda item_id: f"https://api.mercadolibre.com/seller-promotions/items/{item_id}?channel=mshops"
 
 # GCP INFO
 FIRESTORE_COLLECTION_USERS = 'users_credentials'
