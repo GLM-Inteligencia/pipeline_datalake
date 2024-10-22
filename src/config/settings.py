@@ -1,6 +1,7 @@
 
 # Service account
-PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
+#PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
+PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
 
 # Tables Bigquery
 TABLE_MANAGEMENT = "datalake-v2-424516.datalake_v2.datalake_management"
@@ -20,6 +21,8 @@ TABLE_VARIATIONS = "datalake-v2-424516.datalake_v2.items_variations"
 TABLE_CATALOG_COMPETITORS = "datalake-v2-424516.datalake_v2.items_competitors_catalog"
 TABLE_FREE_SHIPPING_STATUS = "datalake-v2-424516.datalake_v2.items_free_shipping_status"
 TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.sellers_competitors_details'
+TABLE_ITEM_PROMOTION = "datalake-v2-424516.datalake_v2.items_promotions"
+
 
 # Bucket name
 BUCKET_STORES = "glm-store"
@@ -41,6 +44,8 @@ BLOB_VARIATIONS = lambda store_name : f'{store_name}/meli/api_response/variation
 BLOB_ORDERS = lambda store_name : f'{store_name}/meli/api_response/orders/'
 BLOB_FREE_SHIPPING_STATUS = lambda store_name : f'{store_name}/meli/api_response/item_free_shipping_status/'
 BLOB_VISITS = lambda store_name : f'{store_name}/meli/api_response/item_visits/'
+BLOB_PROMOTIONS = lambda store_name : f'{store_name}/meli/api_response/items_promotions/'
+BLOB_PROMOTIONS_MSHOPS = lambda store_name : f'{store_name}/meli/api_response/items_promotions_mshops/'
 
 # URLs API
 URL_PRICE_MARKETPLACE = lambda item_id: f"https://api.mercadolibre.com/items/{item_id}/sale_price?context=channel_marketplace"

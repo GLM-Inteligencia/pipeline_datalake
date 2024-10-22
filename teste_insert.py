@@ -23,6 +23,8 @@ from src.cloud_functions._2_insert_bq._2_12_insert_bq_visits.main import insert_
 
 from src.cloud_functions._5_trigger_workflow.main import triggers_workflow
 
+from src.cloud_functions._1_fetch_data._1_13_fetch_items_promotions.main import fetch_promotions_data
+
 class MockRequest:
     
     def __init__(self, json_data):
@@ -31,15 +33,15 @@ class MockRequest:
     def get_json(self):
         return self._json_data
 
-triggers_workflow({})
+#triggers_workflow({})
 # Your test JSON data
-# test_data = {
-#   "access_token": None,
-#   "client_id": "4959083987776428",
-#   "client_secret": "Hw9wWSydd8PMvMEJewWoMvKGYMAWyKEw",
-#   "seller_id": 189643563,
-#   "store_name": "hubsmarthome"
-# }
+# # test_data = {
+# #   "access_token": None,
+# #   "client_id": "4959083987776428",
+# #   "client_secret": "Hw9wWSydd8PMvMEJewWoMvKGYMAWyKEw",
+# #   "seller_id": 189643563,
+# #   "store_name": "hubsmarthome"
+# #  }
 
 # # test_data = {
 # #   "access_token": "APP_USR-2951712600123976-092816-48bb66d5d2dbbceda55d4e5e32a36bd1-569119547",
@@ -49,17 +51,19 @@ triggers_workflow({})
 # #   "store_name": "gw shop"
 # # }
 
-# mock_request = MockRequest(test_data)
+# # mock_request = MockRequest(test_data)
 
 # # Call your function with the mock request
-# # result = fetch_visits_data(mock_request)
-# result = insert_bq_visits(mock_request)
+# # result = fetch_promotions_data(mock_request)
+
+##result = fetch_visits_data(mock_request)
+# # result = insert_bq_visits(mock_request)
 
 # result = insert_bq_details(mock_request)
 # result =insert_bq_prices(mock_request)
 
 # # Print the result
-# print(result)
+# # print(result)
 
 # from flask import Flask
 # from src.cloud_functions.import_data.store_import_data.main import store_import_data
