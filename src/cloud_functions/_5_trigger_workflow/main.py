@@ -102,19 +102,26 @@ def triggers_workflow(request):
         print("All workflows have completed.")
 
     # Cleaning table model
+    print('Creating model sales')
     bigquery.run_query('delete from datalake-v2-424516.models.p_predictions_forecast where prediction_date = current_date()')
 
     # Starting pipeline model sales
     bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.run_queries_sequentially`();')    
 
+    print('Getting history sales')
     # Trigger function to calculate history sales
     trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_max_sales_history',
                                            params= {}) 
     
-    
+    print('Creating frontend tables')
     # Creating frontend tables
     bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.create_frontend_tables`();')
 
+    print('Getting sellers information')
+    # Trigger function to calculate history sales
+    trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_sellers_information',
+                                           params= {}) 
+    
     return ('Success!', 200)
 
 
