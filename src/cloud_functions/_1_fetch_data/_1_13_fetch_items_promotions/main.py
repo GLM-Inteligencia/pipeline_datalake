@@ -18,13 +18,16 @@ async def main_async(request):
     seller_id = data.get('seller_id')
     access_token = data.get('access_token')
     print('** Defining authentication... **')
+    
     # Authenticate (assuming this is now centralized in utils.py or a similar file)
     if not access_token:
         access_token = authenticate(client_id, client_secret)  # You can add this to a common module
     print('** Connecting to storage and BigQuery... **')
+
     # Initialize storage and BigQuery
     storage = CloudStorage(credentials_path=settings.PATH_SERVICE_ACCOUNT)
     #bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
+    
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT

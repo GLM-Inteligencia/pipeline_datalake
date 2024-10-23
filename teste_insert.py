@@ -43,18 +43,18 @@ class MockRequest:
 # #   "store_name": "hubsmarthome"
 # #  }
 
-# # test_data = {
-# #   "access_token": "APP_USR-2951712600123976-092816-48bb66d5d2dbbceda55d4e5e32a36bd1-569119547",
-# #   "client_id": "2951712600123976",
-# #   "client_secret": "QprAIl8ydXzcxFVHjnIHT6fUQ8KpzADV",
-# #   "seller_id": 569119547,
-# #   "store_name": "gw shop"
-# # }
+test_data = {
+   "access_token": "APP_USR-2951712600123976-102309-17e9ae2af96480acf2d3bb33d6de6d71-569119547",
+   "client_id": "2951712600123976",
+   "client_secret": "QprAIl8ydXzcxFVHjnIHT6fUQ8KpzADV",
+   "seller_id": 569119547,
+   "store_name": "gw shop"
+ }
 
-# # mock_request = MockRequest(test_data)
+mock_request = MockRequest(test_data)
 
 # # Call your function with the mock request
-# # result = fetch_promotions_data(mock_request)
+result = fetch_promotions_data(mock_request)
 
 ##result = fetch_visits_data(mock_request)
 # # result = insert_bq_visits(mock_request)
@@ -63,7 +63,7 @@ class MockRequest:
 # result =insert_bq_prices(mock_request)
 
 # # Print the result
-# # print(result)
+print(result)
 
 # from flask import Flask
 # from src.cloud_functions.import_data.store_import_data.main import store_import_data
