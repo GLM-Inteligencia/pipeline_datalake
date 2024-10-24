@@ -27,7 +27,7 @@ async def batch_process(session, items, url_func_or_string, headers,
     Returns:
         None
     """
-    semaphore = asyncio.Semaphore(100)
+    semaphore = asyncio.Semaphore(50)
     chunks = [items[i:i + chunk_size] for i in range(0, len(items), chunk_size)]
     
     # --- Start of changes ---
@@ -100,8 +100,13 @@ async def fetch(session, item_id, url_func_or_string, headers,
         async with session.get(url, headers=headers, params=params) as response:
             if response.status == 200:
                 data = await response.json()  # Await the json() method
-                if add_item_id:
+
+                if add_item_id and isinstance(data, dict):
                     data['item_id'] = item_id
+
+                elif add_item_id and isinstance(data, list):
+                    data.append({"item_id" : item_id})
+
                 return data
             elif response.status == 404:
                 print(f"Item ID {item_id} not found (404). Skipping...")
