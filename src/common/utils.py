@@ -8,7 +8,7 @@ import time
 
 async def batch_process(session, items, url_func_or_string, headers, 
                         bucket_name, date_blob_path, storage, url_with_two_fields=False,
-                        chunk_size=100, add_item_id=False, params=None):
+                        chunk_size=100, add_item_id=False, params=None, sleep_time = 1):
     """
     Processes API requests in batches and stores the responses in Google Cloud Storage.
 
@@ -27,7 +27,7 @@ async def batch_process(session, items, url_func_or_string, headers,
     Returns:
         None
     """
-    semaphore = asyncio.Semaphore(50)
+    semaphore = asyncio.Semaphore(100)
     chunks = [items[i:i + chunk_size] for i in range(0, len(items), chunk_size)]
     
     # --- Start of changes ---
@@ -65,7 +65,7 @@ async def batch_process(session, items, url_func_or_string, headers,
     # Correctly pass params_chunk to process_chunk
     for batch_number, (chunk, params_chunk) in enumerate(zip(chunks, params_chunks)):
         await process_chunk(chunk, batch_number, params_chunk)
-        await asyncio.sleep(1)  # Sleep to avoid rate limits
+        await asyncio.sleep(sleep_time)  # Sleep to avoid rate limits
 
 
 async def fetch(session, item_id, url_func_or_string, headers, 

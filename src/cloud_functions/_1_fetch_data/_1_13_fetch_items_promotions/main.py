@@ -6,6 +6,7 @@ import json
 import asyncio
 import aiohttp
 from datetime import datetime
+import time
 
 semaphore = asyncio.Semaphore(100)  # Control the number of simultaneous requests
 
@@ -62,13 +63,17 @@ async def main_async(request):
     # Batch processing the API requests
     # PROMOTIONS MELI
     async with aiohttp.ClientSession() as session:
-        await batch_process(session, items_id, url_marketplace, headers, bucket_name, date_blob_path_marketplace, storage, add_item_id = True)
+        await batch_process(session, items_id, url_marketplace, headers, bucket_name, date_blob_path_marketplace, storage, add_item_id = True, sleep_time=15)
+    
+    time.sleep(60)
     
     # Batch processing the API requests
     # PROMOTIONS SHOPS
     async with aiohttp.ClientSession() as session:
-        await batch_process(session, items_id, url_mshops, headers, bucket_name, date_blob_path_mshops, storage, add_item_id = True)
+        await batch_process(session, items_id, url_mshops, headers, bucket_name, date_blob_path_mshops, storage, add_item_id = True, sleep_time=15)
 
+
+    
     print('** Logging process in management table... **')
     # Log the process in BigQuery
     log_process(seller_id, destiny_table, today_str, table_management, processed_to_bq=False)
