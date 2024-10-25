@@ -35,13 +35,13 @@ class MockRequest:
 
 #triggers_workflow({})
 # Your test JSON data
-test_data = {
-  "access_token": None,
-  "client_id": "4959083987776428",
-  "client_secret": "Hw9wWSydd8PMvMEJewWoMvKGYMAWyKEw",
-  "seller_id": 189643563,
-  "store_name": "hubsmarthome"
- }
+# # test_data = {
+# #  "access_token": None,
+# #  "client_id": "4959083987776428",
+# #  "client_secret": "Hw9wWSydd8PMvMEJewWoMvKGYMAWyKEw",
+# #  "seller_id": 189643563,
+# #  "store_name": "hubsmarthome"
+# # }
 
 # test_data = {
 #    "access_token": "APP_USR-2951712600123976-102309-17e9ae2af96480acf2d3bb33d6de6d71-569119547",
@@ -51,10 +51,10 @@ test_data = {
 #    "store_name": "gw shop"
 #  }
 
-mock_request = MockRequest(test_data)
+# # mock_request = MockRequest(test_data)
 
 # # Call your function with the mock request
-result = fetch_promotions_data(mock_request)
+# # result = fetch_promotions_data(mock_request)
 
 ##result = fetch_visits_data(mock_request)
 # # result = insert_bq_visits(mock_request)

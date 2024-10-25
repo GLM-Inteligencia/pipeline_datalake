@@ -57,10 +57,19 @@ async def batch_process(session, items, url_func_or_string, headers,
         responses = await asyncio.gather(*tasks, return_exceptions=True)
 
         if responses:
+            filtered_responses = []
+            for response in responses:
+                if isinstance(response, Exception):
+                    # Convert the exception to a string
+                    filtered_responses.append(str(response))
+                else:
+                    # Add the item normally if it is serializable
+                    filtered_responses.append(response)
+
             # Save batch responses to Cloud Storage
             process_time = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%M.%f-03:00")
             filename = f'batch_{batch_number}__process_time={process_time}.json'
-            storage.upload_json(bucket_name, f'{date_blob_path}{filename}', responses)
+            storage.upload_json(bucket_name, f'{date_blob_path}{filename}', filtered_responses)
 
     # Correctly pass params_chunk to process_chunk
     for batch_number, (chunk, params_chunk) in enumerate(zip(chunks, params_chunks)):
