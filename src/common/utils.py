@@ -94,6 +94,7 @@ async def fetch(session, item_id, url_func_or_string, headers,
 
     Returns:
         dict: The JSON response data.
+        dict or list: The JSON response data.
     """
     async with semaphore:
         # Determine the URL (either a function or a fixed string)
@@ -110,11 +111,12 @@ async def fetch(session, item_id, url_func_or_string, headers,
             if response.status == 200:
                 data = await response.json()  # Await the json() method
 
-                if add_item_id and isinstance(data, dict):
-                    data['item_id'] = item_id
-
-                elif add_item_id and isinstance(data, list):
-                    data.append({"item_id" : item_id})
+                if add_item_id:
+                    if isinstance(data, dict):
+                        data['item_id'] = item_id
+                    elif isinstance(data, list):
+                        # Add item_id to each item in the list
+                        data = [{**item, "item_id": item_id} for item in data]
 
                 return data
             elif response.status == 404:
