@@ -93,13 +93,13 @@ async def fetch(session, item_id, url_func_or_string, headers,
         seller_id (str, optional): Seller ID to be passed to the URL function.
 
     Returns:
-        dict: The JSON response data.
+        dict or list: The JSON response data.
     """
     async with semaphore:
         # Determine the URL (either a function or a fixed string)
         if callable(url_func_or_string):
             if url_with_two_fields:
-                url=url_func_or_string(item_id['item_id'], item_id['variation_id'])
+                url = url_func_or_string(item_id['item_id'], item_id['variation_id'])
             else:
                 url = url_func_or_string(item_id)  # Call the URL function with just item_id
         else:
@@ -110,11 +110,12 @@ async def fetch(session, item_id, url_func_or_string, headers,
             if response.status == 200:
                 data = await response.json()  # Await the json() method
 
-                if add_item_id and isinstance(data, dict):
-                    data['item_id'] = item_id
-
-                elif add_item_id and isinstance(data, list):
-                    data.append({"item_id" : item_id})
+                if add_item_id:
+                    if isinstance(data, dict):
+                        data['item_id'] = item_id
+                    elif isinstance(data, list):
+                        # Add item_id to each item in the list
+                        data = [{**item, "item_id": item_id} for item in data]
 
                 return data
             elif response.status == 404:
@@ -123,6 +124,7 @@ async def fetch(session, item_id, url_func_or_string, headers,
                 # Handle other errors (e.g., 400, 500, etc.)
                 error_message = await response.text()  # Get the error message from the response
                 print(f"Error for item ID {item_id}: Status code {response.status}, Response: {error_message}")
+
 
 
 def log_process(seller_id, table_name, process_date, management_table, processed_to_bq=False):

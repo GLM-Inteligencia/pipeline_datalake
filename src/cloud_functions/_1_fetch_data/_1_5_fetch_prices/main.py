@@ -28,7 +28,7 @@ async def main_async(request):
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_PRICES
+    destiny_table = settings.TABLE_PROMOTIONS
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
     
@@ -40,11 +40,11 @@ async def main_async(request):
     print(f'** Cleaning blob **')
     # Path for saving price details
     # marketplace
-    blob_basic_path_marketplace = settings.BLOB_PRICES(store_name)
+    blob_basic_path_marketplace = settings.BLOB_PROMOTIONS(store_name)
     date_blob_path_marketplace = f'{blob_basic_path_marketplace}date={today_str}/'
     
     # mshops
-    blob_basic_path_mshops = settings.BLOB_PRICES_MSHOPS(store_name)
+    blob_basic_path_mshops = settings.BLOB_PROMOTIONS_MSHOPS(store_name)
     date_blob_path_mshops = f'{blob_basic_path_mshops}date={today_str}/'
     
     # Clean existing files in the storage bucket
