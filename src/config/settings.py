@@ -63,7 +63,7 @@ URL_FREE_SHIPPING_STATUS = lambda item_id : f"https://api.mercadolibre.com/items
 URL_VISITS = lambda item_id, n : f'https://api.mercadolibre.com/items/{item_id}/visits/time_window?last={n}&unit=day'
 
 URL_PROMOTIONS_MARKETPLACE = lambda item_id: f"https://api.mercadolibre.com/seller-promotions/items/{item_id}?app_version=v2"
-URL_PROMOTIONS_MSHOPS = lambda item_id: f"https://api.mercadolibre.com/seller-promotions/items/{item_id}?channel=mshops"
+URL_PROMOTIONS_MSHOPS = lambda item_id: f"https://api.mercadolibre.com/seller-promotions/items/{item_id}?channel=mshops&limit=100&offset=0"
 
 # GCP INFO
 FIRESTORE_COLLECTION_USERS = 'users_credentials'
