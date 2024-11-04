@@ -98,11 +98,11 @@ def store_import_data(request):
 
         # Load the DataFrame to BigQuery
         try:
-            job = bigquery.insert_dataframe(
+            bigquery.insert_dataframe(
                 df, table_name
             )
-            job.result()  # Wait for the job to complete
             print(f'BigQuery job completed successfully')
+            
         except Exception as e:
             return jsonify({'error': f'Error uploading data to BigQuery: {e}'}), 500
         
