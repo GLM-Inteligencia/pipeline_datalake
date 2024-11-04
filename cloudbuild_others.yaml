@@ -8,31 +8,31 @@ steps:
       - |
         pip install -r requirements.txt --cache-dir=/workspace/.pip-cache
 
-  # Deploy trigger_workflow
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-trigger-workflow'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - | 
-        cp requirements.txt src/cloud_functions/_5_trigger_workflow && \
-        mkdir -p src/cloud_functions/_5_trigger_workflow/src && \
-        cp -r src/common src/cloud_functions/_5_trigger_workflow/src  && \
-        cp -r src/config src/cloud_functions/_5_trigger_workflow/src  && \
-        cd src/cloud_functions/_5_trigger_workflow  && \
-        gcloud functions deploy triggers_workflow \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 512MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point triggers_workflow \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # # Deploy trigger_workflow
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-trigger-workflow'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - | 
+  #       cp requirements.txt src/cloud_functions/_5_trigger_workflow && \
+  #       mkdir -p src/cloud_functions/_5_trigger_workflow/src && \
+  #       cp -r src/common src/cloud_functions/_5_trigger_workflow/src  && \
+  #       cp -r src/config src/cloud_functions/_5_trigger_workflow/src  && \
+  #       cd src/cloud_functions/_5_trigger_workflow  && \
+  #       gcloud functions deploy triggers_workflow \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 512MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point triggers_workflow \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
   # # Deploy trigger_workflow
@@ -62,64 +62,63 @@ steps:
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
-  # Deploy model predict sales
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-predict-sales'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_4_models/predicted_sales && \
-        mkdir -p src/cloud_functions/_4_models/predicted_sales/src && \
-        cp -r src/common src/cloud_functions/_4_models/predicted_sales/src  && \
-        cp -r src/config src/cloud_functions/_4_models/predicted_sales/src  && \
-        cd src/cloud_functions/_4_models/predicted_sales  && \
-        gcloud functions deploy get_max_sales_history \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 1024MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point get_max_sales_history \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-
-  # # Deploy insert input stores
+  # # Deploy model predict sales
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  #   id: 'deploy-store-import-data'
+  #   id: 'deploy-predict-sales'
   #   waitFor: ['install-dependencies']
   #   entrypoint: 'bash'
   #   args:
   #     - '-c'
   #     - |
-
-  #       cp requirements.txt src/cloud_functions/_3_import_data/_3_0_store_import_data && \
-  #       mkdir -p src/cloud_functions/_3_import_data/_3_0_store_import_data/src && \
-  #       cp -r src/common src/cloud_functions/_3_import_data/_3_0_store_import_data/src  && \
-  #       cp -r src/config src/cloud_functions/_3_import_data/_3_0_store_import_data/src  && \
-  #       cd src/cloud_functions/_3_import_data/_3_0_store_import_data  && \
-  #       gcloud functions deploy store_import_data \
+  #       cp requirements.txt src/cloud_functions/_4_models/predicted_sales && \
+  #       mkdir -p src/cloud_functions/_4_models/predicted_sales/src && \
+  #       cp -r src/common src/cloud_functions/_4_models/predicted_sales/src  && \
+  #       cp -r src/config src/cloud_functions/_4_models/predicted_sales/src  && \
+  #       cd src/cloud_functions/_4_models/predicted_sales  && \
+  #       gcloud functions deploy get_max_sales_history \
   #       --gen2 \
   #       --runtime python310 \
   #       --trigger-http \
   #       --no-allow-unauthenticated \
   #       --region southamerica-east1 \
-  #       --memory 512MB \
+  #       --memory 1024MB \
   #       --timeout 3600 \
   #       --source . \
-  #       --entry-point store_import_data \
+  #       --entry-point get_max_sales_history \
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
+  # Deploy insert input stores
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-store-import-data'
+    waitFor: ['install-dependencies']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        cp requirements.txt src/cloud_functions/_3_import_data/_3_0_store_import_data && \
+        mkdir -p src/cloud_functions/_3_import_data/_3_0_store_import_data/src && \
+        cp -r src/common src/cloud_functions/_3_import_data/_3_0_store_import_data/src  && \
+        cp -r src/config src/cloud_functions/_3_import_data/_3_0_store_import_data/src  && \
+        cd src/cloud_functions/_3_import_data/_3_0_store_import_data  && \
+        gcloud functions deploy store_import_data \
+        --gen2 \
+        --runtime python310 \
+        --trigger-http \
+        --no-allow-unauthenticated \
+        --region southamerica-east1 \
+        --memory 512MB \
+        --timeout 3600 \
+        --source . \
+        --entry-point store_import_data \
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
 timeout: 3600s  # 30 minutos de timeout para o build completo
 options:
   logging: CLOUD_LOGGING_ONLY
-  machineType: 'E2_HIGHCPU_8'
+  # machineType: 'E2_HIGHCPU_8'
   volumes:
     - name: 'pip-cache'
       path: /workspace/.pip-cache
