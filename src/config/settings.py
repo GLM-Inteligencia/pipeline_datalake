@@ -1,7 +1,7 @@
 
 # Service account
-# PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
-PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
+PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
+# PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
 
 # Tables Bigquery
 TABLE_MANAGEMENT = "datalake-v2-424516.datalake_v2.datalake_management"
