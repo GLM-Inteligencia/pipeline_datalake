@@ -7,6 +7,7 @@ from datetime import datetime
 import io
 from src.common.cloud_storage_connector import CloudStorage
 from src.common.bigquery_connector import BigQueryManager
+from src.common.firestore_connector import FirestoreManager
 from src.config import settings
 
 def store_import_data(request):
@@ -77,8 +78,10 @@ def store_import_data(request):
         except Exception as e:
             return jsonify({'error': f'Error reading CSV: {e}'}), 500
 
-        # Initialize BigQuery client
+        # Initialize BigQuery and firestore clients
         bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
+        firestore = FirestoreManager(credentials_path=settings.PATH_SERVICE_ACCOUNT, project_id='datalake-meli-dev')
+
 
         # Generate the table name dynamically based on file_type
         table_name = f'datalake-v2-424516.inputs.{file_type}'
@@ -95,13 +98,47 @@ def store_import_data(request):
 
         # Load the DataFrame to BigQuery
         try:
-            job = bigquery.insert_dataframe(
+            bigquery.insert_dataframe(
                 df, table_name
             )
-            job.result()  # Wait for the job to complete
             print(f'BigQuery job completed successfully')
+            
         except Exception as e:
             return jsonify({'error': f'Error uploading data to BigQuery: {e}'}), 500
+        
+        # Recreating tables frontend:
+        print('** Recreating tables frontend**')
+        bigquery.run_query('call `datalake-v2-424516.datalake_v2.create_frontend_tables`();')
+
+        print('** Cleaning cache **')
+        firestore.clean_cache('query_cache')
+
+        query = f'''
+MERGE datalake-v2-424516.inputs.sku_data AS t1
+USING (
+  SELECT seller_id, seller_sku
+  FROM (
+    SELECT
+      seller_id,
+      seller_sku,
+      ROW_NUMBER() OVER (
+        PARTITION BY seller_id, SAFE_CAST(seller_sku AS INT64)
+        ORDER BY process_time DESC
+      ) AS rn
+    FROM datalake-v2-424516.datalake_v2.items_details
+    WHERE DATE(process_time) = CURRENT_DATE()
+      AND seller_sku LIKE '0%'
+      AND seller_id = {seller_id}
+  )
+  WHERE rn = 1
+) AS t2
+ON t1.seller_id = t2.seller_id
+   AND SAFE_CAST(t1.sku AS INT64) = SAFE_CAST(t2.seller_sku AS INT64)
+WHEN MATCHED THEN
+  UPDATE SET sku = t2.seller_sku;
+'''
+        print('** Treating skus that start with 0**')
+        bigquery.run_query(query)
 
         return jsonify({'message': f'Successfully uploaded {len(df)} rows from {latest_file_path} to BigQuery.'}), 200
 
