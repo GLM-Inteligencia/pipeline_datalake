@@ -30,11 +30,9 @@ def insert_bq_promotions(request):
     print(f'*** Starting to process dates: {len(list_dates_to_process)} dates to process ***')
 
     for date in list_dates_to_process:
-        # Transform date to string
         date_to_process = date.strftime('%Y-%m-%d')
         print(f'Processing date: {date_to_process}')
 
-        # Collect processed data for this date in a list
         processed_data = []
 
         # Channel 'marketplace' processing
@@ -43,11 +41,13 @@ def insert_bq_promotions(request):
         for blob in blobs:
             print(f"Reading file: {blob.name}")
             content = storage.download_json(bucket_name, blob.name)
-            # Process each JSON item individually
             for json_item in content:
-                processed_dict = process_response(json_item, 'Marketplace')
-                if processed_dict:  # Add only valid data
-                    processed_data.append(processed_dict)
+                if json_item:  # Ensure json_item is not None or empty
+                    for item in json_item:
+                        if item:
+                            processed_dict = process_response(item, 'Marketplace')
+                            if processed_dict:
+                                processed_data.append(processed_dict)
 
         # Channel 'mshops' processing
         blob_prefix_mshops = blob_promotions_mshops + f'date={date_to_process}/'
@@ -55,28 +55,26 @@ def insert_bq_promotions(request):
         for blob in blobs:
             print(f"Reading file: {blob.name}")
             content = storage.download_json(bucket_name, blob.name)
-            # Process each JSON item individually
             for json_item in content:
-                processed_dict = process_response(json_item, 'mshops')
-                if processed_dict:  # Add only valid data
-                    processed_data.append(processed_dict)
+                if json_item:  # Ensure json_item is not None or empty
+                    for item in json_item:
+                        if item:
+                            processed_dict = process_response(item, 'mshops')
+                            if processed_dict:
+                                processed_data.append(processed_dict)
 
-        # Convert the processed data list to a DataFrame
         df_processed_data = pd.DataFrame(processed_data)
 
-        # Check if the DataFrame is empty and skip further processing if so
         if df_processed_data.empty:
             print(f'Nenhum dado processado para a data {date_to_process}, pulando inserção...')
-            continue  # Skip to the next date
+            continue
 
-        # Set static columns once after data collection
         df_processed_data['correspondent_date'] = pd.to_datetime(date_to_process)
         df_processed_data['process_time'] = datetime.now()
         df_processed_data['seller_id'] = seller_id
 
         print(f'*** Finished treating all data. {df_processed_data.shape[0]} products ***')
 
-        # Create the table if it does not exist
         if not bigquery.table_exists(destiny_table):
             print(f'Table {destiny_table} does not exist. Creating table...')
             bigquery.create_table(destiny_table, df_processed_data)
@@ -97,21 +95,24 @@ def insert_bq_promotions(request):
 
 
 def process_response(json_item, channel):
+
     try:
         # Define required fields for both channels
         required_fields_marketplace = ['item_id', 'id', 'status', 'type', 'name', 'start_date', 'finish_date']
         required_fields_mshops = ['item_id', 'id', 'status', 'type', 'name', 'target', 'buy_quantity', 'start_date', 'finish_date']
 
-        # Select required fields based on the channel
         required_fields = required_fields_marketplace if channel == "Marketplace" else required_fields_mshops
 
         # Check if all required fields are present in the json_item
         for field in required_fields:
             if field not in json_item or json_item[field] is None:
-                print(f'Missing or None field "{field}" in item: {json_item}')
-                return None  # Skip this item if a required field is missing
+                # Check within "offers" list for fields like "start_date"
+                if field == "start_date" and "offers" in json_item:
+                    start_date_found = any(offer.get("start_date") for offer in json_item["offers"])
+                    if not start_date_found:
+                        print(f'Missing or None field "{field}" in item: {json_item}')
 
-        # Process specific data for the Marketplace channel
+        # Process data based on channel type
         if channel == "Marketplace":
             data = {
                 'item_id': json_item['item_id'],
@@ -121,12 +122,11 @@ def process_response(json_item, channel):
                 'name': json_item['name'],
                 'meli_percent': json_item.get('benefits', {}).get('meli_percent'),
                 'seller_percent': json_item.get('benefits', {}).get('seller_percent'),
-                'start_date': json_item['start_date'],
+                'start_date': json_item['start_date'] if 'start_date' in json_item else json_item['offers'][0].get('start_date'),
                 'finish_date': json_item['finish_date'],
                 'channel': channel,
             }
-        
-        # Process specific data for the mshops channel
+
         elif channel == "mshops":
             data = {
                 'item_id': json_item['item_id'],
@@ -136,13 +136,13 @@ def process_response(json_item, channel):
                 'name': json_item['name'],
                 'target': json_item['target'],
                 'buy_quantity': json_item['buy_quantity'],
-                'start_date': json_item['start_date'],
+                'start_date': json_item['start_date'] if 'start_date' in json_item else json_item['offers'][0].get('start_date'),
                 'finish_date': json_item['finish_date'],
                 'channel': channel,
             }
-        
-        return data  # Return the processed data dictionary
 
+        return data  # Return the processed data dictionary
+    
     except Exception as e:
-        print(f'Error processing json item: {json_item} | Exception: {e}')
-        return None  # Return None in case of an exception to avoid errors in the main flow
+            print(f'Error processing json item: {json_item} | Exception: {e}')
+            return None  # Return None in case of an exception to avoid errors in the main flow
