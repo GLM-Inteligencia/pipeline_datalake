@@ -3,70 +3,78 @@ import json
 from datetime import datetime, timedelta
 import requests 
 import time
+from aiohttp.client_exceptions import ClientResponseError, ClientConnectionError
 
 
 
 async def batch_process(session, items, url_func_or_string, headers, 
                         bucket_name, date_blob_path, storage, url_with_two_fields=False,
-                        chunk_size=100, add_item_id=False, params=None):
-    """
-    Processes API requests in batches and stores the responses in Google Cloud Storage.
-
-    Args:
-        session: The aiohttp session.
-        items (list): List of items to process.
-        url_func_or_string (str or callable): A URL string or function to generate the URL.
-        headers (dict): Headers for the API requests.
-        bucket_name (str): Name of the storage bucket.
-        date_blob_path (str): Path for saving the results.
-        storage (CloudStorage): Storage instance.
-        chunk_size (int, optional): Size of the chunks for batch processing. Defaults to 100.
-        add_item_id (bool, optional): Whether to include the item_id in the response data. Defaults to False.
-        params (list, optional): List of additional parameters to pass in the request for each item.
-
-    Returns:
-        None
-    """
-    semaphore = asyncio.Semaphore(100)
+                        chunk_size=100, add_item_id=False, params=None, sleep_time=1, max_retries=5):
+    semaphore = asyncio.Semaphore(10)  # Limit concurrency to avoid blocking
+    
+    # Split items into chunks
     chunks = [items[i:i + chunk_size] for i in range(0, len(items), chunk_size)]
     
-    # --- Start of changes ---
+    # Split params into chunks or ensure params_chunks is aligned
     if params:
         params_chunks = [params[i:i + chunk_size] for i in range(0, len(params), chunk_size)]
     else:
-        params_chunks = [None] * len(chunks)  # Ensure params_chunks aligns with chunks
+        # Ensure that params_chunks is an empty list for each chunk
+        params_chunks = [[] for _ in chunks]
+
+    # Check alignment between chunks and params chunks
+    assert len(chunks) == len(params_chunks), "Mismatch between chunks and params_chunks"
+
+    async def fetch_with_retry(item, url_func_or_string, headers, param, retries):
+        """Tenta fazer chamadas de API com retries e backoff exponencial."""
+        attempt = 0
+        backoff = 2  # Initial waiting time
+
+        while attempt < retries:
+            try:
+                return await fetch(session, item, url_func_or_string, headers, semaphore, 
+                                   add_item_id, param, url_with_two_fields)
+            except ClientResponseError as e:
+                if e.status == 429:  # Rate limit reached
+                    retry_after = int(e.headers.get('Retry-After', backoff))
+                    print(f"Rate limit atingido. Retentando em {retry_after} segundos...")
+                    await asyncio.sleep(retry_after)
+                else:
+                    raise  # Throw errors other than 429
+            except (ClientConnectionError, asyncio.TimeoutError) as e:
+                print(f"Erro de conexão: {e}. Retentando em {backoff} segundos...")
+                await asyncio.sleep(backoff)
+            attempt += 1
+            backoff *= 2  # Exponential backoff
+        print(f"Máximo de tentativas excedido para item: {item}")
+        return f"Erro: Máximo de tentativas excedido para item: {item}"
 
     async def process_chunk(chunk, batch_number, params_chunk):
-        if params_chunk:
-            # Use params_chunk (singular) to represent the parameters for this chunk
-            tasks = [
-                fetch(
-                    session, item, url_func_or_string, headers, semaphore, add_item_id, 
-                    param, url_with_two_fields
-                ) for item, param in zip(chunk, params_chunk)
-            ]
-        else:
-            tasks = [
-                fetch(
-                    session, item, url_func_or_string, headers, semaphore, add_item_id, 
-                    params=None, url_with_two_fields=url_with_two_fields
-                ) for item in chunk
-            ]
+        """Processa um chunk e faz upload das respostas."""
+        # Ensure that params chunk is not Name
+        if not params_chunk:
+            params_chunk = [[]] * len(chunk)
 
-        # Use return_exceptions=True to maintain order even if exceptions occur
+        tasks = [
+            fetch_with_retry(item, url_func_or_string, headers, param, max_retries)
+            for item, param in zip(chunk, params_chunk)
+        ]
+
         responses = await asyncio.gather(*tasks, return_exceptions=True)
 
-        if responses:
-            # Save batch responses to Cloud Storage
-            process_time = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%M.%f-03:00")
-            filename = f'batch_{batch_number}__process_time={process_time}.json'
-            storage.upload_json(bucket_name, f'{date_blob_path}{filename}', responses)
+        filtered_responses = [
+            str(response) if isinstance(response, Exception) else response
+            for response in responses
+        ]
 
-    # Correctly pass params_chunk to process_chunk
+        process_time = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%S.%f-03:00")
+        filename = f'batch_{batch_number}__process_time={process_time}.json'
+        storage.upload_json(bucket_name, f'{date_blob_path}{filename}', filtered_responses)
+
+    # Process chunks sequentially
     for batch_number, (chunk, params_chunk) in enumerate(zip(chunks, params_chunks)):
         await process_chunk(chunk, batch_number, params_chunk)
-        await asyncio.sleep(1)  # Sleep to avoid rate limits
-
+        await asyncio.sleep(sleep_time)
 
 async def fetch(session, item_id, url_func_or_string, headers, 
                 semaphore, add_item_id, params=None, url_with_two_fields=False):
@@ -85,6 +93,7 @@ async def fetch(session, item_id, url_func_or_string, headers,
 
     Returns:
         dict: The JSON response data.
+        dict or list: The JSON response data.
     """
     async with semaphore:
         # Determine the URL (either a function or a fixed string)
@@ -100,8 +109,14 @@ async def fetch(session, item_id, url_func_or_string, headers,
         async with session.get(url, headers=headers, params=params) as response:
             if response.status == 200:
                 data = await response.json()  # Await the json() method
+
                 if add_item_id:
-                    data['item_id'] = item_id
+                    if isinstance(data, dict):
+                        data['item_id'] = item_id
+                    elif isinstance(data, list):
+                        # Add item_id to each item in the list
+                        data = [{**item, "item_id": item_id} for item in data]
+
                 return data
             elif response.status == 404:
                 print(f"Item ID {item_id} not found (404). Skipping...")

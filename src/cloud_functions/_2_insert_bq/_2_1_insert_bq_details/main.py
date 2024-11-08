@@ -124,6 +124,7 @@ def process_details(content_details, content_variations):
             'listing_type': item.get('listing_type_id'),
             'url': item.get('permalink'),
             'free_shipping': item.get('shipping',{}).get('free_shipping'),
+            'logistic_type': item.get('shipping',{}).get('logistic_type'),
             'catalog_id' : item.get('catalog_product_id'),
             'picture_url': item.get('pictures', [{}])[0].get('url'),
             'catalog_listing': item.get('catalog_listing', ''),

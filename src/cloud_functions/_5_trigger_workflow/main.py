@@ -1,6 +1,7 @@
 from google.cloud import firestore
 from google.cloud import workflows_v1
 from google.cloud.workflows.executions_v1 import ExecutionsClient
+from google.cloud.workflows.executions_v1.types import Execution
 import json
 import requests
 import traceback
@@ -82,10 +83,12 @@ def triggers_workflow(request):
         print("** Checking if workflows are still running **")
         all_done = True
         for execution_name in execution_ids:
-            if execution_name not in execution_states or execution_states[execution_name] not in ['SUCCEEDED', 'FAILED', 'CANCELLED']:
+            if execution_name not in execution_states or execution_states[execution_name] not in [Execution.State.SUCCEEDED, Execution.State.FAILED, Execution.State.CANCELLED]:
                 execution = client.get_execution(name=execution_name)
                 execution_states[execution_name] = execution.state
-                if execution.state not in ['SUCCEEDED', 'FAILED', 'CANCELLED']:
+                state_name = Execution.State(execution.state).name
+                print(f"Execution {execution_name} state: {state_name}")
+                if execution.state not in [Execution.State.SUCCEEDED, Execution.State.FAILED, Execution.State.CANCELLED]:
                     all_done = False
         if all_done or total_wait_time >= max_wait_time:
             break
@@ -99,19 +102,26 @@ def triggers_workflow(request):
         print("All workflows have completed.")
 
     # Cleaning table model
+    print('Creating model sales')
     bigquery.run_query('delete from datalake-v2-424516.models.p_predictions_forecast where prediction_date = current_date()')
 
     # Starting pipeline model sales
-    bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.run_queries_sequentially`();')
+    bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.run_queries_sequentially`();')    
 
-    # Creating frontend tables
-    bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.create_frontend_tables`();')
-    
-
+    print('Getting history sales')
     # Trigger function to calculate history sales
     trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_max_sales_history',
                                            params= {}) 
+    
+    print('Creating frontend tables')
+    # Creating frontend tables
+    bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.create_frontend_tables`();')
 
+    print('Getting sellers information')
+    # Trigger function to calculate history sales
+    trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_sellers_information',
+                                           params= {}) 
+    
     return ('Success!', 200)
 
 
