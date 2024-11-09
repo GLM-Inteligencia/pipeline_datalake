@@ -102,11 +102,11 @@ def triggers_workflow(request):
         print("All workflows have completed.")
 
     # Cleaning table model
-    print('Creating model sales')
-    bigquery.run_query('delete from datalake-v2-424516.models.p_predictions_forecast where prediction_date = current_date()')
+    # print('Creating model sales') 
+    # bigquery.run_query('delete from datalake-v2-424516.models.p_predictions_forecast where prediction_date = current_date()')  # Pausamos esse modelo por enquanto
 
     # Starting pipeline model sales
-    bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.run_queries_sequentially`();')    
+    # bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.run_queries_sequentially`();')    # Pausamos esse modelo por enquanto
 
     print('Getting history sales')
     # Trigger function to calculate history sales
