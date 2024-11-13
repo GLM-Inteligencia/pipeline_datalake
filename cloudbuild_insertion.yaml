@@ -164,7 +164,6 @@ steps:
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-
   # # Deploy insert_bq_orders function in parallel
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'deploy-insert-bq-orders'
@@ -504,6 +503,7 @@ steps:
   #       --entry-point insert_bq_promotions \
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
 
 timeout: 1800s  # 30 minutos de timeout para o build completo
 options:
