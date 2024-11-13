@@ -1,5 +1,6 @@
 import json
 from types import SimpleNamespace
+from cloud_functions._1_fetch_data._1_8_fetch_orders.main import fetch_orders_data
 from src.cloud_functions._1_fetch_data._1_2_fetch_costs.main import fetch_costs_data
 from src.cloud_functions._1_fetch_data._1_5_fetch_prices.main import fetch_prices_data
 from src.cloud_functions._1_fetch_data._1_1_fetch_details.main import fetch_details_data
@@ -20,6 +21,8 @@ from src.cloud_functions._2_insert_bq._2_7_insert_bq_competitors_price.main impo
 from src.cloud_functions._4_models.predicted_sales.main import get_max_sales_history
 from src.cloud_functions._1_fetch_data._0_2_fetch_history_visits.main import fetch_visits_data
 from src.cloud_functions._2_insert_bq._2_12_insert_bq_visits.main import insert_bq_visits
+
+from src.cloud_functions._2_insert_bq._2_8_insert_bq_orders.main import insert_bq_orders
 
 from src.cloud_functions._5_trigger_workflow.main import triggers_workflow
 
@@ -55,8 +58,10 @@ test_data = {
 
 mock_request = MockRequest(test_data)
 
+#result = insert_bq_orders(mock_request)
+
 # # Call your function with the mock request
-result = insert_bq_promotions(mock_request)
+#result = insert_bq_promotions(mock_request)
 
 ##result = fetch_visits_data(mock_request)
 # # result = insert_bq_visits(mock_request)
