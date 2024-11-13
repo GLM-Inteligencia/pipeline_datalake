@@ -24,7 +24,6 @@ TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.sellers_competitors_d
 TABLE_ITEM_PROMOTION = "datalake-v2-424516.datalake_v2.items_promotions"
 TABLE_EXTERNAL_ORDERS = "datalake-v2-424516.datalake_v2.external_orders"
 
-TABLE_ORDERS_UTC = "datalake-v2-424516.datalake_v2.orders_utc"
 
 
 # Bucket name

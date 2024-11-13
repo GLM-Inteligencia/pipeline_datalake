@@ -27,7 +27,7 @@ async def main_async(request):
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_ORDERS_UTC
+    destiny_table = settings.TABLE_ORDERS
     blob_shipping_cost = settings.BLOB_ORDERS(store_name)
 
     # Get dates to process
@@ -40,7 +40,7 @@ async def main_async(request):
         destiny_table
     )
 
-    list_dates_to_process = ['2024-11-11','2024-11-10','2024-11-09'] #[date.strftime('%Y-%m-%d') for date in list_dates_to_process]
+    list_dates_to_process = [date.strftime('%Y-%m-%d') for date in list_dates_to_process]
 
     print(f'*** Starting to process dates: {len(list_dates_to_process)} dates to process ***')
 
@@ -56,23 +56,26 @@ async def main_async(request):
 
         print(f'*** Finished processing all dates. Total sales: {df_all_processed_data.shape[0]} ***')
     
-    print(df_all_processed_data[['reason','order_id','date_approved','date_created','date_closed','date_last_modified','date_last_updated']])
-    # else:
-    #     print('** 0 dates to process**')
-    #     return ('Success', 200)
+    else:
+        print('** 0 dates to process**')
+        return ('Success', 200)
 
-    # # The following steps are synchronous and don't need to be async
-    # print('** Deleting existing data **')
-    # bigquery.delete_existing_data(destiny_table, seller_id, list_dates_to_process, 'processed_json')
+    if not bigquery.table_exists(destiny_table):
+            print(f'Table {destiny_table} does not exist. Creating table...')
+            bigquery.create_table(destiny_table, df_all_processed_data)
 
-    # print('** Correcting dataframe schema **')
-    # bigquery.match_dataframe_schema(df_all_processed_data, destiny_table)
+    # The following steps are synchronous and don't need to be async
+    print('** Deleting existing data **')
+    bigquery.delete_existing_data(destiny_table, seller_id, list_dates_to_process, 'processed_json')
 
-    # print('** Inserting data into BigQuery **')
-    # bigquery.insert_dataframe(df_all_processed_data, destiny_table)
+    print('** Correcting dataframe schema **')
+    bigquery.match_dataframe_schema(df_all_processed_data, destiny_table)
 
-    # print('** Updating log table **')
-    # bigquery.update_logs_table(seller_id, list_dates_to_process, destiny_table, table_management)
+    print('** Inserting data into BigQuery **')
+    bigquery.insert_dataframe(df_all_processed_data, destiny_table)
+
+    print('** Updating log table **')
+    bigquery.update_logs_table(seller_id, list_dates_to_process, destiny_table, table_management)
 
     return ('Success', 200)
 
