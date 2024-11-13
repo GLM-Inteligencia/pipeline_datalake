@@ -25,6 +25,7 @@ TABLE_ITEM_PROMOTION = "datalake-v2-424516.datalake_v2.items_promotions"
 TABLE_EXTERNAL_ORDERS = "datalake-v2-424516.datalake_v2.external_orders"
 
 
+
 # Bucket name
 BUCKET_STORES = "glm-store"
 
