@@ -128,7 +128,6 @@ def triggers_workflow(request):
                                            params= {}) 
     
     # Send frontend tables to mysql
-
     tables_list = ['competitors', 'general', 'performance_table', 'stock_seller', 'suggested_items']
 
     for table in tables_list:

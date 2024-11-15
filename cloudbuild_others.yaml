@@ -27,7 +27,7 @@ steps:
         --trigger-http \
         --no-allow-unauthenticated \
         --region southamerica-east1 \
-        --memory 512MB \
+        --memory 1024MB \
         --timeout 3600 \
         --source . \
         --entry-point triggers_workflow \
