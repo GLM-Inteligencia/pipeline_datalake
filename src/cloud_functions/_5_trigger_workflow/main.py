@@ -143,7 +143,7 @@ def triggers_workflow(request):
         print(f"Tempo decorrido: {elapsed_time:.2f} segundos")
         print('-----------------------------------')
         
-        return ('Success!', 200)
+    return ('Success!', 200)
 
 
 
