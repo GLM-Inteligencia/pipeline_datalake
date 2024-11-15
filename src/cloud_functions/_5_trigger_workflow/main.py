@@ -9,6 +9,11 @@ import time
 from src.common.bigquery_connector import BigQueryManager
 from src.config import settings
 from src.common.trigger_cloud_function import TriggerCloudFunction
+from sqlalchemy import create_engine
+from urllib.parse import quote_plus
+import pandas as pd
+import time
+
 
 firestore_collection_users = 'users_credentials'
 project_id_firebase = 'datalake-meli-dev'
@@ -122,7 +127,41 @@ def triggers_workflow(request):
     trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_sellers_information',
                                            params= {}) 
     
-    return ('Success!', 200)
+    # Send frontend tables to mysql
+
+    tables_list = ['competitors', 'general', 'performance_table', 'stock_seller', 'suggested_items']
+
+    for table in tables_list:
+        df= bigquery.run_query(f'select * from datalake-v2-424516.tables_frontend.{table}')
+
+        memory_usage = df.memory_usage(deep=True).sum()/ (1024 ** 2)
+        print(f"Tabela: {table} / Tamanho em memória: {memory_usage:.2f} MB" )
+
+        start_time = time.time()
+        upload_data_to_mysql(df, table_name= f'{table}_v1')
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"Tempo decorrido: {elapsed_time:.2f} segundos")
+        print('-----------------------------------')
+        
+        return ('Success!', 200)
+
+
+
+def upload_data_to_mysql(df, table_name):
+    # Replace pandas.NA and np.nan with None
+    df = df.where(pd.notnull(df), None)
+    
+    password = quote_plus('Glm@mysql24')  # Your actual password
+
+    # Create the SQLAlchemy engine
+    engine = create_engine(f'mysql+pymysql://geraldo-papa:{password}@34.123.250.92/glm')
+
+    # Use the 'replace' method to drop the table if it exists and create a new one
+    # Alternatively, use 'append' to add data to the existing table
+    df.to_sql(name=table_name, con=engine, if_exists='replace', index=False, chunksize=1000, method='multi')
+
+    print("Data uploaded!!!")
 
 
 def trigger_workflow(parameters, project_id, location, workflow_name):
