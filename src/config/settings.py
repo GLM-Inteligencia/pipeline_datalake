@@ -22,7 +22,7 @@ TABLE_CATALOG_COMPETITORS = "datalake-v2-424516.datalake_v2.items_competitors_ca
 TABLE_FREE_SHIPPING_STATUS = "datalake-v2-424516.datalake_v2.items_free_shipping_status"
 TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.sellers_competitors_details'
 TABLE_ITEM_PROMOTION = "datalake-v2-424516.datalake_v2.items_promotions"
-TABLE_EXTERNAL_ORDERS = "datalake-v2-424516.datalake_v2.external_orders"
+TABLE_ORDERS_SHIPPING = "datalake-v2-424516.datalake_v2.orders_shipping"
 
 
 # Bucket name
@@ -47,6 +47,7 @@ BLOB_FREE_SHIPPING_STATUS = lambda store_name : f'{store_name}/meli/api_response
 BLOB_VISITS = lambda store_name : f'{store_name}/meli/api_response/item_visits/'
 BLOB_PROMOTIONS = lambda store_name : f'{store_name}/meli/api_response/items_promotions/'
 BLOB_PROMOTIONS_MSHOPS = lambda store_name : f'{store_name}/meli/api_response/items_promotions_mshops/'
+BLOB_ORDERS_SHIPPING_COST = lambda store_name : f'{store_name}/meli/api_response/orders_shipping_cost/'
 
 # URLs API
 URL_PRICE_MARKETPLACE = lambda item_id: f"https://api.mercadolibre.com/items/{item_id}/sale_price?context=channel_marketplace"
@@ -65,6 +66,8 @@ URL_VISITS = lambda item_id, n : f'https://api.mercadolibre.com/items/{item_id}/
 
 URL_PROMOTIONS_MARKETPLACE = lambda item_id: f"https://api.mercadolibre.com/seller-promotions/items/{item_id}?app_version=v2"
 URL_PROMOTIONS_MSHOPS = lambda item_id: f"https://api.mercadolibre.com/seller-promotions/items/{item_id}?channel=mshops&limit=100&offset=0"
+URL_ORDERS_SHIPPING_COST = lambda shipment_id: f"https://api.mercadolibre.com/shipments/{shipment_id}/costs"
+
 
 # GCP INFO
 FIRESTORE_COLLECTION_USERS = 'users_credentials'

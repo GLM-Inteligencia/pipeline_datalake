@@ -304,6 +304,58 @@ def fetch_sales_for_day(url, access_token, timezone_offset='-03:00', limit=50):
 
     return sum(all_sales), all_responses
 
+def fetch_shipping_ids_from_results(storage, bucket_name, blob_items_prefix, filter_key=None, filter_value=None):
+    """
+    Fetches the `id` values from the `shipping` field nested within `results` in JSON files
+    stored in Google Cloud Storage.
+
+    Args:
+        storage: CloudStorage instance to interact with GCS.
+        bucket_name (str): The name of the bucket to fetch from.
+        blob_items_prefix (str): The prefix path to the blobs to read.
+        filter_key (str, optional): The key to filter items by (if provided). Defaults to None.
+        filter_value (any, optional): The value to filter items by (if provided). Defaults to None.
+
+    Returns:
+        list: A list of unique shipping IDs.
+    """
+    shipping_ids = []
+    blobs = storage.list_blobs(bucket_name, blob_items_prefix)
+
+    print(f"Blobs found: {[blob.name for blob in blobs]}")
+
+    for blob in blobs:
+        if not blob.name.endswith('.json'):
+            print(f"Skipping non-JSON file: {blob.name}")
+            continue
+
+        print(f"Reading file: {blob.name}")
+        try:
+            content = storage.download_json(bucket_name, blob.name)
+            
+            # Handle case where content is a list
+            if isinstance(content, list):
+                for item in content:
+                    # Ensure 'results' exists and is a list
+                    if isinstance(item, dict) and 'results' in item and isinstance(item['results'], list):
+                        for ship in item['results']:
+                            shipping = ship.get("shipping", None)
+                            if shipping and isinstance(shipping, dict):
+                                shipping_id = shipping.get("id")
+                                if shipping_id:
+                                    shipping_ids.append(shipping_id)
+            else:
+                print(f"Unexpected content format in {blob.name}, expected a list: {type(content)}. Skipping.")
+                continue
+        except Exception as e:
+            print(f"Error processing file {blob.name}: {e}")
+            continue
+
+    unique_ids = list(set(shipping_ids))
+    return unique_ids
+
+
+
 
 
 async def batch_process_details(session, item_ids, url_item_func, url_variation_func, headers,
