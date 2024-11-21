@@ -81,7 +81,7 @@ def transform_to_dataframe(data_list):
         
         # Data base for item and receiver
         data = {
-            "item_id": json_item.get("item_id", None),
+            "shipping_id": json_item.get("item_id", None),
             "gross_amount": json_item.get("gross_amount", 0),
             "receiver_user_id": receiver.get("user_id", None),
             "receiver_cost": receiver.get("cost", 0),
