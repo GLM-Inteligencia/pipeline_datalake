@@ -66,7 +66,8 @@ def insert_bq_promotions(request):
         df_processed_data = pd.DataFrame(processed_data)
 
         if df_processed_data.empty:
-            print(f'Nenhum dado processado para a data {date_to_process}, pulando inserção...')
+            print(f'No data processed for the date {date_to_process}, skipping insertion...')
+
             continue
 
         df_processed_data['correspondent_date'] = pd.to_datetime(date_to_process)

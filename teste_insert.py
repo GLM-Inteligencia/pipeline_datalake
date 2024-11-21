@@ -29,6 +29,7 @@ from src.cloud_functions._1_fetch_data._1_13_fetch_items_promotions.main import 
 from src.cloud_functions._2_insert_bq._2_13_insert_bq_promotions.main import insert_bq_promotions
 from src.cloud_functions._1_fetch_data._1_14_fetch_orders_shipping.main import fetch_orders_shipping_cost
 from src.cloud_functions._1_fetch_data._1_8_fetch_orders.main import fetch_orders_data
+from src.cloud_functions._2_insert_bq._2_14_insert_bq_orders_shipping_cost.main import insert_bq_orders_shipping_cost
 
 
 class MockRequest:
@@ -59,7 +60,9 @@ test_data = {
 
 mock_request = MockRequest(test_data)
 #result = fetch_orders_shipping_cost(mock_request)
-#result = fetch_orders_data(mock_request)
+result = insert_bq_orders_shipping_cost(mock_request)
+
+
 # # Call your function with the mock request
 #result = insert_bq_promotions(mock_request)
 

@@ -34,9 +34,8 @@ async def main_async(request):
     table_management = settings.TABLE_MANAGEMENT
     destiny_table = settings.TABLE_ORDERS_SHIPPING
     # Define today's date
-    #today_str = datetime.today().strftime('%Y-%m-%d')
-    today_str = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
-
+    today_str = datetime.today().strftime('%Y-%m-%d')
+    
     # Fetch item IDs from the storage bucket
     blob_items_prefix = f'{store_name}/meli/api_response/orders/date={today_str}/'
     shipments_id = fetch_shipping_ids_from_results(storage, bucket_name, blob_items_prefix, filter_key=None, filter_value=None)

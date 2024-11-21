@@ -22,7 +22,7 @@ TABLE_CATALOG_COMPETITORS = "datalake-v2-424516.datalake_v2.items_competitors_ca
 TABLE_FREE_SHIPPING_STATUS = "datalake-v2-424516.datalake_v2.items_free_shipping_status"
 TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.sellers_competitors_details'
 TABLE_ITEM_PROMOTION = "datalake-v2-424516.datalake_v2.items_promotions"
-TABLE_ORDERS_SHIPPING = "datalake-v2-424516.datalake_v2.orders_shipping"
+TABLE_ORDERS_SHIPPING_COST = "datalake-v2-424516.datalake_v2.orders_shipping_cost"
 
 
 # Bucket name
