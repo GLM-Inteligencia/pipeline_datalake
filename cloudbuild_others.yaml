@@ -34,6 +34,32 @@ steps:
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
+pipeline_datalake\src\cloud_functions\_7_trigger_hourly_workflow
+  # Deploy trigger_workflow_hourly
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-fetch-trigger-workflow-hourly'
+    waitFor: ['install-dependencies']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - | 
+        cp requirements.txt src/cloud_functions/_7_trigger_hourly_workflow && \
+        mkdir -p src/cloud_functions/_7_trigger_hourly_workflow/src && \
+        cp -r src/common src/cloud_functions/_7_trigger_hourly_workflow/src  && \
+        cp -r src/config src/cloud_functions/_7_trigger_hourly_workflow/src  && \
+        cd src/cloud_functions/_7_trigger_hourly_workflow  && \
+        gcloud functions deploy trigger_hourly_workflow \
+        --gen2 \
+        --runtime python310 \
+        --trigger-http \
+        --no-allow-unauthenticated \
+        --region southamerica-east1 \
+        --memory 1024MB \
+        --timeout 3600 \
+        --source . \
+        --entry-point triggers_workflow_hourly \
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
   # # Deploy get sellers information
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
