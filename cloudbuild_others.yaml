@@ -27,7 +27,7 @@ steps:
         --trigger-http \
         --no-allow-unauthenticated \
         --region southamerica-east1 \
-        --memory 512MB \
+        --memory 1024MB \
         --timeout 3600 \
         --source . \
         --entry-point triggers_workflow \
@@ -35,7 +35,7 @@ steps:
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
-  # # Deploy trigger_workflow
+  # # Deploy get sellers information
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   #   id: 'deploy-fetch-get-sellers-information'
   #   waitFor: ['install-dependencies']
@@ -62,31 +62,31 @@ steps:
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
-  # Deploy model predict sales
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-predict-sales'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp requirements.txt src/cloud_functions/_4_models/predicted_sales && \
-        mkdir -p src/cloud_functions/_4_models/predicted_sales/src && \
-        cp -r src/common src/cloud_functions/_4_models/predicted_sales/src  && \
-        cp -r src/config src/cloud_functions/_4_models/predicted_sales/src  && \
-        cd src/cloud_functions/_4_models/predicted_sales  && \
-        gcloud functions deploy get_max_sales_history \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 1024MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point get_max_sales_history \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # # Deploy model predict sales
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-predict-sales'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       cp requirements.txt src/cloud_functions/_4_models/predicted_sales && \
+  #       mkdir -p src/cloud_functions/_4_models/predicted_sales/src && \
+  #       cp -r src/common src/cloud_functions/_4_models/predicted_sales/src  && \
+  #       cp -r src/config src/cloud_functions/_4_models/predicted_sales/src  && \
+  #       cd src/cloud_functions/_4_models/predicted_sales  && \
+  #       gcloud functions deploy get_max_sales_history \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 1024MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point get_max_sales_history \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
   # # Deploy insert input stores
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -96,7 +96,6 @@ steps:
   #   args:
   #     - '-c'
   #     - |
-
   #       cp requirements.txt src/cloud_functions/_3_import_data/_3_0_store_import_data && \
   #       mkdir -p src/cloud_functions/_3_import_data/_3_0_store_import_data/src && \
   #       cp -r src/common src/cloud_functions/_3_import_data/_3_0_store_import_data/src  && \
@@ -119,7 +118,7 @@ steps:
 timeout: 3600s  # 30 minutos de timeout para o build completo
 options:
   logging: CLOUD_LOGGING_ONLY
-  machineType: 'E2_HIGHCPU_8'
+  # machineType: 'E2_HIGHCPU_8'
   volumes:
     - name: 'pip-cache'
       path: /workspace/.pip-cache

@@ -9,8 +9,8 @@ from aiohttp.client_exceptions import ClientResponseError, ClientConnectionError
 
 async def batch_process(session, items, url_func_or_string, headers, 
                         bucket_name, date_blob_path, storage, url_with_two_fields=False,
-                        chunk_size=100, add_item_id=False, params=None, sleep_time=1, max_retries=5):
-    semaphore = asyncio.Semaphore(10)  # Limit concurrency to avoid blocking
+                        chunk_size=500, add_item_id=False, params=None, sleep_time=1, max_retries=5):
+    semaphore = asyncio.Semaphore(100)  # Limit concurrency to avoid blocking
     
     # Split items into chunks
     chunks = [items[i:i + chunk_size] for i in range(0, len(items), chunk_size)]

@@ -9,6 +9,11 @@ import time
 from src.common.bigquery_connector import BigQueryManager
 from src.config import settings
 from src.common.trigger_cloud_function import TriggerCloudFunction
+from sqlalchemy import create_engine, text
+from urllib.parse import quote_plus
+import pandas as pd
+import time
+from datetime import datetime
 
 firestore_collection_users = 'users_credentials'
 project_id_firebase = 'datalake-meli-dev'
@@ -102,11 +107,11 @@ def triggers_workflow(request):
         print("All workflows have completed.")
 
     # Cleaning table model
-    print('Creating model sales')
-    bigquery.run_query('delete from datalake-v2-424516.models.p_predictions_forecast where prediction_date = current_date()')
+    # print('Creating model sales') 
+    # bigquery.run_query('delete from datalake-v2-424516.models.p_predictions_forecast where prediction_date = current_date()')  # Pausamos esse modelo por enquanto
 
     # Starting pipeline model sales
-    bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.run_queries_sequentially`();')    
+    # bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.run_queries_sequentially`();')    # Pausamos esse modelo por enquanto
 
     print('Getting history sales')
     # Trigger function to calculate history sales
@@ -122,6 +127,44 @@ def triggers_workflow(request):
     trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_sellers_information',
                                            params= {}) 
     
+    print('Uploading data to mysql')
+    # Send frontend tables to mysql
+    tables_list = ['competitor', 'general', 'performance_table', 'stock_seller', 'suggested_items']
+
+    # Database connection
+    password = quote_plus('Glm@mysql24')
+    engine = create_engine(f'mysql+pymysql://geraldo-papa:{password}@34.123.250.92/glm')
+    for table_name in tables_list:
+
+        with engine.connect() as conn:
+            conn.execute(text(f"TRUNCATE TABLE {table_name};"))
+
+        if table_name == 'competitor':
+            table_name = 'competitors'
+            
+        df= bigquery.run_query(f'select * from datalake-v2-424516.tables_frontend.{table_name}')
+        df['created_at'] = datetime.now()
+        df['updated_at'] = datetime.now()
+
+        memory_usage = df.memory_usage(deep=True).sum()/ (1024 ** 2)
+        print(f"Tabela: {table_name} / Tamanho em memória: {memory_usage:.2f} MB" )
+        
+        start_time = time.time()
+        df.to_sql(
+                name=table_name,
+                con=engine,
+                if_exists='append',
+                index=False,
+                chunksize=1000,
+                method='multi',
+                # dtype=data_types  # Specify data types
+            )
+        
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"Tempo decorrido: {elapsed_time:.2f} segundos")
+        print('-----------------------------------')
+        
     return ('Success!', 200)
 
 
