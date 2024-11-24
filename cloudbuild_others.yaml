@@ -34,7 +34,6 @@ steps:
         --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
         --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-pipeline_datalake\src\cloud_functions\_7_trigger_hourly_workflow
   # Deploy trigger_workflow_hourly
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'deploy-fetch-trigger-workflow-hourly'
