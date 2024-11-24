@@ -63,14 +63,13 @@ async def main_async(request):
     # Batch processing the API requests
     # PROMOTIONS MELI
     async with aiohttp.ClientSession() as session:
-        await batch_process(session, items_id, url_marketplace, headers, bucket_name, date_blob_path_marketplace, storage, add_item_id = True, sleep_time=15)
+        await batch_process(session, items_id, url_marketplace, headers, bucket_name, date_blob_path_marketplace, storage, add_item_id = True, sleep_time=1)
     
-    time.sleep(60)
     
     # Batch processing the API requests
     # PROMOTIONS SHOPS
     async with aiohttp.ClientSession() as session:
-        await batch_process(session, items_id, url_mshops, headers, bucket_name, date_blob_path_mshops, storage, add_item_id = True, sleep_time=15)
+        await batch_process(session, items_id, url_mshops, headers, bucket_name, date_blob_path_mshops, storage, add_item_id = True, sleep_time=1)
 
 
     
