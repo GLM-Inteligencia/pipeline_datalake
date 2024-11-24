@@ -56,7 +56,7 @@ test_data = {
 mock_request = MockRequest(test_data)
 
 # # Call your function with the mock request
-result = insert_bq_promotions(mock_request)
+result = fetch_costs_data(mock_request)
 
 ##result = fetch_visits_data(mock_request)
 # # result = insert_bq_visits(mock_request)
