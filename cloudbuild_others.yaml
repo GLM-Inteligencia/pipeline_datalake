@@ -8,83 +8,83 @@ steps:
       - |
         pip install -r requirements.txt --cache-dir=/workspace/.pip-cache
 
-  # Deploy trigger_workflow
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-trigger-workflow'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - | 
-        cp requirements.txt src/cloud_functions/_5_trigger_workflow && \
-        mkdir -p src/cloud_functions/_5_trigger_workflow/src && \
-        cp -r src/common src/cloud_functions/_5_trigger_workflow/src  && \
-        cp -r src/config src/cloud_functions/_5_trigger_workflow/src  && \
-        cd src/cloud_functions/_5_trigger_workflow  && \
-        gcloud functions deploy triggers_workflow \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 1024MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point triggers_workflow \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-
-  # Deploy trigger_workflow_hourly
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-fetch-trigger-workflow-hourly'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - | 
-        cp requirements.txt src/cloud_functions/_7_trigger_hourly_workflow && \
-        mkdir -p src/cloud_functions/_7_trigger_hourly_workflow/src && \
-        cp -r src/common src/cloud_functions/_7_trigger_hourly_workflow/src  && \
-        cp -r src/config src/cloud_functions/_7_trigger_hourly_workflow/src  && \
-        cd src/cloud_functions/_7_trigger_hourly_workflow  && \
-        gcloud functions deploy trigger_hourly_workflow \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 1024MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point triggers_workflow_hourly \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
-
-  # # Deploy get sellers information
+  # # Deploy trigger_workflow
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  #   id: 'deploy-fetch-get-sellers-information'
+  #   id: 'deploy-fetch-trigger-workflow'
   #   waitFor: ['install-dependencies']
   #   entrypoint: 'bash'
   #   args:
   #     - '-c'
   #     - | 
-  #       cp requirements.txt src/cloud_functions/_6_get_sellers_information && \
-  #       mkdir -p src/cloud_functions/_6_get_sellers_information/src && \
-  #       cp -r src/common src/cloud_functions/_6_get_sellers_information/src  && \
-  #       cp -r src/config src/cloud_functions/_6_get_sellers_information/src  && \
-  #       cd src/cloud_functions/_6_get_sellers_information  && \
-  #       gcloud functions deploy get_sellers_information \
+  #       cp requirements.txt src/cloud_functions/_5_trigger_workflow && \
+  #       mkdir -p src/cloud_functions/_5_trigger_workflow/src && \
+  #       cp -r src/common src/cloud_functions/_5_trigger_workflow/src  && \
+  #       cp -r src/config src/cloud_functions/_5_trigger_workflow/src  && \
+  #       cd src/cloud_functions/_5_trigger_workflow  && \
+  #       gcloud functions deploy triggers_workflow \
   #       --gen2 \
   #       --runtime python310 \
   #       --trigger-http \
   #       --no-allow-unauthenticated \
   #       --region southamerica-east1 \
-  #       --memory 512MB \
+  #       --memory 1024MB \
   #       --timeout 3600 \
   #       --source . \
-  #       --entry-point main_fetch_sellers_information \
+  #       --entry-point triggers_workflow \
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
+  # # Deploy trigger_workflow_hourly
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-fetch-trigger-workflow-hourly'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - | 
+  #       cp requirements.txt src/cloud_functions/_7_trigger_hourly_workflow && \
+  #       mkdir -p src/cloud_functions/_7_trigger_hourly_workflow/src && \
+  #       cp -r src/common src/cloud_functions/_7_trigger_hourly_workflow/src  && \
+  #       cp -r src/config src/cloud_functions/_7_trigger_hourly_workflow/src  && \
+  #       cd src/cloud_functions/_7_trigger_hourly_workflow  && \
+  #       gcloud functions deploy trigger_hourly_workflow \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 1024MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point triggers_workflow_hourly \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+
+  # Deploy get sellers information
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-fetch-get-sellers-information'
+    waitFor: ['install-dependencies']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - | 
+        cp requirements.txt src/cloud_functions/_6_get_sellers_information && \
+        mkdir -p src/cloud_functions/_6_get_sellers_information/src && \
+        cp -r src/common src/cloud_functions/_6_get_sellers_information/src  && \
+        cp -r src/config src/cloud_functions/_6_get_sellers_information/src  && \
+        cd src/cloud_functions/_6_get_sellers_information  && \
+        gcloud functions deploy get_sellers_information \
+        --gen2 \
+        --runtime python310 \
+        --trigger-http \
+        --no-allow-unauthenticated \
+        --region southamerica-east1 \
+        --memory 512MB \
+        --timeout 3600 \
+        --source . \
+        --entry-point main_fetch_sellers_information \
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
   # # Deploy model predict sales
