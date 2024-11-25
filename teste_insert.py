@@ -27,6 +27,9 @@ from src.cloud_functions._1_fetch_data._1_13_fetch_items_promotions.main import 
 
 from src.cloud_functions._1_fetch_data._1_13_fetch_items_promotions.main import fetch_promotions_data
 from src.cloud_functions._2_insert_bq._2_13_insert_bq_promotions.main import insert_bq_promotions
+
+from src.cloud_functions._6_get_sellers_information.main import main_fetch_sellers_information
+
 class MockRequest:
     
     def __init__(self, json_data):
@@ -45,6 +48,8 @@ test_data = {
  "store_name": "hubsmarthome"
 }
 
+main_fetch_sellers_information({})
+
 # test_data = {
 #    "access_token": "APP_USR-2951712600123976-102309-17e9ae2af96480acf2d3bb33d6de6d71-569119547",
 #    "client_id": "2951712600123976",
@@ -53,10 +58,10 @@ test_data = {
 #    "store_name": "gw shop"
 #  }
 
-mock_request = MockRequest(test_data)
+# mock_request = MockRequest(test_data)
 
-# # Call your function with the mock request
-result = fetch_costs_data(mock_request)
+# # # Call your function with the mock request
+# result = fetch_costs_data(mock_request)
 
 ##result = fetch_visits_data(mock_request)
 # # result = insert_bq_visits(mock_request)

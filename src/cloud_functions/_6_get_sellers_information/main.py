@@ -5,9 +5,9 @@ import requests
 from src.common.bigquery_connector import BigQueryManager
 from src.config import settings
 import pandas as pd
+from tqdm import tqdm 
 
-
-def main_fetch_sellers_information():
+def main_fetch_sellers_information(request):
 
     bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
     table_id = settings.TABLE_SELLER_INFORMATION
@@ -26,7 +26,7 @@ def main_fetch_sellers_information():
 
     SELECT DISTINCT si.competitor_seller_id
     FROM sellers_ids si 
-    LEFT JOIN `datalake-v2-424516.datalake_v2.sellers_competitors_details` sc
+    LEFT JOIN datalake-v2-424516.datalake_v2.update_sellers_competitors_details sc
     ON CAST(sc.competitor_seller_id AS INT64) = si.competitor_seller_id
     WHERE sc.competitor_seller_id IS NULL
     """
@@ -34,12 +34,14 @@ def main_fetch_sellers_information():
     sellers_df = bigquery.run_query(query)
     sellers_list = sellers_df['competitor_seller_id'].to_list()
 
+    print(f'{len(sellers_list)} novos sellers para processar')
+
     if len(sellers_list) == 0:
         print('Zero novos sellers para processar')
     
     else:
         seller_details_list = []
-        for seller_id in sellers_list:
+        for seller_id in tqdm(sellers_list):
             details = fetch_seller_details(seller_id)
             seller_details_list.append(details)
 
