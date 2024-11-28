@@ -1,3 +1,6 @@
+import ssl
+
+import certifi
 from src.common.cloud_storage_connector import CloudStorage
 from src.common.bigquery_connector import BigQueryManager
 from src.common.utils import batch_process, fetch_shipping_ids_from_results, log_process, authenticate
@@ -27,43 +30,58 @@ async def main_async(request):
 
     # Initialize storage and BigQuery
     storage = CloudStorage(credentials_path=settings.PATH_SERVICE_ACCOUNT)
-    #bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
-    
+    bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
+
     # Define paths and table names from the config
     bucket_name = settings.BUCKET_STORES
     table_management = settings.TABLE_MANAGEMENT
-    destiny_table = settings.TABLE_ORDERS_SHIPPING
+    destiny_table = settings.TABLE_ORDERS_SHIPPING_COST
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
-    
-    # Fetch item IDs from the storage bucket
-    blob_items_prefix = f'{store_name}/meli/api_response/orders/date={today_str}/'
-    shipments_id = fetch_shipping_ids_from_results(storage, bucket_name, blob_items_prefix, filter_key=None, filter_value=None)
-    print(f'** Shipments found: {len(shipments_id)}**')
-    
-    print(f'** Cleaning blob **')
-    # # Path for orders shipping
+    yesterday_str = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 
-    blob_basic_path_orders_shipping = settings.BLOB_ORDERS_SHIPPING_COST(store_name)
-    date_blob_path_orders_shipping = f'{blob_basic_path_orders_shipping}date={today_str}/'
-    
-    
-    # # # Clean existing files in the storage bucket
-    storage.clean_blobs(bucket_name, date_blob_path_orders_shipping)
+    # Get dates to treat
+    list_dates_to_process = bigquery.get_list_dates_from_shipping(seller_id)
+    list_dates_to_process = list(set(list_dates_to_process))  # Remover duplicatas
+    print(f"*** Starting to process {len(list_dates_to_process)} unique dates ***")
 
-    print(f'** Starting API requests for {len(shipments_id)} items**')
-    # # URL function for API
-    url_orders_shipping_cost = settings.URL_ORDERS_SHIPPING_COST
-    headers = {'Authorization': f'Bearer {access_token}'}
-    
-    
-    # # Batch processing the API requests
-    async with aiohttp.ClientSession() as session:
-        await batch_process(session, shipments_id, url_orders_shipping_cost, headers, bucket_name, date_blob_path_orders_shipping, storage, add_item_id = True, sleep_time=1)
+    if not list_dates_to_process:
+        print("No dates returned for processing, verify the function get_list_dates_to_process.")
+        return ('No dates to process', 200)
 
-    print('** Logging process in management table... **')
-    # # # Log the process in BigQuery
-    log_process(seller_id, destiny_table, today_str, table_management, processed_to_bq=False)
+    # Processar cada data
+    for date in list_dates_to_process:
+        print(f"Processing date: {date}")
+
+        date_str = date.strftime('%Y-%m-%d')
+        print(f"Formatted date: {date_str}")
+
+        # Fetch item IDs from the storage bucket
+        blob_items_prefix = f'{store_name}/meli/api_response/orders/date={date_str}/'
+        #print(f"Fetching blobs with prefix: {blob_items_prefix}")
+        shipments_id = fetch_shipping_ids_from_results(storage, bucket_name, blob_items_prefix, filter_key=None, filter_value=None)
+        print(f'** Shipments found: {len(shipments_id)}**')
+        
+        print(f'** Cleaning blob **')
+        # # Path for orders shipping
+        blob_basic_path_orders_shipping = settings.BLOB_ORDERS_SHIPPING_COST(store_name)
+        date_blob_path_orders_shipping = f'{blob_basic_path_orders_shipping}date={date_str}/'
+                
+        # # # Clean existing files in the storage bucket
+        storage.clean_blobs(bucket_name, date_blob_path_orders_shipping)
+
+        print(f'** Starting API requests for {len(shipments_id)} items**')
+        # # URL function for API
+        url_orders_shipping_cost = settings.URL_ORDERS_SHIPPING_COST
+        headers = {'Authorization': f'Bearer {access_token}'}
+    
+        # # Batch processing the API requests
+        async with aiohttp.ClientSession() as session:
+            await batch_process(session, shipments_id, url_orders_shipping_cost, headers, bucket_name, date_blob_path_orders_shipping, storage, add_item_id = True, sleep_time=1)
+
+        print('** Logging process in management table... **')
+        # # # Log the process in BigQuery
+        log_process(seller_id, destiny_table, today_str, table_management, processed_to_bq=False)
 
     return ('Success', 200)
 

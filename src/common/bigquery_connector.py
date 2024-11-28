@@ -78,6 +78,19 @@ class BigQueryManager:
         """
         df = self.run_query(query)
         return df['process_date'].to_list() if df is not None else []
+    
+    def get_list_dates_from_shipping(self, seller_id):
+        query = f"""
+            select distinct o.shipping_id,o.processed_json
+            from datalake-v2-424516.datalake_v2.orders o
+            left join datalake-v2-424516.datalake_v2.orders_shipping_cost s using (shipping_id)
+            where
+            1=1
+            and s.shipping_id is null
+            and o.seller_id = {seller_id}
+        """
+        df = self.run_query(query)
+        return df['processed_json'].to_list() if df is not None else []
 
     def update_logs_table(self, seller_id, date, destiny_table, management_table):
         query = f"""
