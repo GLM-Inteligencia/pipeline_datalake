@@ -356,8 +356,6 @@ def fetch_shipping_ids_from_results(storage, bucket_name, blob_items_prefix, fil
 
 
 
-
-
 async def batch_process_details(session, item_ids, url_item_func, url_variation_func, headers,
                         storage, bucket_name, date_blob_item_basic_path, date_variation_blob_path, 
                         chunk_size=100, semaphore_limit=100):

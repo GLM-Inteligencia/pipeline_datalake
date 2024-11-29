@@ -29,7 +29,7 @@ def insert_bq_orders_shipping_cost(request):
         print("No dates returned for processing, verify the function get_list_dates_to_process.")
         return ('No dates to process', 200)
 
-    all_processed_data = []  # Lista para acumular todos os DataFrames processados
+    all_processed_data = []  # List to accumulate all processed DataFrames
 
     for date in list_dates_to_process:
         date_to_process = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
@@ -54,13 +54,13 @@ def insert_bq_orders_shipping_cost(request):
                 df_processed_data['process_time'] = datetime.now()
                 df_processed_data['seller_id'] = seller_id
 
-                all_processed_data.append(df_processed_data)  # Adiciona o DataFrame à lista
-
+                all_processed_data.append(df_processed_data)  # Add DataFrame to list
+                
     if not all_processed_data:
         print("No data processed for any date. Skipping insertion.")
         return ('No data to insert', 200)
 
-    # Concatenar todos os DataFrames acumulados
+    # Concatenate all accumulated DataFrames
     final_df = pd.concat(all_processed_data, ignore_index=True)
     print(f"Final DataFrame consolidated with {len(final_df)} rows.")
 

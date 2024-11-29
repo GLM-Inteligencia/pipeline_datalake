@@ -42,14 +42,14 @@ async def main_async(request):
 
     # Get dates to treat
     list_dates_to_process = bigquery.get_list_dates_from_shipping(seller_id)
-    list_dates_to_process = list(set(list_dates_to_process))  # Remover duplicatas
+    list_dates_to_process = list(set(list_dates_to_process))  # Remove duplicates
     print(f"*** Starting to process {len(list_dates_to_process)} unique dates ***")
 
     if not list_dates_to_process:
         print("No dates returned for processing, verify the function get_list_dates_to_process.")
         return ('No dates to process', 200)
 
-    # Processar cada data
+    # Process each date
     for date in list_dates_to_process:
         print(f"Processing date: {date}")
 
