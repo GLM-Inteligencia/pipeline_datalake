@@ -8,8 +8,6 @@ from src.common.cloud_storage_connector import CloudStorage
 from src.common.bigquery_connector import BigQueryManager
 from src.config import settings
 import json
-import pytz
-
 
 def insert_bq_orders(request):
     return asyncio.run(main_async(request))
@@ -40,7 +38,7 @@ async def main_async(request):
         destiny_table
     )
 
-    list_dates_to_process = [date.strftime('%Y-%m-%d') for date in list_dates_to_process]
+    list_dates_to_process =['2024-11-29'] #[date.strftime('%Y-%m-%d') for date in list_dates_to_process]
 
     print(f'*** Starting to process dates: {len(list_dates_to_process)} dates to process ***')
 
@@ -60,10 +58,6 @@ async def main_async(request):
         print('** 0 dates to process**')
         return ('Success', 200)
 
-    if not bigquery.table_exists(destiny_table):
-            print(f'Table {destiny_table} does not exist. Creating table...')
-            bigquery.create_table(destiny_table, df_all_processed_data)
-
     # The following steps are synchronous and don't need to be async
     print('** Deleting existing data **')
     bigquery.delete_existing_data(destiny_table, seller_id, list_dates_to_process, 'processed_json')
@@ -73,6 +67,9 @@ async def main_async(request):
 
     print('** Inserting data into BigQuery **')
     bigquery.insert_dataframe(df_all_processed_data, destiny_table)
+
+    print('** Updating date into BigQuery **')
+    bigquery.update_timezones_in_bigquery(destiny_table)
 
     print('** Updating log table **')
     bigquery.update_logs_table(seller_id, list_dates_to_process, destiny_table, table_management)
@@ -97,9 +94,7 @@ async def process_date(date, storage, bucket_name, blob_shipping_cost, semaphore
 
             if not df_processed_data.empty:
                 df_processed_data['processed_json'] = pd.to_datetime(df_processed_data['date_created'])
-                date_now_str = str(datetime.now())
-                date_now_str_formatted = change_time_zone(date_now_str)
-                df_processed_data['process_time'] = date_now_str_formatted
+                df_processed_data['process_time'] = datetime.now()
 
             print(f'*** Finished processing all data for date {date}. {df_processed_data.shape[0]} sales ***')
 
@@ -125,34 +120,10 @@ async def process_blob(blob, storage, bucket_name, semaphore):
             print(f'Error processing blob {blob.name}: {e}')
             return pd.DataFrame()
 
-def change_time_zone(date_str):
-
-    date_approved = datetime.fromisoformat(date_str)
-    saopaulo_tz = pytz.timezone('America/Sao_Paulo')
-    date_saopaulo = date_approved.astimezone(saopaulo_tz)
-    date_formatted = date_saopaulo.isoformat()
-
-    return date_formatted
-
 def process_orders_sync(json_data):
     try:
         structured_sales = []  # List to collect all structured_sale dictionaries
         for sale in json_data:
-            date_approved_str = sale['payments'][0].get('date_approved')
-            date_approved_formatted = change_time_zone(date_approved_str)
-
-            date_last_modified_str = sale['payments'][0].get('date_last_modified')
-            date_last_modified_formatted = change_time_zone(date_last_modified_str)
-
-            date_created_str = sale.get('date_created')
-            date_created_formatted = change_time_zone(date_created_str)
-
-            date_closed_str = sale.get('date_closed')
-            date_closed_formatted = change_time_zone(date_closed_str)
-
-            date_last_updated_str = sale.get('date_last_updated')
-            date_last_updated_formatted = change_time_zone(date_last_updated_str)
-
             structured_sale = {
                 'reason': sale['payments'][0].get('reason'),
                 'status_code': sale['payments'][0].get('status_code'),
@@ -160,14 +131,14 @@ def process_orders_sync(json_data):
                 'operation_type': sale['payments'][0].get('operation_type'),
                 'transaction_amount': sale['payments'][0].get('transaction_amount'),
                 'transaction_amount_refunded': sale['payments'][0].get('transaction_amount_refunded'),
-                'date_approved': date_approved_formatted,
+                'date_approved': sale['payments'][0].get('date_approved'),
                 'collector_id': sale['payments'][0].get('collector', {}).get('id'),
                 'coupon_id': sale['payments'][0].get('coupon_id'),
                 'installments': sale['payments'][0].get('installments'),
                 'authorization_code': sale['payments'][0].get('authorization_code'),
                 'taxes_amount': sale['payments'][0].get('taxes_amount'),
                 'payment_id': sale['payments'][0].get('id'),
-                'date_last_modified': date_last_modified_formatted,
+                'date_last_modified': sale['payments'][0].get('date_last_modified'),
                 'coupon_amount': sale['payments'][0].get('coupon_amount'),
                 'installment_amount': sale['payments'][0].get('installment_amount'),
                 'activation_uri': sale['payments'][0].get('activation_uri'),
@@ -210,11 +181,11 @@ def process_orders_sync(json_data):
                 'base_currency_id': sale['order_items'][0].get('base_currency_id'),
                 'bundle': sale['order_items'][0].get('bundle'),
                 'element_id': sale['order_items'][0].get('element_id'),
-                'date_created': date_created_formatted,
-                'date_closed': date_closed_formatted,
+                'date_created': sale.get('date_created'),
+                'date_closed': sale.get('date_closed'),
                 'status': sale.get('status'),
                 'expiration_date': sale.get('expiration_date'),
-                'date_last_updated': date_last_updated_formatted,
+                'date_last_updated': sale.get('date_last_updated'),
                 'last_updated': sale.get('last_updated'),
                 'comment': sale.get('comment'),
                 'pack_id': sale.get('pack_id'),

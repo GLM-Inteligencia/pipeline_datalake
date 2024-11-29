@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import requests 
 import time
 from aiohttp.client_exceptions import ClientResponseError, ClientConnectionError
+from google.cloud import bigquery
 
 
 
@@ -397,4 +398,7 @@ async def fetch_details(session, item_id, batch_responses_details, batch_respons
                                 item_variations.append(variation_json)
                     
                     batch_responses_variations.extend(item_variations)
+
+
+
 

@@ -134,3 +134,22 @@ class BigQueryManager:
             print(f"Tabela {table_id} criada com sucesso.")
         except Exception as e:
             print(f"Erro ao criar a tabela {table_id}: {str(e)}")
+
+
+    def update_timezones_in_bigquery(self,destiny_table):
+
+        query = f"""
+        UPDATE `{destiny_table}`
+        SET 
+            date_created = TIMESTAMP(DATETIME(date_created, "America/Sao_Paulo")),
+            date_approved = TIMESTAMP(DATETIME(date_approved, "America/Sao_Paulo")),
+            date_last_modified = TIMESTAMP(DATETIME(date_last_modified, "America/Sao_Paulo")),
+            date_closed = TIMESTAMP(DATETIME(date_closed, "America/Sao_Paulo")),
+            date_last_updated = TIMESTAMP(DATETIME(date_last_updated, "America/Sao_Paulo"))
+        WHERE TRUE;
+        """
+        
+        query_job = self.client.query(query)  # Executa a consulta
+        query_job.result()  # Aguarda a conclusão
+        print("Timezones updated to São Paulo in BigQuery.")
+        
