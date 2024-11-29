@@ -20,7 +20,7 @@ TABLE_INPUT_COMPETITORS = "datalake-v2-424516.datalake_v2.competitors_suggestion
 TABLE_VARIATIONS = "datalake-v2-424516.datalake_v2.items_variations"
 TABLE_CATALOG_COMPETITORS = "datalake-v2-424516.datalake_v2.items_competitors_catalog"
 TABLE_FREE_SHIPPING_STATUS = "datalake-v2-424516.datalake_v2.items_free_shipping_status"
-TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.sellers_competitors_details'
+TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.update_sellers_competitors_details'
 TABLE_ITEM_PROMOTION = "datalake-v2-424516.datalake_v2.items_promotions"
 TABLE_EXTERNAL_ORDERS = "datalake-v2-424516.datalake_v2.external_orders"
 
