@@ -149,7 +149,7 @@ class BigQueryManager:
         WHERE TRUE;
         """
         
-        query_job = self.client.query(query)  # Executa a consulta
-        query_job.result()  # Aguarda a conclusão
+        query_job = self.client.query(query)  # Run the query
+        query_job.result()  # Waiting for completion
         print("Timezones updated to São Paulo in BigQuery.")
         

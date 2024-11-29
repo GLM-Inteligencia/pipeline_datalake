@@ -38,7 +38,7 @@ async def main_async(request):
         destiny_table
     )
 
-    list_dates_to_process =['2024-11-29'] #[date.strftime('%Y-%m-%d') for date in list_dates_to_process]
+    list_dates_to_process = [date.strftime('%Y-%m-%d') for date in list_dates_to_process]
 
     print(f'*** Starting to process dates: {len(list_dates_to_process)} dates to process ***')
 
