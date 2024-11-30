@@ -58,6 +58,8 @@ def main_fetch_sellers_information(request):
         print('Inserting dataframe')
         bigquery.insert_dataframe(df_to_save, table_id)
 
+    return 'Success', 200
+
 
 
 def fetch_seller_details(seller_id):
