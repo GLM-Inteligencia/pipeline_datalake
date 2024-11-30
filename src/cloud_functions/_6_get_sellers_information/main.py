@@ -5,7 +5,6 @@ import requests
 from src.common.bigquery_connector import BigQueryManager
 from src.config import settings
 import pandas as pd
-from tqdm import tqdm 
 
 def main_fetch_sellers_information(request):
 
@@ -37,11 +36,11 @@ def main_fetch_sellers_information(request):
     print(f'{len(sellers_list)} novos sellers para processar')
 
     if len(sellers_list) == 0:
-        print('Zero novos sellers para processar')
+        return 'Zero novos sellers para processar', 200
     
     else:
         seller_details_list = []
-        for seller_id in tqdm(sellers_list):
+        for seller_id in sellers_list:
             details = fetch_seller_details(seller_id)
             seller_details_list.append(details)
 

@@ -91,6 +91,7 @@ def store_import_data(request):
         try:
             df.dropna(how='all', inplace=True)
             df.drop_duplicates(inplace=True)
+            df = df.replace(',', '.', regex=True)
             df = bigquery.match_dataframe_schema(df, table_name)
         
         except Exception as e:
@@ -105,10 +106,6 @@ def store_import_data(request):
             
         except Exception as e:
             return jsonify({'error': f'Error uploading data to BigQuery: {e}'}), 500
-        
-        # Recreating tables frontend:
-        print('** Recreating tables frontend**')
-        bigquery.run_query('call `datalake-v2-424516.datalake_v2.create_frontend_tables`();')
 
         print('** Cleaning cache **')
         firestore.clean_cache('query_cache')
@@ -139,6 +136,10 @@ WHEN MATCHED THEN
 '''
         print('** Treating skus that start with 0**')
         bigquery.run_query(query)
+
+        # Recreating tables frontend:
+        print('** Recreating tables frontend**')
+        bigquery.run_query('call `datalake-v2-424516.datalake_v2.create_frontend_tables`();')
 
         return jsonify({'message': f'Successfully uploaded {len(df)} rows from {latest_file_path} to BigQuery.'}), 200
 
