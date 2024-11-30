@@ -129,7 +129,7 @@ def triggers_workflow_hourly(request):
     
     print('Uploading data to mysql')
     # Send frontend tables to mysql
-    tables_list = ['competitor', 'general', 'performance_table', 'stock_seller', 'suggested_items']
+    tables_list = ['competitor', 'general','stock_seller']  #performance_table, suggested_items
 
     # Database connection
     password = quote_plus('Glm@mysql24')
