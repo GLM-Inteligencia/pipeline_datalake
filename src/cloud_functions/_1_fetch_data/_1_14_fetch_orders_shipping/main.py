@@ -41,8 +41,8 @@ async def main_async(request):
     yesterday_str = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 
     # Get dates to treat
-    list_dates_to_process = bigquery.get_list_dates_from_shipping(seller_id)
-    list_dates_to_process = list(set(list_dates_to_process))  # Remove duplicates
+    list_dates = bigquery.get_list_dates_from_shipping(seller_id)
+    list_dates_to_process = list(set(list_dates))  # Remove duplicates
     print(f"*** Starting to process {len(list_dates_to_process)} unique dates ***")
 
     if not list_dates_to_process:
@@ -74,9 +74,15 @@ async def main_async(request):
         # # URL function for API
         url_orders_shipping_cost = settings.URL_ORDERS_SHIPPING_COST
         headers = {'Authorization': f'Bearer {access_token}'}
-    
+        
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        
+        #async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=ssl_context))as session:
+
         # # Batch processing the API requests
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=ssl_context))as session:
             await batch_process(session, shipments_id, url_orders_shipping_cost, headers, bucket_name, date_blob_path_orders_shipping, storage, add_item_id = True, sleep_time=1)
 
         print('** Logging process in management table... **')

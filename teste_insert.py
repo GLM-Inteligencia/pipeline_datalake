@@ -59,7 +59,7 @@ test_data = {
 #  }
 
 mock_request = MockRequest(test_data)
-#result = fetch_orders_shipping_cost(mock_request)
+result = fetch_orders_shipping_cost(mock_request)
 #result = insert_bq_orders_shipping_cost(mock_request)
 
 
