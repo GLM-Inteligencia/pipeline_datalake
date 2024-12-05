@@ -19,10 +19,10 @@ firestore_collection_users = 'users_credentials'
 project_id_firebase = 'datalake-meli-dev'
 project_id_workflow = "datalake-v2-424516"
 location = "southamerica-east1"
-workflow_name = "workflow-functions-datalakev2"
+workflow_name = "workflow-functions-datalake-daily"
 
 
-def triggers_workflow(request):
+def triggers_workflow_hourly(request):
 
     users_dict = read_firestore_data(firestore_collection_users, project_id_firebase)
     bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
@@ -113,23 +113,23 @@ def triggers_workflow(request):
     # Starting pipeline model sales
     # bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.run_queries_sequentially`();')    # Pausamos esse modelo por enquanto
 
-    print('Getting history sales')
-    # Trigger function to calculate history sales
-    trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_max_sales_history',
-                                           params= {}) 
+    # print('Getting history sales')
+    # # Trigger function to calculate history sales
+    # trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_max_sales_history',
+    #                                        params= {}) 
     
     print('Creating frontend tables')
     # Creating frontend tables
     bigquery.run_query('CALL `datalake-v2-424516.datalake_v2.create_frontend_tables`();')
 
-    print('Getting sellers information')
-    # Trigger function to calculate history sales
-    trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_sellers_information',
-                                           params= {}) 
+    # print('Getting sellers information')
+    # # Trigger function to calculate history sales
+    # trigger_function.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/get_sellers_information',
+    #                                        params= {}) 
     
     print('Uploading data to mysql')
     # Send frontend tables to mysql
-    tables_list = ['competitor', 'general', 'performance_table', 'stock_seller', 'suggested_items']
+    tables_list = ['competitor', 'general','stock_seller']  #performance_table, suggested_items
 
     # Database connection
     password = quote_plus('Glm@mysql24')

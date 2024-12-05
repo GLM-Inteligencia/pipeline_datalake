@@ -50,7 +50,7 @@ def fetch_orders_data(request):
         print('** First time processing orders - processing history **')
         trigger_functions = TriggerCloudFunction(credentials_path=settings.PATH_SERVICE_ACCOUNT)
             
-        trigger_functions.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/fetch_historic_orders',
+        trigger_functions.trigger_function(function_url='https://southamerica-east1-datalake-v2-424516.cloudfunctions.net/fetch_history_orders',
                                            params= data) 
                              
         return ('Success', 200)

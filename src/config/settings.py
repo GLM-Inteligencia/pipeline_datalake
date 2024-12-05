@@ -1,7 +1,7 @@
 
 # Service account
-#PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
-PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
+PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
+# PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
 
 # Tables Bigquery
 TABLE_MANAGEMENT = "datalake-v2-424516.datalake_v2.datalake_management"
@@ -20,7 +20,7 @@ TABLE_INPUT_COMPETITORS = "datalake-v2-424516.datalake_v2.competitors_suggestion
 TABLE_VARIATIONS = "datalake-v2-424516.datalake_v2.items_variations"
 TABLE_CATALOG_COMPETITORS = "datalake-v2-424516.datalake_v2.items_competitors_catalog"
 TABLE_FREE_SHIPPING_STATUS = "datalake-v2-424516.datalake_v2.items_free_shipping_status"
-TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.sellers_competitors_details'
+TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.update_sellers_competitors_details'
 TABLE_ITEM_PROMOTION = "datalake-v2-424516.datalake_v2.items_promotions"
 TABLE_EXTERNAL_ORDERS = "datalake-v2-424516.datalake_v2.external_orders"
 
