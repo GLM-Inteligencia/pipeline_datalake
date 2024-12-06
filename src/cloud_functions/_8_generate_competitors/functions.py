@@ -22,6 +22,7 @@ from sklearn.linear_model import LinearRegression
 import openai
 from src.common.bigquery_connector import BigQueryManager
 from src.common.firestore_connector import FirestoreManager
+from src.config import settings
 
 # ---------------------------- CONFIGURAÇÕES INICIAIS ----------------------------
 
@@ -47,8 +48,8 @@ os.makedirs(CACHE_DIR, exist_ok=True)
 os.makedirs(OPENAI_CACHE_DIR, exist_ok=True)  # Criar diretório de cache para OpenAI
 
 # Inicializar o cliente BigQuery
-bigquery = BigQueryManager(credentials_path='datalake-v2-424516-020ee4bc98c0.json')
-firestore_manager = FirestoreManager(credentials_path='datalake-v2-424516-020ee4bc98c0.json')
+bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
+firestore_manager = FirestoreManager(credentials_path=settings.PATH_SERVICE_ACCOUNT, project_id='datalake-meli-dev')
 
 # ---------------------------- FUNÇÕES UTILITÁRIAS ----------------------------
 
@@ -174,7 +175,7 @@ def obter_ranking_com_cache(ranking_params):
     hash_key = hashlib.sha256(json.dumps(ranking_params, sort_keys=True).encode('utf-8')).hexdigest()
 
     # Tentar carregar o ranking do cache OpenAI
-    cached_ranking = carregar_cache(hash_key, cache_dir=OPENAI_CACHE_DIR)
+    cached_ranking = carregar_cache(hash_key)
     if cached_ranking:
         logging.info("Ranking carregado do cache OpenAI.")
         return cached_ranking
@@ -312,7 +313,7 @@ def obter_ranking_com_cache(ranking_params):
             return None
 
         # Salvar o ranking no cache OpenAI
-        salvar_cache(hash_key, ranking_data, cache_dir=OPENAI_CACHE_DIR)
+        salvar_cache(hash_key, ranking_data)
         logging.info("Ranking salvo no cache OpenAI.")
 
         return ranking_data
@@ -501,7 +502,7 @@ def load_and_process_sales_data():
 
     if df.empty:
         logging.error("O DataFrame de vendas está vazio. Verifique a consulta e os dados no BigQuery.")
-        exit(1)
+        raise ValueError("O DataFrame de vendas está vazio. Verifique a consulta e os dados no BigQuery.")
 
     # Função para pré-processar os nomes dos produtos
     def preprocess_name(name):
@@ -570,7 +571,7 @@ def load_and_process_sales_data():
 
     if grouped.empty:
         logging.error("O DataFrame agrupado está vazio. Verifique os dados de entrada.")
-        exit(1)
+        raise ValueError("O DataFrame agrupado está vazio. Verifique a consulta e os dados no BigQuery.")
 
     # Função para agrupar similaridade baseada em nome e preço
     def group_similar_names_with_price(df, name_col='processed_name', price_col='weighted_avg_price', name_threshold=80, price_threshold=0.15):

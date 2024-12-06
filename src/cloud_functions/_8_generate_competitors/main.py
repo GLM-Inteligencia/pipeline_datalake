@@ -1,9 +1,10 @@
-import functions 
+from src.cloud_functions._8_generate_competitors import functions
 from datetime import datetime
 import logging
 from src.common.bigquery_connector import BigQueryManager
+from src.config import settings
 
-bigquery = BigQueryManager(credentials_path='datalake-v2-424516-020ee4bc98c0.json')
+bigquery = BigQueryManager(credentials_path=settings.PATH_SERVICE_ACCOUNT)
 
 # Tabelas no bigquery
 table_groups = 'datalake-v2-424516.datalake_v2.grouped_items_mshops'
@@ -40,10 +41,12 @@ def generate_competitors_main(request):
             concorrentes_topX_df['data'] = datetime.now().strftime('%Y-%m-%d')
 
         # Salva os dados no bigquery
-        bigquery.insert_dataframe(selected_items_df, table_competitors)
+        bigquery.insert_dataframe(concorrentes_topX_df, table_competitors)
         logging.info(f"Dados dos concorrentes exportados para bigquery: '{table_competitors}'.")
 
     else:
         logging.info("Nenhum dado para exportar.")
 
     return 'Success', 200
+
+generate_competitors_main({})

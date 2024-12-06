@@ -29,6 +29,8 @@ from src.cloud_functions._1_fetch_data._1_13_fetch_items_promotions.main import 
 from src.cloud_functions._2_insert_bq._2_13_insert_bq_promotions.main import insert_bq_promotions
 
 from src.cloud_functions._6_get_sellers_information.main import main_fetch_sellers_information
+from src.cloud_functions._8_generate_competitors.main import generate_competitors_main
+
 
 class MockRequest:
     
@@ -48,7 +50,7 @@ test_data = {
  "store_name": "hubsmarthome"
 }
 
-main_fetch_sellers_information({})
+generate_competitors_main({})
 
 # test_data = {
 #    "access_token": "APP_USR-2951712600123976-102309-17e9ae2af96480acf2d3bb33d6de6d71-569119547",
