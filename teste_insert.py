@@ -32,6 +32,8 @@ from src.cloud_functions._6_get_sellers_information.main import main_fetch_selle
 from src.cloud_functions._8_generate_competitors.main import generate_competitors_main
 
 
+from src.cloud_functions._8_generate_competitors.main import generate_competitors_main
+
 class MockRequest:
     
     def __init__(self, json_data):

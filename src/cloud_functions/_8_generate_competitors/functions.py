@@ -280,7 +280,7 @@ def obter_ranking_com_cache(ranking_params):
     try:
         logging.info("Enviando solicitação à API OpenAI para rankeamento de produtos.")
 
-        response = openai.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "Você é um assistente útil que classifica produtos com base na similaridade e preço."},
@@ -378,7 +378,7 @@ def get_competitors_for_top_n(selected_items_df, top_n=10):
             "location": "Brazil",
             "gl": "br",
             "hl": "pt-br",
-            "num": 50,
+            "num": 20,
             "page": 1
         }
 
