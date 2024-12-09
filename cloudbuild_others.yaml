@@ -8,31 +8,31 @@ steps:
       - |
         pip install -r requirements.txt --cache-dir=/workspace/.pip-cache
 
-  # # Deploy trigger_workflow
-  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  #   id: 'deploy-fetch-trigger-workflow'
-  #   waitFor: ['install-dependencies']
-  #   entrypoint: 'bash'
-  #   args:
-  #     - '-c'
-  #     - | 
-  #       cp requirements.txt src/cloud_functions/_5_trigger_workflow && \
-  #       mkdir -p src/cloud_functions/_5_trigger_workflow/src && \
-  #       cp -r src/common src/cloud_functions/_5_trigger_workflow/src  && \
-  #       cp -r src/config src/cloud_functions/_5_trigger_workflow/src  && \
-  #       cd src/cloud_functions/_5_trigger_workflow  && \
-  #       gcloud functions deploy triggers_workflow \
-  #       --gen2 \
-  #       --runtime python310 \
-  #       --trigger-http \
-  #       --no-allow-unauthenticated \
-  #       --region southamerica-east1 \
-  #       --memory 1024MB \
-  #       --timeout 3600 \
-  #       --source . \
-  #       --entry-point triggers_workflow \
-  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # Deploy trigger_workflow
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-fetch-trigger-workflow'
+    waitFor: ['install-dependencies']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - | 
+        cp requirements.txt src/cloud_functions/_5_trigger_workflow && \
+        mkdir -p src/cloud_functions/_5_trigger_workflow/src && \
+        cp -r src/common src/cloud_functions/_5_trigger_workflow/src  && \
+        cp -r src/config src/cloud_functions/_5_trigger_workflow/src  && \
+        cd src/cloud_functions/_5_trigger_workflow  && \
+        gcloud functions deploy triggers_workflow \
+        --gen2 \
+        --runtime python310 \
+        --trigger-http \
+        --no-allow-unauthenticated \
+        --region southamerica-east1 \
+        --memory 1024MB \
+        --timeout 3600 \
+        --source . \
+        --entry-point triggers_workflow \
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
   # # Deploy trigger_workflow_hourly
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -139,30 +139,30 @@ steps:
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy generate_competitors
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-generate-competitors'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - | 
-        mkdir -p src/cloud_functions/_8_generate_competitors/src && \
-        cp -r src/common src/cloud_functions/_8_generate_competitors/src  && \
-        cp -r src/config src/cloud_functions/_8_generate_competitors/src  && \
-        cd src/cloud_functions/_8_generate_competitors  && \
-        gcloud functions deploy generate_competitors \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 1024MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point generate_competitors_main \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # # Deploy generate_competitors
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-generate-competitors'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - | 
+  #       mkdir -p src/cloud_functions/_8_generate_competitors/src && \
+  #       cp -r src/common src/cloud_functions/_8_generate_competitors/src  && \
+  #       cp -r src/config src/cloud_functions/_8_generate_competitors/src  && \
+  #       cd src/cloud_functions/_8_generate_competitors  && \
+  #       gcloud functions deploy generate_competitors \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 1024MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point generate_competitors_main \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
 timeout: 3600s  # 30 minutos de timeout para o build completo
