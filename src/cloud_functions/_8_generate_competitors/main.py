@@ -1,4 +1,4 @@
-from src.cloud_functions._8_generate_competitors import functions
+import functions 
 from datetime import datetime
 import logging
 from src.common.bigquery_connector import BigQueryManager
