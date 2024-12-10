@@ -31,7 +31,7 @@ def generate_competitors_main(request):
     logging.info(f"Dados dos grupos de items exportados para bigquery: '{table_groups}'.")
 
     # Definir o número de itens top N por seller_id
-    top_n = 20  # Ajuste conforme necessário
+    top_n = 50  # Ajuste conforme necessário
 
     # Obter os concorrentes para os top N itens
     concorrentes_topX_df = functions.get_competitors_for_top_n(selected_items_df, top_n=top_n)
