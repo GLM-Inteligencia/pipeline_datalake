@@ -486,7 +486,7 @@ def load_and_process_sales_data():
         SUM(stock) AS stock,
         SUM(sold_quantity) AS sold_quantity
     FROM datalake-v2-424516.datalake_v2.items_details 
-    WHERE correspondent_date BETWEEN DATETIME("2024-11-30") AND DATETIME_ADD(DATETIME("2024-11-30"), INTERVAL 1 DAY) 
+    WHERE date(correspondent_date) = current_date()
         AND fg_mshops = true AND status = 'active'
     GROUP BY 1, 2, 3, 4
     """
