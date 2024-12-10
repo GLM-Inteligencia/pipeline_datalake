@@ -54,11 +54,17 @@ class BigQueryManager:
             print(f"Tabela de destino {table_id} não existe. Não foi possível inserir os dados.")
 
     def delete_existing_data(self, table_id, seller_id, date, date_filter_name='correspondent_date'):
-        query = f"""
-            DELETE FROM {table_id}
-            WHERE seller_id = {seller_id}
-            AND date({date_filter_name}) {self.build_date_condition(date)}
-            """
+        if not seller_id:
+            query = f"""
+                DELETE FROM {table_id}
+                WHERE date({date_filter_name}) {self.build_date_condition(date)}
+                """
+        else: 
+            query = f"""
+                DELETE FROM {table_id}
+                WHERE seller_id = {seller_id}
+                AND date({date_filter_name}) {self.build_date_condition(date)}
+                """
         self.run_query(query)
         print(f'Existing data deleted from {table_id} for dates {date} and seller_id {seller_id}.')
 
