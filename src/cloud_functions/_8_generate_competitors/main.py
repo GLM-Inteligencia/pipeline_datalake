@@ -1,4 +1,4 @@
-import functions 
+import functions
 from datetime import datetime
 import logging
 from src.common.bigquery_connector import BigQueryManager
@@ -34,7 +34,7 @@ def generate_competitors_main(request):
     top_n = 20  # Ajuste conforme necessário
 
     # Obter os concorrentes para os top N itens
-    concorrentes_topX_df = functions.get_competitors_for_top_n(selected_items_df.iloc, top_n=top_n)
+    concorrentes_topX_df = functions.get_competitors_for_top_n(selected_items_df, top_n=top_n)
     concorrentes_topX_df['correspondent_date'] = current_date
 
     # Verificar se o DataFrame não está vazio
