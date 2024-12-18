@@ -34,21 +34,22 @@ def get_max_sales_history(request):
 
     # Compute past sales
     logger.info("Computing past 7 days sales")
-    df_past_7_days_sales = create_past_sales(df_sales, 7)
+    df_past_7_days_sales_with_channel, df_past_7_days_sales = create_past_sales(df_sales, 7)
 
     logger.info("Computing past 21 days sales")
-    df_past_21_days_sales = create_past_sales(df_sales, 21)
+    df_past_21_days_sales_with_channel, df_past_21_days_sales = create_past_sales(df_sales, 21)
 
     # Merge results
     logger.info("Merging all computed dataframes")
     # For global max, we do not have context_channel, so merge on just sku and seller_id first.
     df_consolidado = (
         df_max_sales
-        .merge(df_past_7_days_sales, on=['seller_sku', 'seller_id', 'context_channel'], how='left')
-        .merge(df_past_21_days_sales, on=['seller_sku', 'seller_id', 'context_channel'], how='left')
+        .merge(df_past_21_days_sales_with_channel, on=['seller_sku', 'seller_id', 'context_channel'], how='left')
+        .merge(df_past_7_days_sales_with_channel, on=['seller_sku', 'seller_id', 'context_channel'], how='left')
         .merge(df_max_sales_global, on=['seller_sku', 'seller_id'], how='left', suffixes=('', '_global'))
+        .merge(df_past_21_days_sales, on=['seller_sku', 'seller_id'], how='left', suffixes=('', '_global'))
+        .merge(df_past_7_days_sales, on=['seller_sku', 'seller_id'], how='left', suffixes=('', '_global'))
     )
-
     logger.info("Dataframes merged successfully")
 
     # Clear and insert into BigQuery
@@ -172,6 +173,7 @@ def create_past_sales(df_sales, num_days):
 
     logger.info(f"Computed past {num_days} days sales with channel")
 
+    df_filtered_sales.fillna(0, inplace=True)
     # Group by 'seller_sku' and 'seller_id' (global, without channel)
     df_past_sales_global = (
         df_filtered_sales
@@ -182,15 +184,8 @@ def create_past_sales(df_sales, num_days):
 
     logger.info(f"Computed past {num_days} days sales globally (without channel)")
 
-    # Merge the two results to include both channel and global sales
-    df_merged = pd.merge(
-        df_past_sales_with_channel,
-        df_past_sales_global,
-        on=['seller_sku', 'seller_id'],
-        how='left'
-    )
-
     logger.info(f"Merged past {num_days} days sales with global sales")
 
-    logger.debug(f"Start date: {start_date}, End date: {end_date}, Rows: {len(df_merged)}")
-    return df_merged
+    logger.debug(f"Start date: {start_date}, End date: {end_date}, Rows: {len(df_past_sales_global)}")
+    
+    return df_past_sales_with_channel, df_past_sales_global
