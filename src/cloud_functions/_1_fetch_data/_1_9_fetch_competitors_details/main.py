@@ -33,21 +33,23 @@ async def main_async(request):
     table_management = settings.TABLE_MANAGEMENT
     destiny_table = settings.TABLE_COMPETITORS_DETAILS
 
-    # competitors input table
-    table_competitors_input = settings.TABLE_INPUT_COMPETITORS
-
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
     
     # Fetch item IDs from the input bigquery
     query = f'''
-    select distinct competitor_id
-    from {table_competitors_input}
-    where reference_seller_id = {seller_id}
+    SELECT 
+        distinct REPLACE(REGEXP_EXTRACT(link, r'MLB-\d+'), '-', '') AS product_id
+    FROM 
+        `datalake-v2-424516.datalake_v2.competitors_suggestions_mshops`
+    WHERE
+        1=1
+        AND LOWER(link) LIKE '%mlb-%'
+        AND top_seller_id = {seller_id}
     '''
 
     df_competitors = bigquery.run_query(query)
-    items_id = df_competitors['competitor_id'].to_list()
+    items_id = df_competitors['product_id'].to_list()
     print(f'** Items found: {len(items_id)}**')
 
     print(f'** Cleaning blob **')

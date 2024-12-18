@@ -29,13 +29,15 @@ from src.cloud_functions._1_fetch_data._1_13_fetch_items_promotions.main import 
 from src.cloud_functions._2_insert_bq._2_13_insert_bq_promotions.main import insert_bq_promotions
 
 from src.cloud_functions._6_get_sellers_information.main import main_fetch_sellers_information
-from src.cloud_functions._8_generate_competitors.main import generate_competitors_main
 
+from src.cloud_functions._1_fetch_data._1_7_fetch_competitors_price.main import fetch_competitors_prices_data
+from src.cloud_functions._1_fetch_data._1_9_fetch_competitors_details.main import fetch_competitors_details_data
 
-from src.cloud_functions._8_generate_competitors.main import generate_competitors_main
+from src.cloud_functions._2_insert_bq._2_9_insert_bq_competitors_details.main import insert_bq_competitors_details
+from src.cloud_functions._2_insert_bq._2_7_insert_bq_competitors_price.main import insert_bq_competitors_prices
 
-class MockRequest:
-    
+class MockRequest:    
+
     def __init__(self, json_data):
         self._json_data = json_data
 
@@ -52,9 +54,17 @@ test_data = {
  "store_name": "hubsmarthome"
 }
 
-generate_competitors_main({})
+mock_request = MockRequest(test_data)
 
-# test_data = {
+result = fetch_competitors_prices_data(mock_request)
+result = insert_bq_competitors_prices(mock_request)
+
+result = fetch_competitors_details_data(mock_request)
+result = insert_bq_competitors_details(mock_request)
+
+# generate_competitors_main({})
+
+# # test_data = {
 #    "access_token": "APP_USR-2951712600123976-102309-17e9ae2af96480acf2d3bb33d6de6d71-569119547",
 #    "client_id": "2951712600123976",
 #    "client_secret": "QprAIl8ydXzcxFVHjnIHT6fUQ8KpzADV",

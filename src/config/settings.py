@@ -31,7 +31,8 @@ BUCKET_STORES = "glm-store"
 BLOB_PRICES = lambda store_name : f'{store_name}/meli/api_response/item_price/'
 BLOB_PRICES_MSHOPS = lambda store_name : f'{store_name}/meli/api_response/item_price_mshops/'
 
-BLOB_COMPETITORS_PRICES = lambda store_name : f'{store_name}/meli/api_response/item_competitors_price/'
+BLOB_COMPETITORS_PRICES_MSHOPS = lambda store_name : f'{store_name}/meli/api_response/item_competitors_price_mshops/'
+BLOB_COMPETITORS_PRICES_MARKETPLACE = lambda store_name : f'{store_name}/meli/api_response/item_competitors_price_marketplace/'
 BLOB_COMPETITORS_DETAILS = lambda store_name : f'{store_name}/meli/api_response/item_competitors_details/'
 BLOB_COMPETITORS_CATALOG = lambda store_name : f'{store_name}/meli/api_response/item_competitors_catalog/'
 BLOB_CATALOG = lambda store_name : f'{store_name}/meli/api_response/catelog_details/' 

@@ -81,6 +81,9 @@ def insert_bq_competitors_details(request):
 def process_competitors_details(json):
 
     try:
+        flag_marketplace = 'marketplace' in json.get('channels',[])
+        flag_mshops = 'mshops' in json.get('channels',[]) 
+
         dict_content = {
                         'item_id' : json.get('item_id'),
                         'competitors_type': 'input',
@@ -93,6 +96,8 @@ def process_competitors_details(json):
                         'condition': json.get('condition'),
                         'permalink': json.get('permalink'),
                         'status' : json.get('status'),
+                        'flag_marketplace': flag_marketplace,
+                        'flag_mshops': flag_mshops
                         }
         
         return dict_content
