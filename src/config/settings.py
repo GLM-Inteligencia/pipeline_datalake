@@ -15,7 +15,7 @@ TABLE_COMPETITORS_DETAILS = "datalake-v2-424516.datalake_v2.items_competitors_de
 TABLE_SHIPPING_COSTS = "datalake-v2-424516.datalake_v2.items_shipping_cost"
 TABLE_VISITS = "datalake-v2-424516.datalake_v2.items_visits"
 TABLE_ORDERS = "datalake-v2-424516.datalake_v2.orders"
-TABLE_PREDICTED_SALES = "datalake-v2-424516.predictions.sales"
+TABLE_PREDICTED_SALES = "datalake-v2-424516.predictions.sales_v2"
 TABLE_INPUT_COMPETITORS = "datalake-v2-424516.datalake_v2.competitors_suggestions_v2"
 TABLE_VARIATIONS = "datalake-v2-424516.datalake_v2.items_variations"
 TABLE_CATALOG_COMPETITORS = "datalake-v2-424516.datalake_v2.items_competitors_catalog"
@@ -23,7 +23,6 @@ TABLE_FREE_SHIPPING_STATUS = "datalake-v2-424516.datalake_v2.items_free_shipping
 TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.update_sellers_competitors_details'
 TABLE_ITEM_PROMOTION = "datalake-v2-424516.datalake_v2.items_promotions"
 TABLE_EXTERNAL_ORDERS = "datalake-v2-424516.datalake_v2.external_orders"
-
 
 # Bucket name
 BUCKET_STORES = "glm-store"

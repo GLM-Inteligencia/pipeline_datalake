@@ -113,6 +113,8 @@ class BigQueryManager:
                         df[column] = df[column].astype(bool)
                     elif dtype == 'TIMESTAMP':
                         df[column] = pd.to_datetime(df[column], errors='coerce')
+                    elif dtype == 'DATETIME':
+                        df[column] = pd.to_datetime(df[column], errors='coerce')
             
             print("Schema adjusted to match BigQuery table.")
             return df[schema_dict.keys()]
