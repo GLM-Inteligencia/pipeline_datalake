@@ -87,31 +87,31 @@ steps:
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
-  # # Deploy model predict sales
-  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  #   id: 'deploy-predict-sales'
-  #   waitFor: ['install-dependencies']
-  #   entrypoint: 'bash'
-  #   args:
-  #     - '-c'
-  #     - |
-  #       cp requirements.txt src/cloud_functions/_4_models/predicted_sales && \
-  #       mkdir -p src/cloud_functions/_4_models/predicted_sales/src && \
-  #       cp -r src/common src/cloud_functions/_4_models/predicted_sales/src  && \
-  #       cp -r src/config src/cloud_functions/_4_models/predicted_sales/src  && \
-  #       cd src/cloud_functions/_4_models/predicted_sales  && \
-  #       gcloud functions deploy get_max_sales_history \
-  #       --gen2 \
-  #       --runtime python310 \
-  #       --trigger-http \
-  #       --no-allow-unauthenticated \
-  #       --region southamerica-east1 \
-  #       --memory 1024MB \
-  #       --timeout 3600 \
-  #       --source . \
-  #       --entry-point get_max_sales_history \
-  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # Deploy model predict sales
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-predict-sales'
+    waitFor: ['install-dependencies']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        cp requirements.txt src/cloud_functions/_4_models/predicted_sales && \
+        mkdir -p src/cloud_functions/_4_models/predicted_sales/src && \
+        cp -r src/common src/cloud_functions/_4_models/predicted_sales/src  && \
+        cp -r src/config src/cloud_functions/_4_models/predicted_sales/src  && \
+        cd src/cloud_functions/_4_models/predicted_sales  && \
+        gcloud functions deploy get_max_sales_history \
+        --gen2 \
+        --runtime python310 \
+        --trigger-http \
+        --no-allow-unauthenticated \
+        --region southamerica-east1 \
+        --memory 1024MB \
+        --timeout 3600 \
+        --source . \
+        --entry-point get_max_sales_history \
+        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
   # # Deploy insert input stores
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -139,30 +139,30 @@ steps:
   #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
   #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
-  # Deploy generate_competitors
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'deploy-generate-competitors'
-    waitFor: ['install-dependencies']
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - | 
-        mkdir -p src/cloud_functions/_8_generate_competitors/src && \
-        cp -r src/common src/cloud_functions/_8_generate_competitors/src  && \
-        cp -r src/config src/cloud_functions/_8_generate_competitors/src  && \
-        cd src/cloud_functions/_8_generate_competitors  && \
-        gcloud functions deploy generate_competitors \
-        --gen2 \
-        --runtime python310 \
-        --trigger-http \
-        --no-allow-unauthenticated \
-        --region southamerica-east1 \
-        --memory 1024MB \
-        --timeout 3600 \
-        --source . \
-        --entry-point generate_competitors_main \
-        --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
-        --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
+  # # Deploy generate_competitors
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-generate-competitors'
+  #   waitFor: ['install-dependencies']
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - | 
+  #       mkdir -p src/cloud_functions/_8_generate_competitors/src && \
+  #       cp -r src/common src/cloud_functions/_8_generate_competitors/src  && \
+  #       cp -r src/config src/cloud_functions/_8_generate_competitors/src  && \
+  #       cd src/cloud_functions/_8_generate_competitors  && \
+  #       gcloud functions deploy generate_competitors \
+  #       --gen2 \
+  #       --runtime python310 \
+  #       --trigger-http \
+  #       --no-allow-unauthenticated \
+  #       --region southamerica-east1 \
+  #       --memory 1024MB \
+  #       --timeout 3600 \
+  #       --source . \
+  #       --entry-point generate_competitors_main \
+  #       --service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com \
+  #       --run-service-account data-lake-v2@datalake-v2-424516.iam.gserviceaccount.com
 
 
 timeout: 3600s  # 30 minutos de timeout para o build completo
