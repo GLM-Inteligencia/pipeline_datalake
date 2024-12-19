@@ -33,43 +33,56 @@ async def main_async(request):
     table_management = settings.TABLE_MANAGEMENT
     destiny_table = settings.TABLE_COMPETITORS_PRICES
 
-    # competitors input table
-    table_competitors_input = settings.TABLE_INPUT_COMPETITORS
-
     # Define today's date
     today_str = datetime.today().strftime('%Y-%m-%d')
     
     # Fetch item IDs from the input bigquery
     query = f'''
-    select distinct competitor_id
-    from {table_competitors_input}
-    where reference_seller_id = {seller_id}
+    SELECT 
+        distinct REPLACE(REGEXP_EXTRACT(link, r'MLB-\d+'), '-', '') AS product_id
+    FROM 
+        `datalake-v2-424516.datalake_v2.competitors_suggestions_mshops`
+    WHERE
+        1=1
+        AND LOWER(link) LIKE '%mlb-%'
+        AND top_seller_id = {seller_id}
     '''
 
     df_competitors = bigquery.run_query(query)
-    items_id = df_competitors['competitor_id'].to_list()
+    items_id = df_competitors['product_id'].to_list()
     print(f'** Items found: {len(items_id)}**')
 
     print(f'** Cleaning blob **')
     # Path for saving price details
-    blob_basic_path = settings.BLOB_COMPETITORS_PRICES(store_name)
-    date_blob_path = f'{blob_basic_path}date={today_str}/'
+    blob_basic_path_mshops = settings.BLOB_COMPETITORS_PRICES_MSHOPS(store_name)
+    date_blob_path_mshops = f'{blob_basic_path_mshops}date={today_str}/'
+
+    blob_basic_path_marketplace = settings.BLOB_COMPETITORS_PRICES_MSHOPS(store_name)
+    date_blob_path_marketplace = f'{blob_basic_path_marketplace}date={today_str}/'
 
     # Clean existing files in the storage bucket
-    storage.clean_blobs(bucket_name, date_blob_path)
+    storage.clean_blobs(bucket_name, date_blob_path_mshops)
 
     print(f'** Starting API requests for {len(items_id)} items**')
     # URL function for API
     if len(items_id) == 0:
         print("** No items to process **")
         return ('Success', 200)
-
-    url = settings.URL_PRICE_MARKETPLACE
+    
+    # URL function for API
+    url_marketplace = settings.URL_PRICE_MARKETPLACE
+    url_mshops = settings.URL_PRICE_MSHOPS
     headers = {'Authorization': f'Bearer {access_token}'}
     
     # Batch processing the API requests
+    # PRICES MELI
     async with aiohttp.ClientSession() as session:
-        await batch_process(session, items_id, url, headers, bucket_name, date_blob_path, storage, add_item_id = True)
+        await batch_process(session, items_id, url_marketplace, headers, bucket_name, date_blob_path_marketplace, storage, add_item_id = True)
+    
+    # Batch processing the API requests
+    # PRICES SHOPS
+    async with aiohttp.ClientSession() as session:
+        await batch_process(session, items_id, url_mshops, headers, bucket_name, date_blob_path_mshops, storage, add_item_id = True)
 
     print('** Logging process in management table... **')
     # Log the process in BigQuery

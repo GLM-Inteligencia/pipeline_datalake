@@ -1,7 +1,7 @@
 
 # Service account
-#PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
-PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
+PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
+# PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
 
 # Tables Bigquery
 TABLE_MANAGEMENT = "datalake-v2-424516.datalake_v2.datalake_management"
@@ -15,15 +15,14 @@ TABLE_COMPETITORS_DETAILS = "datalake-v2-424516.datalake_v2.items_competitors_de
 TABLE_SHIPPING_COSTS = "datalake-v2-424516.datalake_v2.items_shipping_cost"
 TABLE_VISITS = "datalake-v2-424516.datalake_v2.items_visits"
 TABLE_ORDERS = "datalake-v2-424516.datalake_v2.orders"
-TABLE_PREDICTED_SALES = "datalake-v2-424516.predictions.sales"
+TABLE_PREDICTED_SALES = "datalake-v2-424516.predictions.sales_v2"
 TABLE_INPUT_COMPETITORS = "datalake-v2-424516.datalake_v2.competitors_suggestions_v2"
 TABLE_VARIATIONS = "datalake-v2-424516.datalake_v2.items_variations"
 TABLE_CATALOG_COMPETITORS = "datalake-v2-424516.datalake_v2.items_competitors_catalog"
 TABLE_FREE_SHIPPING_STATUS = "datalake-v2-424516.datalake_v2.items_free_shipping_status"
-TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.sellers_competitors_details'
+TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.update_sellers_competitors_details'
 TABLE_ITEM_PROMOTION = "datalake-v2-424516.datalake_v2.items_promotions"
 TABLE_EXTERNAL_ORDERS = "datalake-v2-424516.datalake_v2.external_orders"
-
 
 # Bucket name
 BUCKET_STORES = "glm-store"
@@ -32,7 +31,8 @@ BUCKET_STORES = "glm-store"
 BLOB_PRICES = lambda store_name : f'{store_name}/meli/api_response/item_price/'
 BLOB_PRICES_MSHOPS = lambda store_name : f'{store_name}/meli/api_response/item_price_mshops/'
 
-BLOB_COMPETITORS_PRICES = lambda store_name : f'{store_name}/meli/api_response/item_competitors_price/'
+BLOB_COMPETITORS_PRICES_MSHOPS = lambda store_name : f'{store_name}/meli/api_response/item_competitors_price_mshops/'
+BLOB_COMPETITORS_PRICES_MARKETPLACE = lambda store_name : f'{store_name}/meli/api_response/item_competitors_price_marketplace/'
 BLOB_COMPETITORS_DETAILS = lambda store_name : f'{store_name}/meli/api_response/item_competitors_details/'
 BLOB_COMPETITORS_CATALOG = lambda store_name : f'{store_name}/meli/api_response/item_competitors_catalog/'
 BLOB_CATALOG = lambda store_name : f'{store_name}/meli/api_response/catelog_details/' 

@@ -61,4 +61,4 @@ class TriggerCloudFunction:
             return response
 
         except Exception as e:
-            print('Bad response for function')
+            print(f'Bad response for function: {e}')
