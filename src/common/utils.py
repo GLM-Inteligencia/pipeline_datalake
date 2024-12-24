@@ -214,6 +214,81 @@ def fetch_items_from_storage(storage, bucket_name, blob_items_prefix, key_names,
     return list(set(items_list)) if is_single_key else [dict(t) for t in {tuple(d.items()) for d in items_list}]
 
 
+def fetch_promotion_ids_from_storage(storage, bucket_name, blob_items_prefix, target_key="id", nested_key=None):
+    """
+    Fetches unique `id` values from JSON files stored in Google Cloud Storage. Supports both list 
+    and dictionary formats in the JSON files.
+
+    Args:
+        storage: CloudStorage instance to interact with GCS.
+        bucket_name (str): The name of the bucket to fetch from.
+        blob_items_prefix (str): The prefix path to the blobs to read.
+        target_key (str, optional): The key to extract IDs from. Defaults to "id".
+        nested_key (str, optional): If specified, indicates a nested field within the JSON to process.
+                                    For example, "results" for nested dictionaries or lists.
+
+    Returns:
+        list: A list of unique IDs extracted from the JSON files.
+    """
+    ids = []
+    blobs = storage.list_blobs(bucket_name, blob_items_prefix)
+
+    print(f"Blobs found: {[blob.name for blob in blobs]}")
+
+    for blob in blobs:
+        if not blob.name.endswith('.json'):
+            print(f"Skipping non-JSON file: {blob.name}")
+            continue
+
+        print(f"Reading file: {blob.name}")
+        try:
+            content = storage.download_json(bucket_name, blob.name)
+            
+            # Process based on content type
+            if isinstance(content, list):
+                for item in content:
+                    if nested_key and isinstance(item, dict) and nested_key in item:
+                        nested_content = item[nested_key]
+                        if isinstance(nested_content, list):
+                            ids.extend(extract_ids_from_list(nested_content, target_key))
+                    elif isinstance(item, dict):
+                        ids.extend(extract_ids_from_list([item], target_key))
+                    elif isinstance(item, list):
+                        ids.extend(extract_ids_from_list(item, target_key))
+            elif isinstance(content, dict) and nested_key in content:
+                nested_content = content[nested_key]
+                if isinstance(nested_content, list):
+                    ids.extend(extract_ids_from_list(nested_content, target_key))
+            else:
+                print(f"Unexpected content format in {blob.name}. Skipping.")
+                continue
+        except Exception as e:
+            print(f"Error processing file {blob.name}: {e}")
+            continue
+
+    unique_ids = list(set(ids))
+    return unique_ids
+
+def extract_ids_from_list(items, target_key):
+    """
+    Extracts IDs from a list of dictionaries.
+
+    Args:
+        items (list): A list of dictionaries to process.
+        target_key (str): The key to extract values from.
+
+    Returns:
+        list: A list of extracted IDs.
+    """
+    ids = []
+    for item in items:
+        if isinstance(item, dict):
+            value = item.get(target_key)
+            if value:
+                ids.append(value)
+    return ids
+
+
 def fetch_items(url, seller_id, access_token):
     url = url(seller_id)
     params = {

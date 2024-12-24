@@ -1,7 +1,7 @@
 
 # Service account
-PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
-# PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
+#PATH_SERVICE_ACCOUNT = "C:/Users/User/Documents/papa preco/service account/service_account_datalakev2.json"
+PATH_SERVICE_ACCOUNT = "D:/bacar/Savvi/GLM/Desenvolvimento/service_account/service_account_datalakev2.json"
 
 # Tables Bigquery
 TABLE_MANAGEMENT = "datalake-v2-424516.datalake_v2.datalake_management"
@@ -23,7 +23,8 @@ TABLE_FREE_SHIPPING_STATUS = "datalake-v2-424516.datalake_v2.items_free_shipping
 TABLE_SELLER_INFORMATION = 'datalake-v2-424516.datalake_v2.update_sellers_competitors_details'
 TABLE_ITEM_PROMOTION = "datalake-v2-424516.datalake_v2.items_promotions"
 TABLE_EXTERNAL_ORDERS = "datalake-v2-424516.datalake_v2.external_orders"
-
+TABLE_MARKETPLACE_CAMPAIGN = "datalake-v2-424516.datalake_v2.marketplace_campaign"
+TABLE_ITEM_MARKETPLACE_CAMPAIGN = "datalake-v2-424516.datalake_v2.item_marketplace_campaign"
 
 # Bucket name
 BUCKET_STORES = "glm-store"
@@ -47,6 +48,8 @@ BLOB_FREE_SHIPPING_STATUS = lambda store_name : f'{store_name}/meli/api_response
 BLOB_VISITS = lambda store_name : f'{store_name}/meli/api_response/item_visits/'
 BLOB_PROMOTIONS = lambda store_name : f'{store_name}/meli/api_response/items_promotions/'
 BLOB_PROMOTIONS_MSHOPS = lambda store_name : f'{store_name}/meli/api_response/items_promotions_mshops/'
+BLOB_MARKETPLACE_CAMPAIGN = lambda store_name : f'{store_name}/meli/api_response/marketplace_campaign/'
+BLOB_ITEM_MARKETPLACE_CAMPAIGN = lambda store_name : f'{store_name}/meli/api_response/item_marketplace_campaign/'
 
 # URLs API
 URL_PRICE_MARKETPLACE = lambda item_id: f"https://api.mercadolibre.com/items/{item_id}/sale_price?context=channel_marketplace"
@@ -65,6 +68,8 @@ URL_VISITS = lambda item_id, n : f'https://api.mercadolibre.com/items/{item_id}/
 
 URL_PROMOTIONS_MARKETPLACE = lambda item_id: f"https://api.mercadolibre.com/seller-promotions/items/{item_id}?app_version=v2"
 URL_PROMOTIONS_MSHOPS = lambda item_id: f"https://api.mercadolibre.com/seller-promotions/items/{item_id}?channel=mshops&limit=100&offset=0"
+URL_MARKETPLACE_CAMPAIGN = lambda promotion_id: f"https://api.mercadolibre.com/seller-promotions/promotions/{promotion_id}?promotion_type=MARKETPLACE_CAMPAIGN&app_version=v2"
+URL_ITEM_MARKETPLACE_CAMPAIGN = lambda promotion_id: f"https://api.mercadolibre.com/seller-promotions/promotions/{promotion_id}/items?promotion_type=MARKETPLACE_CAMPAIGN&app_version=v2"
 
 # GCP INFO
 FIRESTORE_COLLECTION_USERS = 'users_credentials'
